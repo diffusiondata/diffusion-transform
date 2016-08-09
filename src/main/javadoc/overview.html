@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+    <body>
+        <p>This API builds on top of the <em>Diffusion Java API</em> to enhance the new typed steams and updaters with
+            additional data conversion functionality. Such functionality is very opinionated in Java and it was decided
+            not suitable for the core library.</p>
+        <p>This API currently supports streams and updaters, allowing them to use types not supported by
+            <em>Diffusion</em>. This is done by creating a
+            {@link com.pushtechnology.diffusion.transform.transformer.Transformer} that knows how to convert objects
+            between types.</p>
+        <p>You can create a stream that converts the data it receives. First get a <em>StreamBuilder</em> and apply
+            one or more transformers. Each transformer returns a new <em>StreamBuilder</em> with a different type.
+            Once all the transformers have been chained you can call create to register a new stream. Transformed values
+            are delivered to the stream you register. You construct a chain of transformers that transform from a
+            type <em>Diffusion</em> understands to a custom type.</p>
+        <p>You can create an updater that converts the data it sends. First get an <em>UpdaterBuilder</em> and apply
+            one or more transformers. Each transformer returns a new <em>UpdaterBuilder</em> with a different type.
+            Once all the transformers have been chained you can call create to create a new updater. Values passed to
+            the updater will be transformed before sending. You construct a chain of transformers that transform from a
+            custom type to a type <em>Diffusion</em> understands.</p>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+*.class
+*.dar
+.DS_Store
+*.backup.zip
+*.xcscheme
+*.xcuserdata
+*.xcuserdatad/
+*.war
+*.ear
+*.xccheckout
+*.xcuserstate
+*.xcuserstate
+.idea
+*iml
+target
+
