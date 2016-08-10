@@ -44,14 +44,16 @@ import com.pushtechnology.diffusion.transform.updater.SafeTransformedUpdater;
  */
 public final class ProducingBinary extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingBinary.class);
-    private static final SafeTransformer<RandomData, byte[]> SERIALISER =
-        value -> {
+    private static final SafeTransformer<RandomData, byte[]> SERIALISER = new SafeTransformer<RandomData, byte[]>() {
+        @Override
+        public byte[] transform(RandomData value) {
             final ByteBuffer buffer = ByteBuffer.allocate(16);
             buffer.putInt(value.getId());
             buffer.putLong(value.getTimestamp());
             buffer.putInt(value.getRandomInt());
             return buffer.array();
-        };
+        }
+    };
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;
