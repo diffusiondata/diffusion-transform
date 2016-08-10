@@ -26,7 +26,10 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
  * @author Push Technology Limited
  */
 /*package*/ final class BinaryToIntegerTransformer extends FromBinaryTransformer<Integer> {
-    public static Transformer<Binary, Integer> INSTANCE = new BinaryToIntegerTransformer();
+    /**
+     * Instance of {@link BinaryToIntegerTransformer}.
+     */
+    public static final Transformer<Binary, Integer> INSTANCE = new BinaryToIntegerTransformer();
 
     private BinaryToIntegerTransformer() {
     }
