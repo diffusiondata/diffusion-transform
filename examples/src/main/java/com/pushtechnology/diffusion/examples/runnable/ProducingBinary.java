@@ -56,6 +56,11 @@ public final class ProducingBinary extends AbstractClient {
 
     private volatile Future<?> updateTask;
 
+    /**
+     * Constructor.
+     * @param url The URL to connect to
+     * @param principal The principal to connect as
+     */
     public ProducingBinary(String url, String principal) {
         super(url, principal);
     }

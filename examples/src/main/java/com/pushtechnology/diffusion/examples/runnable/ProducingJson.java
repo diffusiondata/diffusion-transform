@@ -46,6 +46,11 @@ public final class ProducingJson extends AbstractClient {
 
     private volatile Future<?> updateTask;
 
+    /**
+     * Constructor.
+     * @param url The URL to connect to
+     * @param principal The principal to connect as
+     */
     public ProducingJson(String url, String principal) {
         super(url, principal);
     }

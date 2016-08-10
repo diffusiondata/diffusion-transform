@@ -47,6 +47,11 @@ public final class ProducingJsonWithExculsiveUpdater extends AbstractClient {
 
     private volatile Future<?> updateTask;
 
+    /**
+     * Constructor.
+     * @param url The URL to connect to
+     * @param principal The principal to connect as
+     */
     public ProducingJsonWithExculsiveUpdater(String url, String principal) {
         super(url, principal);
     }
