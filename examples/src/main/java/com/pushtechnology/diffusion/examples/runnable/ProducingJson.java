@@ -31,6 +31,7 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
 
@@ -76,7 +77,7 @@ public final class ProducingJson extends AbstractClient {
                         RandomData.next(),
                         new TopicUpdateControl.Updater.UpdateCallback.Default());
                 }
-                catch (Exception e) {
+                catch (TransformationException e) {
                     LOG.warn("Failed to transform data", e);
                 }
             },
