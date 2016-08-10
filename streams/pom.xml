@@ -45,27 +45,6 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.pushtechnology.sample</groupId>
-                        <artifactId>build-rules</artifactId>
-                        <version>1.4</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <configLocation>checkstyle/checkstyle.xml</configLocation>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.0</version>
