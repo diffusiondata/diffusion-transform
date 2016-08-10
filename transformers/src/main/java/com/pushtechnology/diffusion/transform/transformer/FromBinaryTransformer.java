@@ -25,6 +25,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 /**
  * Abstract {@link Transformer} to help deserialise values from {@link Binary}.
  *
+ * @param <T> the type to transform to
  * @author Push Technology Limited
  */
 public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T> {

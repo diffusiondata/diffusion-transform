@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 /**
  * Abstract {@link Transformer} to help serialise values to {@link Binary}.
  *
+ * @param <S> the type to transform from
  * @author Push Technology Limited
  */
 public abstract class ToBinaryTransformer<S> implements Transformer<S, Binary> {
