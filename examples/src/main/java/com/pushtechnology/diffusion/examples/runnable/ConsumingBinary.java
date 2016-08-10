@@ -69,10 +69,12 @@ public final class ConsumingBinary extends AbstractClient {
      * @param args The command line arguments
      * @throws InterruptedException If the main thread was interrupted
      */
+    // CHECKSTYLE.OFF: UncommentedMain
     public static void main(String[] args) throws InterruptedException {
         final ConsumingBinary client =
             new ConsumingBinary("ws://diffusion.example.com:80", "auth");
         client.start("auth_secret");
         client.waitForStopped();
     }
+    // CHECKSTYLE.ON: UncommentedMain
 }
