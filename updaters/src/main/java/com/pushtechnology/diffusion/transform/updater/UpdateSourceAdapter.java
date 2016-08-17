@@ -27,18 +27,22 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
  * @author Push Technology Limited
  */
 /*package*/ final class UpdateSourceAdapter<S, T>  implements TopicUpdateControl.UpdateSource {
+    private final ValueCache valueCache;
     private final TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource;
     private final UpdaterBuilderImpl<S, T> updaterBuilder;
 
     UpdateSourceAdapter(
+            ValueCache valueCache,
             UpdaterBuilderImpl<S, T> updaterBuilder,
             TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
+        this.valueCache = valueCache;
         this.updaterBuilder = updaterBuilder;
         this.updateSource = updateSource;
     }
 
     @Override
     public void onActive(String topicPath, TopicUpdateControl.Updater updater) {
+        valueCache.removeCachedValues(topicPath);
         updateSource.onActive(topicPath, updaterBuilder.create(updater));
     }
 
@@ -55,10 +59,12 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
     @Override
     public void onClose(String topicPath) {
         updateSource.onClose(topicPath);
+        valueCache.removeCachedValues(topicPath);
     }
 
     @Override
     public void onError(String topicPath, ErrorReason errorReason) {
         updateSource.onError(topicPath, errorReason);
+        valueCache.removeCachedValues(topicPath);
     }
 }

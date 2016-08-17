@@ -24,25 +24,26 @@ import com.pushtechnology.diffusion.client.topics.TopicSelector;
  * @param <S> The type of value returned by the cache
  * @author Push Technology Limited
  */
-/*package*/ final class ValueCacheImpl<S> implements ValueCache<S> {
-    private final TopicUpdateControl.ValueUpdater<S> delegate;
+/*package*/ final class UpdateControlValueCache<S> implements ValueCache<S> {
+    private final TopicUpdateControl updateControl;
 
-    ValueCacheImpl(TopicUpdateControl.ValueUpdater<S> delegate) {
-        this.delegate = delegate;
+    /*package*/ UpdateControlValueCache(TopicUpdateControl updateControl) {
+        this.updateControl = updateControl;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public S getCachedValue(String topicPath) throws IllegalArgumentException, ClassCastException {
-        return delegate.getCachedValue(topicPath);
+        return (S) updateControl.getCachedValue(topicPath);
     }
 
     @Override
-    public void removeCachedValues(String topics) throws IllegalArgumentException {
-        delegate.removeCachedValues(topics);
+    public void removeCachedValues(String selector) throws IllegalArgumentException {
+        updateControl.removeCachedValues(selector);
     }
 
     @Override
-    public void removeCachedValues(TopicSelector topics) throws IllegalArgumentException {
-        delegate.removeCachedValues(topics);
+    public void removeCachedValues(TopicSelector selector) throws IllegalArgumentException {
+        updateControl.removeCachedValues(selector);
     }
 }

@@ -20,7 +20,7 @@ import com.pushtechnology.diffusion.client.topics.TopicSelector;
 /**
  * Accessed to cached values. The updater uses a cache of values to calculate deltas.
  *
- * @param <S> The type of value understood by the topic
+ * @param <S> The type of value returned by the cache
  * @author Push Technology Limited
  */
 public interface ValueCache<S> {

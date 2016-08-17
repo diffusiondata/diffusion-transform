@@ -59,7 +59,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
             TopicUpdateControl updateControl,
             String topicPath,
             TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
-        updateControl.registerUpdateSource(topicPath, new UpdateSourceAdapter<>(this, updateSource));
+        updateControl.registerUpdateSource(
+            topicPath,
+            new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
     }
 
     public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater, Class<T> type) {
