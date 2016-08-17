@@ -38,14 +38,12 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     }
 
     @Override
-    public <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-            transform(Transformer<R, T> newTransformer) {
+    public <R> InternalUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
         return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 
     @Override
-    public <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-            transform(Transformer<R, T> newTransformer, Class<R> type) {
+    public <R> InternalUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
         return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 

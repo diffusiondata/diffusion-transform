@@ -27,8 +27,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-/*package*/ final class UpdaterBuilderImpl<S, T> implements
-        UpdaterBuilder<S, T, TransformedUpdater<S, T>, TransformedUpdateSource<S, T, TransformedUpdater<S, T>>> {
+/*package*/ final class UpdaterBuilderImpl<S, T> implements InternalUpdaterBuilder<S, T> {
     private final Class<S> valueType;
     private final Transformer<T, S> transformer;
 
@@ -38,14 +37,12 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     }
 
     @Override
-    public <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-            transform(Transformer<R, T> newTransformer) {
+    public <R> InternalUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
         return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 
     @Override
-    public <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-            transform(Transformer<R, T> newTransformer, Class<R> type) {
+    public <R> InternalUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
         return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 
