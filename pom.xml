@@ -30,12 +30,12 @@
     </repositories>
 
     <properties>
-        <jackson.version>2.7.1</jackson.version>
+        <jackson.version>2.7.6</jackson.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- Module dependencies -->
+            <!-- Internal project dependencies -->
             <dependency>
                 <groupId>com.pushtechnology.diffusion.transform</groupId>
                 <artifactId>examples</artifactId>
@@ -60,19 +60,21 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Third party dependencies -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.12</version>
-            </dependency>
-
+            <!-- Push Technology dependencies -->
             <dependency>
                 <groupId>com.pushtechnology.diffusion</groupId>
                 <artifactId>diffusion-api</artifactId>
                 <version>5.8.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.pushtechnology.diffusion</groupId>
+                <artifactId>diffusion-client</artifactId>
+                <version>5.8.3</version>
+            </dependency>
+
+
+            <!-- Third party dependencies -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
@@ -98,12 +100,6 @@
             </dependency>
 
             <dependency>
-                <groupId>com.pushtechnology.diffusion</groupId>
-                <artifactId>diffusion-client</artifactId>
-                <version>5.8.3</version>
-            </dependency>
-
-            <dependency>
                 <groupId>net.jcip</groupId>
                 <artifactId>jcip-annotations</artifactId>
                 <version>1.0</version>
@@ -120,7 +116,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>1.9.5</version>
+                <version>1.10.19</version>
                 <scope>test</scope>
             </dependency>
 
