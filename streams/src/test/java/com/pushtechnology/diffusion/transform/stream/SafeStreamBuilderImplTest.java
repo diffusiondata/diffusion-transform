@@ -28,6 +28,7 @@ import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
+import com.pushtechnology.diffusion.datatype.json.JSON;
 
 /**
  * Unit tests for {@link SafeStreamBuilderImpl}.
@@ -41,6 +42,8 @@ public final class SafeStreamBuilderImplTest {
     private TopicSelector selector;
     @Mock
     private Topics.ValueStream<String> stream;
+    @Mock
+    private Topics.ValueStream<JSON> jsonStream;
 
     @Before
     public void setUp() {
@@ -92,10 +95,10 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallback() {
-        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
-        streamBuilder.createFallback(topics, stream);
+        final StreamBuilder<JSON, JSON, Topics.ValueStream<JSON>> streamBuilder =
+            new SafeStreamBuilderImpl<>(JSON.class, identity(JSON.class));
+        streamBuilder.createFallback(topics, jsonStream);
 
-        verify(topics).addFallbackStream(eq(String.class), isA(SafeStreamAdapter.class));
+        verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
     }
 }

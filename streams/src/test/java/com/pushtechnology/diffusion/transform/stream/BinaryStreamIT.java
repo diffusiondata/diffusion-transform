@@ -116,8 +116,6 @@ public final class BinaryStreamIT {
         topicControl.addTopic("test/topic", TopicType.BINARY, addCallback);
         verify(addCallback, timed()).onTopicAdded("test/topic");
 
-        // TODO: Filter fallback streams by topic type
-        verify(stream, timed()).onSubscription(eq("test"), isA(TopicSpecification.class));
         verify(stream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
         final TopicSpecification specification0 = specificationCaptor.getValue();
         assertEquals(TopicType.BINARY, specification0.getType());
@@ -139,7 +137,6 @@ public final class BinaryStreamIT {
         verify(completionCallback, timed().times(2)).onComplete();
 
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
-        verify(stream, timed()).onUnsubscription(eq("test"), isA(TopicSpecification.class), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
     }

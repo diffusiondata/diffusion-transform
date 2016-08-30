@@ -15,8 +15,14 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
+import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
+import com.pushtechnology.diffusion.client.topics.details.TopicType;
+import com.pushtechnology.diffusion.datatype.DataType;
 
 /**
  * Abstract implementation of {@link StreamBuilder}.
@@ -52,9 +58,12 @@ import com.pushtechnology.diffusion.client.topics.TopicSelector;
         topicsFeature.addStream(topicSelector, valueType, adaptStream(stream));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void createFallback(Topics topicsFeature, V stream) {
-        topicsFeature.addFallbackStream(valueType, adaptStream(stream));
+        final DataType<S> dataType = (DataType<S>) Diffusion.dataTypes().getByClass(valueType);
+        final TopicType topicType = TopicType.valueOf(dataType.getTypeName().toUpperCase());
+        topicsFeature.addFallbackStream(valueType, new FilterStream<>(topicType, adaptStream(stream)));
     }
 
     /**
@@ -63,4 +72,55 @@ import com.pushtechnology.diffusion.client.topics.TopicSelector;
      * @return The source value stream
      */
     protected abstract Topics.ValueStream<S> adaptStream(V targetStream);
+
+    /**
+     * Implementation of {@link Topics.ValueStream} that filters by topic type. Used to restrict fallback streams to
+     * certain topic types.
+     *
+     * @param <S>
+     */
+    private static final class FilterStream<S> implements Topics.ValueStream<S> {
+        private final TopicType topicType;
+        private final Topics.ValueStream<S> delegate;
+
+        private FilterStream(TopicType topicType, Topics.ValueStream<S> delegate) {
+            this.topicType = topicType;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public void onValue(String topicPath, TopicSpecification topicSpecification, S oldValue, S newValue) {
+            if (topicType.equals(topicSpecification.getType())) {
+                delegate.onValue(topicPath, topicSpecification, oldValue, newValue);
+            }
+        }
+
+        @Override
+        public void onSubscription(String topicPath, TopicSpecification topicSpecification) {
+            if (topicType.equals(topicSpecification.getType())) {
+                delegate.onSubscription(topicPath, topicSpecification);
+            }
+        }
+
+        @Override
+        public void onUnsubscription(
+            String topicPath,
+            TopicSpecification topicSpecification,
+            UnsubscribeReason unsubscribeReason) {
+
+            if (topicType.equals(topicSpecification.getType())) {
+                delegate.onUnsubscription(topicPath, topicSpecification, unsubscribeReason);
+            }
+        }
+
+        @Override
+        public void onClose() {
+            delegate.onClose();
+        }
+
+        @Override
+        public void onError(ErrorReason errorReason) {
+            delegate.onError(errorReason);
+        }
+    }
 }

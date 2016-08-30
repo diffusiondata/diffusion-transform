@@ -23,7 +23,6 @@ import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -118,8 +117,6 @@ public final class JSONStreamIT {
         topicControl.addTopic("test/topic", TopicType.JSON, addCallback);
         verify(addCallback, timed()).onTopicAdded("test/topic");
 
-        // TODO: Filter fallback streams by topic type
-        verify(stream, timed()).onSubscription(eq("test"), isA(TopicSpecification.class));
         verify(stream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
         final TopicSpecification specification0 = specificationCaptor.getValue();
         assertEquals(TopicType.JSON, specification0.getType());
@@ -141,7 +138,6 @@ public final class JSONStreamIT {
         verify(completionCallback, timed().times(2)).onComplete();
 
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
-        verify(stream, timed()).onUnsubscription(eq("test"), isA(TopicSpecification.class), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
     }

@@ -27,6 +27,7 @@ import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
+import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
@@ -41,6 +42,8 @@ public final class StreamBuilderImplTest {
     private TopicSelector selector;
     @Mock
     private TransformedStream<String, String> stream;
+    @Mock
+    private TransformedStream<JSON, JSON> jsonStream;
 
     @Before
     public void setUp() {
@@ -81,10 +84,10 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallback() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
-        streamBuilder.createFallback(topics, stream);
+        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
+            new StreamBuilderImpl<>(JSON.class, Transformers.<JSON>identity());
+        streamBuilder.createFallback(topics, jsonStream);
 
-        verify(topics).addFallbackStream(eq(String.class), isA(StreamAdapter.class));
+        verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
     }
 }
