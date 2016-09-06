@@ -7,6 +7,8 @@ understood. This library aims to add additional ways of transforming these value
 
 [![Build Status](https://travis-ci.org/pushtechnology/diffusion-transform.svg?branch=master)](https://travis-ci.org/pushtechnology/diffusion-transform)
 
+[Additional information](https://pushtechnology.github.io/diffusion-transform/)
+
 ## Transformers
 
 A key component is the `Transformer` interface. This interface provides an abstraction over converting values from one
