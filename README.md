@@ -5,6 +5,8 @@ The Diffusion Java API uses these values when subscribing and updating topics. `
 not allow its value to inspected. `Binary` is a wrapper around a byte array that needs further deserialisation to be
 understood. This library aims to add additional ways of transforming these values to those easier to work with.
 
+[![Build Status](https://travis-ci.org/pushtechnology/diffusion-transform.svg?branch=master)](https://travis-ci.org/pushtechnology/diffusion-transform)
+
 ## Transformers
 
 A key component is the `Transformer` interface. This interface provides an abstraction over converting values from one
