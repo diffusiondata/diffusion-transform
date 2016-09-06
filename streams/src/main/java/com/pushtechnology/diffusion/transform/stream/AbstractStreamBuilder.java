@@ -49,21 +49,27 @@ import com.pushtechnology.diffusion.datatype.DataType;
     }
 
     @Override
-    public final void create(Topics topicsFeature, String topicSelector, V stream) {
-        topicsFeature.addStream(topicSelector, valueType, adaptStream(stream));
+    public final StreamHandle create(Topics topicsFeature, String topicSelector, V stream) {
+        final Topics.ValueStream<S> valueStream = adaptStream(stream);
+        topicsFeature.addStream(topicSelector, valueType, valueStream);
+        return new StreamHandleImpl(topicsFeature, valueStream);
     }
 
     @Override
-    public final void create(Topics topicsFeature, TopicSelector topicSelector, V stream) {
-        topicsFeature.addStream(topicSelector, valueType, adaptStream(stream));
+    public final StreamHandle create(Topics topicsFeature, TopicSelector topicSelector, V stream) {
+        final Topics.ValueStream<S> valueStream = adaptStream(stream);
+        topicsFeature.addStream(topicSelector, valueType, valueStream);
+        return new StreamHandleImpl(topicsFeature, valueStream);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void createFallback(Topics topicsFeature, V stream) {
+    public final StreamHandle createFallback(Topics topicsFeature, V stream) {
         final DataType<S> dataType = (DataType<S>) Diffusion.dataTypes().getByClass(valueType);
         final TopicType topicType = TopicType.valueOf(dataType.getTypeName().toUpperCase());
-        topicsFeature.addFallbackStream(valueType, new FilterStream<>(topicType, adaptStream(stream)));
+        final Topics.ValueStream<S> valueStream = new FilterStream<>(topicType, adaptStream(stream));
+        topicsFeature.addFallbackStream(valueType, valueStream);
+        return new StreamHandleImpl(topicsFeature, valueStream);
     }
 
     /**

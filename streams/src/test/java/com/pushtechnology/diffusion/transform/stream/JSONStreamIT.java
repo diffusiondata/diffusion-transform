@@ -39,7 +39,6 @@ import org.mockito.Mock;
 import org.mockito.verification.VerificationWithTimeout;
 
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -94,10 +93,6 @@ public final class JSONStreamIT {
 
         verify(listener, timed()).onSessionStateChanged(session, CONNECTED_ACTIVE, CLOSED_BY_CLIENT);
 
-        // Should this be mapped to a normal close?
-        // TODO: Provide a way to remove transformed streams
-        verify(stream).onError(ErrorReason.SESSION_CLOSED);
-
         verifyNoMoreInteractions(listener, stream, addCallback, removeCallback, completionCallback, updateCallback);
     }
 
@@ -105,7 +100,7 @@ public final class JSONStreamIT {
     @Test
     public void fallback() {
         final Topics topics = session.feature(Topics.class);
-        StreamBuilders
+        final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
             .transform(Transformers.toMapOf(String.class))
             .createFallback(topics, stream);
@@ -140,13 +135,16 @@ public final class JSONStreamIT {
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(stream, timed()).onClose();
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void stream() {
         final Topics topics = session.feature(Topics.class);
-        StreamBuilders
+        final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
             .transform(Transformers.toMapOf(String.class))
             .create(topics, "?test//", stream);
@@ -181,6 +179,9 @@ public final class JSONStreamIT {
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(stream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {

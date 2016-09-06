@@ -66,6 +66,9 @@ StreamBuilders.newJsonStreamBuilder()
 A `StreamBuilder` can also be used to create a fallback stream. A fallback stream receives notifications for any topics
 that do not match the topic selector of any other stream.
 
+A `StreamBuilder` returns a `StreamHandle` when it creates a stream or fallback stream. This must be used to close the
+stream when it is no longer needed.
+
 ## UpdaterBuilders
 
 To help with updating topics with new values an `UpdaterBuilder` can be used to construct a `TransformedUpdater` that

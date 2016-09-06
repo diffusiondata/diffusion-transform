@@ -46,8 +46,9 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param topicsFeature the topics feature
      * @param topicSelector the topic selector to match the stream
      * @param stream the stream handler
+     * @return a handle to the stream
      */
-    void create(Topics topicsFeature, String topicSelector, V stream);
+    StreamHandle create(Topics topicsFeature, String topicSelector, V stream);
 
     /**
      * Create the stream.
@@ -55,14 +56,16 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param topicsFeature the topics feature
      * @param topicSelector the topic selector to match the stream
      * @param stream the stream handler
+     * @return a handle to the stream
      */
-    void create(Topics topicsFeature, TopicSelector topicSelector, V stream);
+    StreamHandle create(Topics topicsFeature, TopicSelector topicSelector, V stream);
 
     /**
      * Create the fallback stream.
      *
      * @param topicsFeature the topics feature
      * @param stream the stream handler
+     * @return a handle to the stream
      */
-    void createFallback(Topics topicsFeature, V stream);
+    StreamHandle createFallback(Topics topicsFeature, V stream);
 }

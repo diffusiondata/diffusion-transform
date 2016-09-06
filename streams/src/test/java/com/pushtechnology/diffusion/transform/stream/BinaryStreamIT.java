@@ -24,7 +24,6 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.in
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -39,7 +38,6 @@ import org.mockito.Mock;
 import org.mockito.verification.VerificationWithTimeout;
 
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -94,17 +92,13 @@ public final class BinaryStreamIT {
 
         verify(listener, timed()).onSessionStateChanged(session, CONNECTED_ACTIVE, CLOSED_BY_CLIENT);
 
-        // Should this be mapped to a normal close?
-        // TODO: Provide a way to remove transformed streams
-        verify(stream).onError(ErrorReason.SESSION_CLOSED);
-
         verifyNoMoreInteractions(listener, stream, addCallback, removeCallback, completionCallback, updateCallback);
     }
 
     @Test
     public void fallback() throws TransformationException {
         final Topics topics = session.feature(Topics.class);
-        StreamBuilders
+        final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
             .transform(binaryToInteger())
             .createFallback(topics, stream);
@@ -139,12 +133,15 @@ public final class BinaryStreamIT {
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(stream, timed()).onClose();
     }
 
     @Test
     public void stream() throws TransformationException {
         final Topics topics = session.feature(Topics.class);
-        StreamBuilders
+        final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
             .transform(binaryToInteger())
             .create(topics, "?test//", stream);
@@ -179,6 +176,9 @@ public final class BinaryStreamIT {
         verify(stream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
         final TopicSpecification specification1 = specificationCaptor.getValue();
         assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(stream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {
