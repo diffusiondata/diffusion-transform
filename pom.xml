@@ -12,6 +12,7 @@
 
     <groupId>com.pushtechnology.diffusion.transform</groupId>
     <artifactId>diffusion-transform</artifactId>
+    <name>Diffusion Transform</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -29,8 +30,32 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>https://pushtechnology.github.io/diffusion-transform/</url>
+        </site>
+    </distributionManagement>
+
+    <scm>
+        <url>https://github.com/pushtechnology/diffusion-transform</url>
+        <connection>scm:git:https://github.com/pushtechnology/diffusion-transform</connection>
+        <developerConnection>scm:git:ssh://git@github.com/pushtechnology/diffusion-transform.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jackson.version>2.7.6</jackson.version>
+
+        <!-- To publish the site documentation: -->
+        <!-- mvn clean site:site site:stage scm-publish:publish-scm -Dscmpublish.dryRun=true -->
+        <!-- and if that works: mvn scm-publish:publish-scm -->
+
+        <scm-publish.checkoutDirectory>${project.build.directory}/scmpublish</scm-publish.checkoutDirectory>
+        <scm-publish.scmBranch>gh-pages</scm-publish.scmBranch>
+        <scm-publish.pubScmUrl>scm:git:https://github.com/pushtechnology/diffusion-transform</scm-publish.pubScmUrl>
+        <scm-publish.siteDocOutputDirectory>${project.build.directory}/staging</scm-publish.siteDocOutputDirectory>
     </properties>
 
     <dependencyManagement>
@@ -192,11 +217,43 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-scm-publish-plugin</artifactId>
+                <version>1.1</version>
+                <configuration>
+                    <checkoutDirectory>${scm-publish.checkoutDirectory}</checkoutDirectory>
+                    <checkinComment>Publishing Site Docs for
+                        ${project.artifactId}:${project.version}.</checkinComment>
+                    <content>${scm-publish.siteDocOutputDirectory}</content>
+                    <skipDeletedFiles>true</skipDeletedFiles>
+                    <pubScmUrl>${scm-publish.pubScmUrl}</pubScmUrl>
+                    <scmBranch>${scm-publish.scmBranch}</scmBranch>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <reporting>
         <plugins>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>license</report>
+                            <report>dependency-info</report>
+                            <report>scm</report>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
@@ -210,6 +267,32 @@
                         <reports>
                             <report>aggregate</report>
                         </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Medium</threshold>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports></reports>
                     </reportSet>
                 </reportSets>
             </plugin>
