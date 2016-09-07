@@ -66,7 +66,7 @@ public final class StreamBuilderImplTest {
     public void createPath() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
-        streamBuilder.create(topics, "path", stream);
+        streamBuilder.register(topics, "path", stream);
 
         verify(topics).addStream(eq("path"), eq(String.class), isA(StreamAdapter.class));
     }
@@ -76,7 +76,7 @@ public final class StreamBuilderImplTest {
     public void createSelector() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
-        streamBuilder.create(topics, selector, stream);
+        streamBuilder.register(topics, selector, stream);
 
         verify(topics).addStream(eq(selector), eq(String.class), isA(StreamAdapter.class));
     }

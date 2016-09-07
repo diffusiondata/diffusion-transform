@@ -24,12 +24,12 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * This extends {@link StreamBuilder} with support for untransformed and safely transformed streams. If the
  * transformation does not need to throw an exception a {@link SafeTransformer} can be used. Chaining a
  * {@link SafeTransformer} to a {@link SafeStreamBuilder} returns another {@link SafeStreamBuilder}. The
- * {@link SafeStreamBuilder} can be used to create a stream that does not need to implement any exception handling.
+ * {@link SafeStreamBuilder} can be used to register a stream that does not need to implement any exception handling.
  * <p>
  * The builder can be used to chain the {@link com.pushtechnology.diffusion.transform.transformer.Transformer}s that
- * will be applied to a stream. The builder can be used as a template to create multiple streams that apply the same
- * transformation. Once the transformations have been chained the {@link #create(Topics, String, Topics.ValueStream)}
- * method can be used to create the stream.
+ * will be applied to a stream. The builder can be used as a template to register multiple streams that apply the same
+ * transformation. Once the transformations have been chained the {@link #register(Topics, String, Topics.ValueStream)}
+ * method can be used to register the stream.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values

@@ -54,7 +54,7 @@ public final class ConsumingJson extends AbstractClient {
         newJsonStreamBuilder()
             .transform(toMapOf(BigInteger.class))
             .transform(project("timestamp"))
-            .create(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
+            .register(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
                 @Override
                 public void onValue(
                     String topicPath,

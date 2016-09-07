@@ -22,7 +22,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
- * A {@link SafeStreamBuilder} that does create a transformed stream.
+ * A {@link SafeStreamBuilder} that does register a transformed stream.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values

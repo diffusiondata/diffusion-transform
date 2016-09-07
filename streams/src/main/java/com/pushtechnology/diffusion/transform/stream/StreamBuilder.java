@@ -21,9 +21,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
  * An immutable builder for streams. The builder can be used to chain the {@link Transformer}s that will be applied to
- * a stream. The builder can be used as a template to create multiple streams that apply the same transformation. Once
- * the transformations have been chained the {@link #create(Topics, String, Topics.ValueStream)} method can be used to
- * create the stream.
+ * a stream. The builder can be used as a template to register multiple streams that apply the same transformation. Once
+ * the transformations have been chained the {@link #register(Topics, String, Topics.ValueStream)} method can be used to
+ * register the stream.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
@@ -48,7 +48,7 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param stream the stream handler
      * @return a handle to the stream
      */
-    StreamHandle create(Topics topicsFeature, String topicSelector, V stream);
+    StreamHandle register(Topics topicsFeature, String topicSelector, V stream);
 
     /**
      * Create the stream.
@@ -58,7 +58,7 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param stream the stream handler
      * @return a handle to the stream
      */
-    StreamHandle create(Topics topicsFeature, TopicSelector topicSelector, V stream);
+    StreamHandle register(Topics topicsFeature, TopicSelector topicSelector, V stream);
 
     /**
      * Create the fallback stream.

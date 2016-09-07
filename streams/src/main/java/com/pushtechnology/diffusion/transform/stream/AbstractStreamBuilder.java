@@ -49,14 +49,14 @@ import com.pushtechnology.diffusion.datatype.DataType;
     }
 
     @Override
-    public final StreamHandle create(Topics topicsFeature, String topicSelector, V stream) {
+    public final StreamHandle register(Topics topicsFeature, String topicSelector, V stream) {
         final Topics.ValueStream<S> valueStream = adaptStream(stream);
         topicsFeature.addStream(topicSelector, valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
     }
 
     @Override
-    public final StreamHandle create(Topics topicsFeature, TopicSelector topicSelector, V stream) {
+    public final StreamHandle register(Topics topicsFeature, TopicSelector topicSelector, V stream) {
         final Topics.ValueStream<S> valueStream = adaptStream(stream);
         topicsFeature.addStream(topicSelector, valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);

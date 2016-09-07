@@ -147,7 +147,7 @@ public final class JSONStreamIT {
         final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
             .transform(Transformers.toMapOf(String.class))
-            .create(topics, "?test//", stream);
+            .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);
         verify(completionCallback, timed()).onComplete();

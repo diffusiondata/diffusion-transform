@@ -77,7 +77,7 @@ public final class SafeStreamBuilderImplTest {
     public void createPath() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity(String.class));
-        streamBuilder.create(topics, "path", stream);
+        streamBuilder.register(topics, "path", stream);
 
         verify(topics).addStream(eq("path"), eq(String.class), isA(SafeStreamAdapter.class));
     }
@@ -87,7 +87,7 @@ public final class SafeStreamBuilderImplTest {
     public void createSelector() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity(String.class));
-        streamBuilder.create(topics, selector, stream);
+        streamBuilder.register(topics, selector, stream);
 
         verify(topics).addStream(eq(selector), eq(String.class), isA(SafeStreamAdapter.class));
     }

@@ -49,7 +49,7 @@ public final class ConsumingBinary extends AbstractClient {
         newBinaryStreamBuilder()
             .transform(Bytes::toByteArray)
             .transform(RandomData::fromByteArray)
-            .create(topics, "binary/random", new Topics.ValueStream.Default<RandomData>() {
+            .register(topics, "binary/random", new Topics.ValueStream.Default<RandomData>() {
                 @Override
                 public void onValue(
                     String topicPath,

@@ -144,7 +144,7 @@ public final class BinaryStreamIT {
         final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
             .transform(binaryToInteger())
-            .create(topics, "?test//", stream);
+            .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);
         verify(completionCallback, timed()).onComplete();
