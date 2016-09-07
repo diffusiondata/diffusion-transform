@@ -162,4 +162,13 @@ public final class StreamAdapterTest {
 
         verify(delegate).onError(ErrorReason.TOPIC_TREE_REGISTRATION_CONFLICT);
     }
+
+    @Test
+    public void onSessionClose() {
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+
+        stream.onError(ErrorReason.SESSION_CLOSED);
+
+        verify(delegate).onClose();
+    }
 }

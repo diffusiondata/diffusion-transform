@@ -70,7 +70,12 @@ import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 
     @Override
     public final void onError(ErrorReason errorReason) {
-        delegate.onError(errorReason);
+        if (ErrorReason.SESSION_CLOSED.equals(errorReason)) {
+            delegate.onClose();
+        }
+        else {
+            delegate.onError(errorReason);
+        }
         valueCache.clear();
     }
 
