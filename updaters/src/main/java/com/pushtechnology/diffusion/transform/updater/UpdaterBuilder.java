@@ -24,10 +24,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @param <U> The type of updater
- * @param <V> The type of update source
  * @author Push Technology Limited
  */
-public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V extends TransformedUpdateSource<S, T, U>> {
+public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>> {
 
     /**
      * Transform the updater that will be built.
@@ -53,11 +52,4 @@ public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V exte
      * @param updater the update to transform
      */
     U create(TopicUpdateControl.Updater updater);
-
-    /**
-     * Register an update source.
-     * @param updateControl the {@link TopicUpdateControl} feature
-     * @param updateSource the update source
-     */
-    void register(TopicUpdateControl updateControl, String topicPath, V updateSource);
 }

@@ -15,18 +15,20 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-
 /**
- * An extension to {@link UpdaterBuilder} that creates {@link TransformedUpdater}s.
+ * An extension to {@link UpdaterBuilder} that is bound to a session.
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
+ * @param <U> The type of updater
+ * @param <V> The type of update source
  * @author Push Technology Limited
  */
-public interface TransformedUpdaterBuilder<S, T> extends
-    UpdaterBuilder<S, T, TransformedUpdater<S, T>> {
-
-    @Override
-    TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater);
+public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V extends
+        TransformedUpdateSource<S, T, U>> extends UpdaterBuilder<S, T, U> {
+    /**
+     * Register an update source.
+     * @param updateSource the update source
+     */
+    void register(String topicPath, V updateSource);
 }

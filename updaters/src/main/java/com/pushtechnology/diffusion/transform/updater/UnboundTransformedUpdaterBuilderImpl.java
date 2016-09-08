@@ -18,57 +18,55 @@ package com.pushtechnology.diffusion.transform.updater;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
- * Implementation of {@link SafeUpdaterBuilder}.
-
+ * Implementation of {@link UpdaterBuilder}.
+ *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-/*package*/ final class SafeUpdaterBuilderImpl<S, T> implements SafeUpdaterBuilder<S, T> {
+/*package*/ final class UnboundTransformedUpdaterBuilderImpl<S, T> implements UnboundTransformedUpdaterBuilder<S, T> {
     private final Class<S> valueType;
-    private final SafeTransformer<T, S> transformer;
+    private final Transformer<T, S> transformer;
 
-    SafeUpdaterBuilderImpl(Class<S> valueType, SafeTransformer<T, S> transformer) {
+    UnboundTransformedUpdaterBuilderImpl(Class<S> valueType, Transformer<T, S> transformer) {
         this.valueType = valueType;
         this.transformer = transformer;
     }
 
     @Override
-    public <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
-        return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 
     @Override
-    public <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
-        return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
     }
 
     @Override
-    public <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer) {
-        return new SafeUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater) {
+        return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
     }
 
     @Override
-    public <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type) {
-        return new SafeUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
-    }
-
-    @Override
-    public SafeTransformedUpdater<S, T> create(TopicUpdateControl.Updater updater) {
-        return new SafeTransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
+    public BoundTransformedUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl) {
+        return new BoundTransformedUpdaterBuilderImpl<>(updateControl, valueType, transformer);
     }
 
     @Override
     public void register(
             TopicUpdateControl updateControl,
             String topicPath,
-            SafeTransformedUpdateSource<S, T> updateSource) {
+            TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
         updateControl.registerUpdateSource(
             topicPath,
-            new SafeUpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
+            new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
+    }
+
+    public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater, Class<T> type) {
+        return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
     }
 }

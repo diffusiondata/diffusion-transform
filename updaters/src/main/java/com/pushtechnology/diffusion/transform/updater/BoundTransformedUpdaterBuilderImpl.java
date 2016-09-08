@@ -21,29 +21,34 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
- * Implementation of {@link UpdaterBuilder}.
+ * Implementation of {@link BoundTransformedUpdaterBuilder}.
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-/*package*/ final class UpdaterBuilderImpl<S, T> implements TransformedUpdaterBuilder<S, T> {
+/*package*/ final class BoundTransformedUpdaterBuilderImpl<S, T> implements BoundTransformedUpdaterBuilder<S, T> {
+    private final TopicUpdateControl updateControl;
     private final Class<S> valueType;
     private final Transformer<T, S> transformer;
 
-    UpdaterBuilderImpl(Class<S> valueType, Transformer<T, S> transformer) {
+    public BoundTransformedUpdaterBuilderImpl(
+            TopicUpdateControl updateControl,
+            Class<S> valueType,
+            Transformer<T, S> transformer) {
+        this.updateControl = updateControl;
         this.valueType = valueType;
         this.transformer = transformer;
     }
 
     @Override
-    public <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
-        return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    public <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
+        return new BoundTransformedUpdaterBuilderImpl<>(updateControl, valueType, chain(newTransformer, transformer));
     }
 
     @Override
-    public <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
-        return new UpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    public <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
+        return new BoundTransformedUpdaterBuilderImpl<>(updateControl, valueType, chain(newTransformer, transformer));
     }
 
     @Override
@@ -52,17 +57,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     }
 
     @Override
-    public void register(
-            TopicUpdateControl updateControl,
-            String topicPath,
-            TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
+    public void register(String topicPath, TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
         updateControl.registerUpdateSource(
             topicPath,
             new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
     }
-
-    public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater, Class<T> type) {
-        return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
-    }
-
 }

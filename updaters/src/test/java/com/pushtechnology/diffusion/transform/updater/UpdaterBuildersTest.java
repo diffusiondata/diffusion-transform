@@ -33,20 +33,20 @@ public final class UpdaterBuildersTest {
     public void safeBuilder() {
         final SafeUpdaterBuilder<JSON, JSON> jsonUpdater = UpdaterBuilders.updaterBuilder(JSON.class);
 
-        assertTrue(jsonUpdater instanceof SafeUpdaterBuilderImpl);
+        assertTrue(jsonUpdater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 
     @Test
     public void jsonSafeBuilder() {
         final SafeUpdaterBuilder<JSON, JSON> jsonUpdater = UpdaterBuilders.jsonUpdaterBuilder();
 
-        assertTrue(jsonUpdater instanceof SafeUpdaterBuilderImpl);
+        assertTrue(jsonUpdater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 
     @Test
     public void binarySafeBuilder() {
         final SafeUpdaterBuilder<Binary, Binary> binaryUpdater = UpdaterBuilders.binaryUpdaterBuilder();
 
-        assertTrue(binaryUpdater instanceof SafeUpdaterBuilderImpl);
+        assertTrue(binaryUpdater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 }

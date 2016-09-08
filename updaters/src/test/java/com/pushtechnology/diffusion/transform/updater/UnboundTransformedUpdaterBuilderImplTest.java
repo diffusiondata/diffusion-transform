@@ -33,11 +33,11 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
- * Unit tests for {@link UpdaterBuilderImpl}.
+ * Unit tests for {@link UnboundTransformedUpdaterBuilderImpl}.
  *
  * @author Push Technology Limited
  */
-public final class UpdaterBuilderImplTest {
+public final class UnboundTransformedUpdaterBuilderImplTest {
     @Mock
     private TopicUpdateControl.Updater simpleUpdater;
     @Mock
@@ -51,7 +51,7 @@ public final class UpdaterBuilderImplTest {
     @Mock
     private TopicUpdateControl.Updater.UpdateContextCallback contextCallback;
 
-    private UpdaterBuilderImpl<JSON, JSON> updaterBuilder;
+    private UnboundTransformedUpdaterBuilderImpl<JSON, JSON> updaterBuilder;
 
     @Before
     public void setUp() throws TransformationException {
@@ -61,7 +61,7 @@ public final class UpdaterBuilderImplTest {
         when(transformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
 
-        updaterBuilder = new UpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
+        updaterBuilder = new UnboundTransformedUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
     }
 
     @After

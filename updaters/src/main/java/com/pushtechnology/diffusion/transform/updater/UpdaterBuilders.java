@@ -36,8 +36,8 @@ public final class UpdaterBuilders {
      * @param <V> Value type
      * @return The builder
      */
-    public static <V> SafeUpdaterBuilder<V, V> updaterBuilder(Class<V> valueType) {
-        return new SafeUpdaterBuilderImpl<>(
+    public static <V> UnboundSafeUpdaterBuilder<V, V> updaterBuilder(Class<V> valueType) {
+        return new UnboundSafeUpdaterBuilderImpl<>(
             valueType,
             Transformers.<V>identity());
     }
@@ -46,15 +46,15 @@ public final class UpdaterBuilders {
      * Create a builder for {@link JSON} updaters.
      * @return The builder
      */
-    public static SafeUpdaterBuilder<JSON, JSON> jsonUpdaterBuilder() {
-        return new SafeUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
+    public static UnboundSafeUpdaterBuilder<JSON, JSON> jsonUpdaterBuilder() {
+        return new UnboundSafeUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
     }
 
     /**
      * Create a builder for {@link Binary} updaters.
      * @return The builder
      */
-    public static SafeUpdaterBuilder<Binary, Binary> binaryUpdaterBuilder() {
-        return new SafeUpdaterBuilderImpl<>(Binary.class, identity(Binary.class));
+    public static UnboundSafeUpdaterBuilder<Binary, Binary> binaryUpdaterBuilder() {
+        return new UnboundSafeUpdaterBuilderImpl<>(Binary.class, identity(Binary.class));
     }
 }

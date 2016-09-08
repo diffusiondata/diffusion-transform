@@ -10,7 +10,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
-* limitations under the License.
+ * limitations under the License.
  *******************************************************************************/
 
 package com.pushtechnology.diffusion.transform.updater;
@@ -19,32 +19,28 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
- * An extension to {@link UpdaterBuilder} that creates {@link SafeTransformedUpdater}s.
+ * An extension to {@link SafeUpdaterBuilder} that is not bound to a session.
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T, SafeTransformedUpdater<S, T>> {
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new safe transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     */
-    <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new safe transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     */
-    <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+public interface UnboundSafeUpdaterBuilder<S, T> extends
+    SafeUpdaterBuilder<S, T>,
+    UnboundUpdaterBuilder<S, T, SafeTransformedUpdater<S, T>, SafeTransformedUpdateSource<S, T>> {
 
     @Override
-    SafeTransformedUpdater<S, T> create(TopicUpdateControl.Updater updater);
+    <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
+
+    @Override
+    <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+
+    @Override
+    BoundSafeUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl);
+
+    /**
+     * Register an update source.
+     * @param updateSource the update source
+     */
+    void register(TopicUpdateControl updateControl, String topicPath, SafeTransformedUpdateSource<S, T> updateSource);
 }
