@@ -36,8 +36,7 @@ public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V exte
      * @param <R> the new type of the transformed values
      * @return a new updater builder
      */
-    <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-        transform(Transformer<R, T> newTransformer);
+    <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
 
     /**
      * Transform the updater that will be built.
@@ -46,8 +45,7 @@ public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V exte
      * @param <R> the new type of the transformed values
      * @return a new updater builder
      */
-    <R> UpdaterBuilder<S, R, TransformedUpdater<S, R>, TransformedUpdateSource<S, R, TransformedUpdater<S, R>>>
-        transform(Transformer<R, T> newTransformer, Class<R> type);
+    <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Create the updater.

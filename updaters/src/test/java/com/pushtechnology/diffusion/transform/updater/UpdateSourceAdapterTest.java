@@ -48,7 +48,7 @@ public final class UpdateSourceAdapterTest {
     @Mock
     private TransformedUpdateSource<JSON, JSON, TransformedUpdater<JSON, JSON>> updateSource;
     @Mock
-    private InternalUpdaterBuilder<JSON, JSON> updaterBuilder;
+    private TransformedUpdaterBuilder<JSON, JSON> updaterBuilder;
 
     private UpdateSourceAdapter<JSON, JSON> adapter;
 

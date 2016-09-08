@@ -15,13 +15,24 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+
 /**
- * Internal marker interface to simplify the type signature.
+ * An extension to {@link UpdaterBuilder} that creates {@link TransformedUpdater}s.
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-/*package*/ interface InternalUpdaterBuilder<S, T> extends
+public interface TransformedUpdaterBuilder<S, T> extends
     UpdaterBuilder<S, T, TransformedUpdater<S, T>, TransformedUpdateSource<S, T, TransformedUpdater<S, T>>> {
+
+    @Override
+    TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater);
+
+    @Override
+    void register(
+        TopicUpdateControl updateControl,
+        String topicPath,
+        TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource);
 }
