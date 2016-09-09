@@ -67,6 +67,8 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
             TopicUpdateControl updateControl,
             String topicPath,
             SafeTransformedUpdateSource<S, T> updateSource) {
-        updateControl.registerUpdateSource(topicPath, new SafeUpdateSourceAdapter<>(this, updateSource));
+        updateControl.registerUpdateSource(
+            topicPath,
+            new SafeUpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
     }
 }

@@ -42,8 +42,8 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
 
     @Override
     public void onActive(String topicPath, TopicUpdateControl.Updater updater) {
-        valueCache.removeCachedValues(topicPath);
         updateSource.onActive(topicPath, updaterBuilder.create(updater));
+        valueCache.removeCachedValues(topicPath);
     }
 
     @Override
