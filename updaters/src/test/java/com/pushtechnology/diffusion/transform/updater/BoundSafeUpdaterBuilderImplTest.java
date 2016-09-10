@@ -17,6 +17,7 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -42,6 +45,8 @@ public final class BoundSafeUpdaterBuilderImplTest {
     @Mock
     private TopicUpdateControl updateControl;
     @Mock
+    private SafeTransformedUpdateSource<JSON, String> updateSource;
+    @Mock
     private TopicUpdateControl.Updater simpleUpdater;
     @Mock
     private TopicUpdateControl.ValueUpdater<JSON> delegateUpdater;
@@ -55,6 +60,10 @@ public final class BoundSafeUpdaterBuilderImplTest {
     private TopicUpdateControl.Updater.UpdateCallback callback;
     @Mock
     private TopicUpdateControl.Updater.UpdateContextCallback contextCallback;
+    @Captor
+    private ArgumentCaptor<SafeTransformedUpdater<JSON, String>> updaterCaptor;
+    @Captor
+    private ArgumentCaptor<TopicUpdateControl.UpdateSource> updateSourceCaptor;
 
     private BoundSafeUpdaterBuilder<JSON, JSON> updaterBuilder;
 
@@ -143,5 +152,32 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
         verify(transformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, "context", contextCallback);
+    }
+
+    @Test
+    public void transformRegisterAndUpdate() throws TransformationException {
+        updaterBuilder
+            .transform(safeTransformer)
+            .register("topic", updateSource);
+
+        verify(updateControl).registerUpdateSource(eq("topic"), updateSourceCaptor.capture());
+
+        updateSourceCaptor.getValue().onActive("topic", simpleUpdater);
+
+        verify(updateSource).onActive(eq("topic"), updaterCaptor.capture());
+
+        updaterCaptor.getValue().update("topic", "stringValue", callback);
+
+        verify(safeTransformer).transform("stringValue");
+        verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void transformAndUnbind() throws TransformationException {
+        final UnboundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
+            .transform(transformer)
+            .unbind();
+
+        builder.create(simpleUpdater);
     }
 }
