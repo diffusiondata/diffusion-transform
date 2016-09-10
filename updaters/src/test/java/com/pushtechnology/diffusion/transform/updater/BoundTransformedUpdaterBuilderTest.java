@@ -62,6 +62,7 @@ public final class BoundTransformedUpdaterBuilderTest {
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
         when(transformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
+        when(updateControl.updater()).thenReturn(simpleUpdater);
 
         updaterBuilder = new BoundTransformedUpdaterBuilderImpl<>(updateControl, JSON.class, identity(JSON.class));
     }
@@ -73,7 +74,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
     @Test
     public void createAndUpdate() throws TransformationException {
-        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
+        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
 
         updater.update("topic", jsonValue, callback);
 
@@ -82,7 +83,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
     @Test
     public void createWithClassAndUpdate() throws TransformationException {
-        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
+        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
 
         updater.update("topic", jsonValue, callback);
 
@@ -91,7 +92,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
     @Test
     public void untransformedValueCache() {
-        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
+        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
 
         final ValueCache<JSON> jsonValueCache = updater.untransformedValueCache();
 
@@ -105,7 +106,7 @@ public final class BoundTransformedUpdaterBuilderTest {
     public void transformCreateAndUpdate() throws TransformationException {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(transformer)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", callback);
 
@@ -117,7 +118,7 @@ public final class BoundTransformedUpdaterBuilderTest {
     public void transformCreateAndUpdateWithClass() throws TransformationException {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(transformer, String.class)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", "context", contextCallback);
 

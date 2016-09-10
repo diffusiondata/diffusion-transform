@@ -66,6 +66,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         when(transformer.transform("stringValue")).thenReturn(jsonValue);
         when(safeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
+        when(updateControl.updater()).thenReturn(simpleUpdater);
 
         updaterBuilder = new BoundSafeUpdaterBuilderImpl<>(updateControl, JSON.class, identity(JSON.class));
     }
@@ -77,7 +78,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
     @Test
     public void createAndUpdate() throws TransformationException {
-        final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
+        final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
 
         updater.update("topic", jsonValue, callback);
 
@@ -86,7 +87,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
     @Test
     public void untransformedValueCache() {
-        final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
+        final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
 
         final ValueCache<JSON> jsonValueCache = updater.untransformedValueCache();
 
@@ -100,7 +101,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     public void safeTransformCreateAndUpdate() throws TransformationException {
         final SafeTransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(safeTransformer)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", callback);
 
@@ -112,7 +113,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     public void safeTransformCreateAndUpdateWithClass() throws TransformationException {
         final SafeTransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(safeTransformer, String.class)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", "context", contextCallback);
 
@@ -124,7 +125,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     public void transformCreateAndUpdate() throws TransformationException {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(transformer)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", callback);
 
@@ -136,7 +137,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     public void transformCreateAndUpdateWithClass() throws TransformationException {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(transformer, String.class)
-            .create(simpleUpdater);
+            .create();
 
         updater.update("topic", "stringValue", "context", contextCallback);
 

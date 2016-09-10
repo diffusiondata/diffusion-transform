@@ -25,4 +25,10 @@ package com.pushtechnology.diffusion.transform.updater;
 public interface BoundTransformedUpdaterBuilder<S, T> extends
     TransformedUpdaterBuilder<S, T>,
     BoundUpdaterBuilder<S, T, TransformedUpdater<S, T>, TransformedUpdateSource<S, T, TransformedUpdater<S, T>>> {
+
+    @Override
+    TransformedUpdater<S, T> create();
+
+    @Override
+    UnboundTransformedUpdaterBuilder<S, T> unbind();
 }

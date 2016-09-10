@@ -15,8 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-
 /**
  * An extension to {@link UpdaterBuilder} that creates {@link TransformedUpdater}s.
  *
@@ -24,9 +22,5 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-public interface TransformedUpdaterBuilder<S, T> extends
-    UpdaterBuilder<S, T, TransformedUpdater<S, T>> {
-
-    @Override
-    TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater);
+public interface TransformedUpdaterBuilder<S, T> extends UpdaterBuilder<S, T> {
 }

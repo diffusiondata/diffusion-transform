@@ -29,11 +29,11 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
 /*package*/ final class SafeUpdateSourceAdapter<S, T>  implements TopicUpdateControl.UpdateSource {
     private final ValueCache valueCache;
     private final SafeTransformedUpdateSource<S, T> updateSource;
-    private final SafeUpdaterBuilder<S, T> updaterBuilder;
+    private final UnboundSafeUpdaterBuilder<S, T> updaterBuilder;
 
     SafeUpdateSourceAdapter(
             ValueCache valueCache,
-            SafeUpdaterBuilder<S, T> updaterBuilder,
+            UnboundSafeUpdaterBuilder<S, T> updaterBuilder,
             SafeTransformedUpdateSource<S, T> updateSource) {
         this.valueCache = valueCache;
         this.updaterBuilder = updaterBuilder;

@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
@@ -25,7 +24,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T, SafeTransformedUpdater<S, T>> {
+public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T> {
 
     /**
      * Transform the updater that will be built.
@@ -44,7 +43,4 @@ public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T, SafeTrans
      * @return a new updater builder
      */
     <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
-
-    @Override
-    SafeTransformedUpdater<S, T> create(TopicUpdateControl.Updater updater);
 }

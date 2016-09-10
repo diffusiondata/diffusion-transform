@@ -48,7 +48,7 @@ public final class SafeUpdateSourceAdapterTest {
     @Mock
     private SafeTransformedUpdateSource<JSON, JSON> updateSource;
     @Mock
-    private SafeUpdaterBuilder<JSON, JSON> updaterBuilder;
+    private UnboundSafeUpdaterBuilder<JSON, JSON> updaterBuilder;
 
     private SafeUpdateSourceAdapter<JSON, JSON> adapter;
 

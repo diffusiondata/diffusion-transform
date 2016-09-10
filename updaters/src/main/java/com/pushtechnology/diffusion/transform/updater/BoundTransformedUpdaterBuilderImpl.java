@@ -52,14 +52,19 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     }
 
     @Override
-    public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater) {
-        return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
+    public TransformedUpdater<S, T> create() {
+        return new TransformedUpdaterImpl<>(updateControl.updater().valueUpdater(valueType), transformer);
+    }
+
+    @Override
+    public UnboundTransformedUpdaterBuilder<S, T> unbind() {
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, transformer);
     }
 
     @Override
     public void register(String topicPath, TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
         updateControl.registerUpdateSource(
             topicPath,
-            new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
+            new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this.unbind(), updateSource));
     }
 }

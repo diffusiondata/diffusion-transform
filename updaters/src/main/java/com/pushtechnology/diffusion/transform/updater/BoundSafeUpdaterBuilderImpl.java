@@ -63,8 +63,13 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     }
 
     @Override
-    public SafeTransformedUpdater<S, T> create(TopicUpdateControl.Updater updater) {
-        return new SafeTransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
+    public SafeTransformedUpdater<S, T> create() {
+        return new SafeTransformedUpdaterImpl<>(updateControl.updater().valueUpdater(valueType), transformer);
+    }
+
+    @Override
+    public UnboundSafeUpdaterBuilder<S, T> unbind() {
+        return new UnboundSafeUpdaterBuilderImpl<>(valueType, transformer);
     }
 
     @Override
@@ -73,6 +78,6 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
         SafeTransformedUpdateSource<S, T> updateSource) {
         updateControl.registerUpdateSource(
             topicPath,
-            new SafeUpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
+            new SafeUpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this.unbind(), updateSource));
     }
 }

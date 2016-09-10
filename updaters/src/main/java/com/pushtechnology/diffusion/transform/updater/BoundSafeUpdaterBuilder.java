@@ -33,4 +33,10 @@ public interface BoundSafeUpdaterBuilder<S, T> extends
 
     @Override
     <R> BoundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+
+    @Override
+    SafeTransformedUpdater<S, T> create();
+
+    @Override
+    UnboundSafeUpdaterBuilder<S, T> unbind();
 }

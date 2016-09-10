@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import com.pushtechnology.diffusion.transform.transformer.Transformer;
+
 /**
  * An extension to {@link UpdaterBuilder} that is bound to a session.
  *
@@ -25,10 +27,27 @@ package com.pushtechnology.diffusion.transform.updater;
  * @author Push Technology Limited
  */
 public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V extends
-        TransformedUpdateSource<S, T, U>> extends UpdaterBuilder<S, T, U> {
+        TransformedUpdateSource<S, T, U>> extends UpdaterBuilder<S, T> {
+
+    @Override
+    <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
+
+    @Override
+    <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
+
+    /**
+     * Create the updater.
+     */
+    U create();
+
     /**
      * Register an update source.
      * @param updateSource the update source
      */
     void register(String topicPath, V updateSource);
+
+    /**
+     * @return an unbound updater builder
+     */
+    UnboundUpdaterBuilder<S, T, U, V> unbind();
 }

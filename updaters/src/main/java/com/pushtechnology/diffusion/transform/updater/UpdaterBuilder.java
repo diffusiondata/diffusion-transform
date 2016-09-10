@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
@@ -23,10 +22,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
- * @param <U> The type of updater
  * @author Push Technology Limited
  */
-public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>> {
+public interface UpdaterBuilder<S, T> {
 
     /**
      * Transform the updater that will be built.
@@ -45,11 +43,4 @@ public interface UpdaterBuilder<S, T, U extends TransformedUpdater<S, T>> {
      * @return a new updater builder
      */
     <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
-
-    /**
-     * Create the updater.
-     *
-     * @param updater the update to transform
-     */
-    U create(TopicUpdateControl.Updater updater);
 }

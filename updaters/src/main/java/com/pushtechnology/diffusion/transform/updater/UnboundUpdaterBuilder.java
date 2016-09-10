@@ -29,7 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  */
 public interface UnboundUpdaterBuilder
     <S, T, U extends TransformedUpdater<S, T>, V extends TransformedUpdateSource<S, T, U>>
-    extends UpdaterBuilder<S, T, U> {
+    extends UpdaterBuilder<S, T> {
 
     @Override
     <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
@@ -43,6 +43,13 @@ public interface UnboundUpdaterBuilder
      * @return The bound updater
      */
     BoundUpdaterBuilder<S, T, U, V> bind(TopicUpdateControl updateControl);
+
+    /**
+     * Create the updater.
+     *
+     * @param updater the update to transform
+     */
+    U create(TopicUpdateControl.Updater updater);
 
     /**
      * Register an update source.
