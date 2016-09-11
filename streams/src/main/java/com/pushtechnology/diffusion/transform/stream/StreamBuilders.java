@@ -21,7 +21,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 
 /**
- * Utility class for creating instances of {@link SafeStreamBuilder}s and {@link StreamBuilder}s.
+ * Factory for creating instances of {@link SafeStreamBuilder}s and {@link StreamBuilder}s.
  *
  * @author Push Technology Limited
  */

@@ -22,7 +22,7 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
- * Utilities for values updaters.
+ * Factory for creating instances of {@link UpdaterBuilder}s.
  *
  * @author Push Technology Limited
  */
