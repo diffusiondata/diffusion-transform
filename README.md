@@ -117,7 +117,7 @@ A `UpdaterBuilder` can also be used to register a `TransformedUpdateSource`.
 ```java
 final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.class)
     .transform(Transformers.<RandomData>fromPojo())
-    .register(updater, "json", new TransformedUpdateSource<JSON, RandomData, TransformedUpdater<JSON, RandomData>>() {
+    .register(session.feature(TopicUpdateControl.class), "json", new TransformedUpdateSource.Default<JSON, RandomData>() {
         @Override
         public void onActive(String topicPath, TransformedUpdater<JSON, RandomData> valueUpdater) {
             valueUpdater.update(
