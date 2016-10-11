@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Diffusion Transform - Source Repository</title>
+    <title>Diffusion Transform - </title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -65,40 +65,14 @@
                           <a href="stream-builders.html" title="Stream Builders">Stream Builders</a>
             </li>
                   <li class="none">
-                          <a href="updater-builders.html" title="Updater Builders">Updater Builders</a>
-            </li>
+            <strong>Updater Builders</strong>
+          </li>
           </ul>
                        <h5>Project Documentation</h5>
                   <ul>
-                                                                                                                                                                                                            <li class="expanded">
+                                                                                                                                                                                                  <li class="collapsed">
                           <a href="project-info.html" title="Project Information">Project Information</a>
-                    <ul>
-                      <li class="none">
-                          <a href="index.html" title="About">About</a>
-            </li>
-                      <li class="none">
-                          <a href="project-summary.html" title="Project Summary">Project Summary</a>
-            </li>
-                      <li class="none">
-                          <a href="license.html" title="Project License">Project License</a>
-            </li>
-                      <li class="none">
-                          <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
-            </li>
-                      <li class="none">
-            <strong>Source Repository</strong>
-          </li>
-                      <li class="none">
-                          <a href="dependencies.html" title="Dependencies">Dependencies</a>
-            </li>
-                      <li class="none">
-                          <a href="team-list.html" title="Project Team">Project Team</a>
-            </li>
-                      <li class="none">
-                          <a href="plugins.html" title="Project Plugins">Project Plugins</a>
-            </li>
-              </ul>
-        </li>
+                  </li>
                                                                                       <li class="collapsed">
                           <a href="project-reports.html" title="Project Reports">Project Reports</a>
                   </li>
@@ -112,27 +86,43 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section">
-<h2>Overview<a name="Overview"></a></h2><a name="Overview"></a>
-<p>This project uses <a class="externalLink" href="http://git-scm.com/">GIT</a> to manage its source code. Instructions on GIT use can be found at <a class="externalLink" href="http://git-scm.com/documentation">http://git-scm.com/documentation</a>.</p></div>
-<div class="section">
-<h2>Web Access<a name="Web_Access"></a></h2><a name="Web_Access"></a>
-<p>The following is a link to the online source repository.</p>
+        <h1>UpdaterBuilders</h1>
+<p>To help with updating topics with new values an <tt>UpdaterBuilder</tt> can be used to construct a <tt>TransformedUpdater</tt> that applies a transformation to a value before updating the topic with the result. Like the <tt>StreamBuilder</tt> an <tt>UpdaterBuilder</tt> makes it easy to chain transformers together. An <tt>UpdaterBuilder</tt> is immutable and allows a new <tt>UpdaterBuilder</tt> to be created from it that adds an additional transformation.</p>
+<p>Every <tt>UpdaterBuilder</tt> has two properties, safe transformation and session binding. Each of these properties can have one of two values. Updater builders can have any combination of these values.</p>
+<p>An <tt>UpdaterBuilder</tt> that is safely transforming only uses <tt>SafeTransformer</tt>s. If it is transformed with a <tt>Transformer</tt> that is not a <tt>SafeTransformer</tt> the resulting <tt>UpdaterBuilder</tt> is unsafely transforming.</p>
+<p>An <tt>UpdaterBuilder</tt> that is not bound must be provided with an <tt>Updater</tt> to create a <tt>TransformedUpdater</tt> or a <tt>TopicUpdateControl</tt> to register a <tt>TransformedUpdateSource</tt>. An <tt>UpdaterBuilder</tt> that is bound to a session can create a <tt>TransformedUpdater</tt> or register a <tt>TransformedUpdateSource</tt> without any being provided an <tt>Updater</tt> or <tt>TopicUpdateControl</tt>.</p>
+<p>A <tt>TransformedUpdater</tt> will throw a <tt>TransformationException</tt> when attempting to update a topic if the transformation cannot be applied to the value. Using only <tt>SafeTransformer</tt> this additional exception throwing can be avoided.</p>
+<p>A <tt>TransformedUpdater</tt> can be created that converts a bean or pojo to a <tt>JSON</tt> value and applies it to a topic. </p>
+
 <div class="source">
-<pre><a class="externalLink" href="https://github.com/pushtechnology/diffusion-transform">https://github.com/pushtechnology/diffusion-transform</a></pre></div></div>
-<div class="section">
-<h2>Anonymous access<a name="Anonymous_access"></a></h2><a name="Anonymous_access"></a>
-<p>The source can be checked out anonymously from GIT with this command (See <a class="externalLink" href="http://git-scm.com/docs/git-clone">http://git-scm.com/docs/git-clone</a>):</p>
+<pre>final TopicUpdateControl.Updater updater = session
+    .feature(TopicUpdateControl.class)
+    .updater();
+
+final TransformedUpdater&lt;JSON, RandomData&gt; valueUpdater = updaterBuilder(JSON.class)
+    .transform(Transformers.&lt;RandomData&gt;fromPojo())
+    .create(updater);
+
+valueUpdater.update(
+    &quot;json/random&quot;,
+    RandomData.next(),
+    new TopicUpdateControl.Updater.UpdateCallback.Default());
+</pre></div>
+<p>A <tt>UpdaterBuilder</tt> can also be used to register a <tt>TransformedUpdateSource</tt>.</p>
+
 <div class="source">
-<pre>$ git clone https://github.com/pushtechnology/diffusion-transform</pre></div></div>
-<div class="section">
-<h2>Developer access<a name="Developer_access"></a></h2><a name="Developer_access"></a>
-<p>Only project developers can access the GIT tree via this method (See <a class="externalLink" href="http://git-scm.com/docs/git-clone">http://git-scm.com/docs/git-clone</a>).</p>
-<div class="source">
-<pre>$ git clone ssh://git@github.com/pushtechnology/diffusion-transform.git</pre></div></div>
-<div class="section">
-<h2>Access from behind a firewall<a name="Access_from_behind_a_firewall"></a></h2><a name="Access_from_behind_a_firewall"></a>
-<p>Refer to the documentation of the SCM used for more information about access behind a firewall.</p></div>
+<pre>final TransformedUpdater&lt;JSON, RandomData&gt; valueUpdater = updaterBuilder(JSON.class)
+    .transform(Transformers.&lt;RandomData&gt;fromPojo())
+    .register(session.feature(TopicUpdateControl.class), &quot;json&quot;, new TransformedUpdateSource.Default&lt;JSON, RandomData&gt;() {
+        @Override
+        public void onActive(String topicPath, TransformedUpdater&lt;JSON, RandomData&gt; valueUpdater) {
+            valueUpdater.update(
+                &quot;json/random&quot;,
+                RandomData.next(),
+                new TopicUpdateControl.Updater.UpdateCallback.Default());
+        }
+    });
+</pre></div>
       </div>
     </div>
     <div class="clear">

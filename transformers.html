@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Diffusion Transform - Source Repository</title>
+    <title>Diffusion Transform - </title>
     <style type="text/css" media="all">
       @import url("./css/maven-base.css");
       @import url("./css/maven-theme.css");
@@ -59,8 +59,8 @@
                        <h5>Details</h5>
                   <ul>
                   <li class="none">
-                          <a href="transformers.html" title="Transformers">Transformers</a>
-            </li>
+            <strong>Transformers</strong>
+          </li>
                   <li class="none">
                           <a href="stream-builders.html" title="Stream Builders">Stream Builders</a>
             </li>
@@ -70,35 +70,9 @@
           </ul>
                        <h5>Project Documentation</h5>
                   <ul>
-                                                                                                                                                                                                            <li class="expanded">
+                                                                                                                                                                                                  <li class="collapsed">
                           <a href="project-info.html" title="Project Information">Project Information</a>
-                    <ul>
-                      <li class="none">
-                          <a href="index.html" title="About">About</a>
-            </li>
-                      <li class="none">
-                          <a href="project-summary.html" title="Project Summary">Project Summary</a>
-            </li>
-                      <li class="none">
-                          <a href="license.html" title="Project License">Project License</a>
-            </li>
-                      <li class="none">
-                          <a href="dependency-info.html" title="Dependency Information">Dependency Information</a>
-            </li>
-                      <li class="none">
-            <strong>Source Repository</strong>
-          </li>
-                      <li class="none">
-                          <a href="dependencies.html" title="Dependencies">Dependencies</a>
-            </li>
-                      <li class="none">
-                          <a href="team-list.html" title="Project Team">Project Team</a>
-            </li>
-                      <li class="none">
-                          <a href="plugins.html" title="Project Plugins">Project Plugins</a>
-            </li>
-              </ul>
-        </li>
+                  </li>
                                                                                       <li class="collapsed">
                           <a href="project-reports.html" title="Project Reports">Project Reports</a>
                   </li>
@@ -112,27 +86,32 @@
     </div>
     <div id="bodyColumn">
       <div id="contentBox">
-        <div class="section">
-<h2>Overview<a name="Overview"></a></h2><a name="Overview"></a>
-<p>This project uses <a class="externalLink" href="http://git-scm.com/">GIT</a> to manage its source code. Instructions on GIT use can be found at <a class="externalLink" href="http://git-scm.com/documentation">http://git-scm.com/documentation</a>.</p></div>
-<div class="section">
-<h2>Web Access<a name="Web_Access"></a></h2><a name="Web_Access"></a>
-<p>The following is a link to the online source repository.</p>
+        <h1>Transformers</h1>
+<p>A key component is the <tt>Transformer</tt> interface. This interface provides an abstraction over converting values from one type to another. It allows for performing deserialsation, data binding and data manipulation. Importantly it also allows for these transformations to be chained and combined. The transformation may fail by throwing a <tt>TransformationException</tt>. There is a variation <tt>SafeTransformer</tt> that does not throw this exception and should always successfully be applicable.</p>
+<p>Provided are several transformers for working with <tt>JSON</tt>, <tt>Binary</tt> and common Java values. There are transformers for converting pojos and beans to <tt>JSON</tt> and back, accessing the byte array of <tt>Binary</tt> values and chaining transformers together.</p>
+<p>The <tt>@Data</tt> annotation is taken from <a class="externalLink" href="https://projectlombok.org/">Project Lombok</a> to generate a bean like object.</p>
+
 <div class="source">
-<pre><a class="externalLink" href="https://github.com/pushtechnology/diffusion-transform">https://github.com/pushtechnology/diffusion-transform</a></pre></div></div>
-<div class="section">
-<h2>Anonymous access<a name="Anonymous_access"></a></h2><a name="Anonymous_access"></a>
-<p>The source can be checked out anonymously from GIT with this command (See <a class="externalLink" href="http://git-scm.com/docs/git-clone">http://git-scm.com/docs/git-clone</a>):</p>
+<pre>@Data
+public class TestBean {
+    private String name;
+    private int someNumber;
+}
+</pre></div>
+<p>The <tt>Transformers.toObject</tt> can be used to bind a JSON value to a bean.</p>
+
 <div class="source">
-<pre>$ git clone https://github.com/pushtechnology/diffusion-transform</pre></div></div>
+<pre>final JSON json = JSON_DATA_TYPE.fromJsonString(&quot;{\&quot;name\&quot;: \&quot;a name\&quot;, \&quot;someNumber\&quot;: 7}&quot;);
+final Transformer&lt;JSON, TestBean&gt; transformer = Transformers.toObject(TestBean.class);
+final TestBean asBean = transformer.transform(json);
+</pre></div>
 <div class="section">
-<h2>Developer access<a name="Developer_access"></a></h2><a name="Developer_access"></a>
-<p>Only project developers can access the GIT tree via this method (See <a class="externalLink" href="http://git-scm.com/docs/git-clone">http://git-scm.com/docs/git-clone</a>).</p>
-<div class="source">
-<pre>$ git clone ssh://git@github.com/pushtechnology/diffusion-transform.git</pre></div></div>
+<h2>Provided transformers<a name="Provided_transformers"></a></h2>
+<p>See the <a href="apidocs/index.html?com/pushtechnology/diffusion/transform/transformer/Transformers.html">JavaDoc</a> for information on the provided transformers.</p></div>
 <div class="section">
-<h2>Access from behind a firewall<a name="Access_from_behind_a_firewall"></a></h2><a name="Access_from_behind_a_firewall"></a>
-<p>Refer to the documentation of the SCM used for more information about access behind a firewall.</p></div>
+<h2>Custom transformers<a name="Custom_transformers"></a></h2>
+<p>Custom transformers can also be implemented. They should be implemented as stateless functions.</p>
+<p>The abstract <a href="apidocs/index.html?com/pushtechnology/diffusion/transform/transformer/FromBinaryTransformer.html">FromBinaryTransformer</a> and <a href="apidocs/index.html?com/pushtechnology/diffusion/transform/transformer/ToBinaryTransformer.html">ToBinaryTransformer</a> can be used to simplify the implementation of binary transformers. They provide abstract methods that provide a <a class="externalLink" href="http://docs.oracle.com/javase/7/docs/api/java/io/DataInput.html">DataInput</a> or <a class="externalLink" href="http://docs.oracle.com/javase/7/docs/api/java/io/DataOutput.html">DataOutput</a> object that can be used to read or write the Binary value. </p></div>
       </div>
     </div>
     <div class="clear">
