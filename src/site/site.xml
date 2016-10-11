@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <body>
+        <menu ref="modules" />
+        <menu name="Details">
+            <item name="Transformers" href="transformers.html" />
+            <item name="Stream Builders" href="stream-builders.html" />
+            <item name="Updater Builders" href="updater-builders.html" />
+        </menu>
+        <menu ref="reports" />
+    </body>
+</project>
