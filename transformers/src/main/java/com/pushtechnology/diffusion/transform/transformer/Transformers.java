@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -314,5 +315,25 @@ public final class Transformers {
      */
     public static Transformer<Binary, Integer> binaryToInteger() {
         return BinaryToIntegerTransformer.INSTANCE;
+    }
+
+    /**
+     * Transformer from String to Binary.
+     *
+     * @param charset the character set to encode the string with
+     * @return the transformer to Binary
+     */
+    public static Transformer<String, Binary> stringToBinary(Charset charset) {
+        return new StringToBinaryTransformer(charset);
+    }
+
+    /**
+     * Transformer from Binary to String.
+     *
+     * @param charset the character set to decode the string with
+     * @return the transformer to String
+     */
+    public static Transformer<Binary, String> binaryToString(Charset charset) {
+        return new BinaryToStringTransformer(charset);
     }
 }
