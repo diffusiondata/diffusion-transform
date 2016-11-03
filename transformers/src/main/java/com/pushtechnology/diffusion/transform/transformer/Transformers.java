@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 
@@ -58,6 +59,28 @@ public final class Transformers {
                 return null;
             }
             return JacksonContext.fromMap((Map<String, ?>) value);
+        }
+    };
+    private static final Transformer<String, JSON> PARSE_JSON_TRANSFORMER = new Transformer<String, JSON>() {
+        @Override
+        public JSON transform(String value) throws TransformationException {
+            try {
+                return Diffusion.dataTypes().json().fromJsonString(value);
+            }
+            catch (InvalidDataException e) {
+                throw new TransformationException(e);
+            }
+        }
+    };
+    private static final Transformer<JSON, String> STRINGIFY_TRANSFORMER = new Transformer<JSON, String>() {
+        @Override
+        public String transform(JSON value) throws TransformationException {
+            try {
+                return value.toJsonString();
+            }
+            catch (InvalidDataException e) {
+                throw new TransformationException(e);
+            }
         }
     };
 
@@ -335,5 +358,21 @@ public final class Transformers {
      */
     public static Transformer<Binary, String> binaryToString(Charset charset) {
         return new BinaryToStringTransformer(charset);
+    }
+
+    /**
+     * Transformer from String to JSON.
+     * @return the transformer to JSON
+     */
+    public static Transformer<String, JSON> parseJSON() {
+        return PARSE_JSON_TRANSFORMER;
+    }
+
+    /**
+     * Transformer from JSON to String.
+     * @return the transformer to String
+     */
+    public static Transformer<JSON, String> stringify() {
+        return STRINGIFY_TRANSFORMER;
     }
 }

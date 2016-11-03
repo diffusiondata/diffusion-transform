@@ -15,19 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.Bytes;
@@ -35,6 +22,18 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsMapContaining;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for {@link Transformers}.
@@ -182,5 +181,18 @@ public final class TransformersTest {
         final Integer deserialisedValue = Transformers.binaryToInteger().transform(serialisedValue);
 
         assertEquals(5, (int) deserialisedValue);
+    }
+
+    @Test
+    public void jsonString() throws TransformationException {
+        final JSON serialisedValue = Transformers.parseJSON().transform("{\"key\":\"value\"}");
+
+        assertEquals(Diffusion.dataTypes().json().fromJsonString("{\"key\":\"value\"}"), serialisedValue);
+        final Map<String, String> map = Transformers.toMapOf(String.class).transform(serialisedValue);
+        assertEquals("value", map.get("key"));
+        assertEquals(1, map.size());
+
+        final String deserialisedValue = Transformers.stringify().transform(serialisedValue);
+        assertEquals("{\"key\":\"value\"}", deserialisedValue);
     }
 }
