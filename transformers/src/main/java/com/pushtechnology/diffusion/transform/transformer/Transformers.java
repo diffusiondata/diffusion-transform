@@ -209,6 +209,8 @@ public final class Transformers {
      */
     public static <S, T> Transformer<S, T> cast(Class<T> type) {
         return new Transformer<S, T>() {
+            // Cast exceptions are caught so they can be propagated as transformation exceptions
+            @SuppressWarnings("unchecked")
             @Override
             public T transform(S value) throws TransformationException {
                 try {
@@ -231,6 +233,8 @@ public final class Transformers {
      */
     public static <S, T> Transformer<S, T> cast(TypeReference<T> type) {
         return new Transformer<S, T>() {
+            // Cast exceptions are caught so they can be propagated as transformation exceptions
+            @SuppressWarnings("unchecked")
             @Override
             public T transform(S value) throws TransformationException {
                 try {
