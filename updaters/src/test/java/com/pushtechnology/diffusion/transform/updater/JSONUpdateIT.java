@@ -19,7 +19,6 @@ import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeRea
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
-import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
@@ -63,7 +62,7 @@ public final class JSONUpdateIT {
     @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
-    private TopicControl.RemoveCallback removeCallback;
+    private TopicControl.RemovalCallback removalCallback;
     @Mock
     private Topics.CompletionCallback completionCallback;
     @Mock
@@ -89,14 +88,14 @@ public final class JSONUpdateIT {
 
     @After
     public void postConditions() {
-        session.feature(TopicControl.class).removeTopics("test", removeCallback);
-        verify(removeCallback, timed()).onTopicsRemoved();
+        session.feature(TopicControl.class).remove("test", removalCallback);
+        verify(removalCallback, timed()).onTopicsRemoved();
 
         session.close();
 
         verify(listener, timed()).onSessionStateChanged(session, CONNECTED_ACTIVE, CLOSED_BY_CLIENT);
 
-        verifyNoMoreInteractions(listener, stream, addCallback, removeCallback, completionCallback, updateCallback);
+        verifyNoMoreInteractions(listener, stream, addCallback, removalCallback, completionCallback, updateCallback);
     }
 
     @SuppressWarnings("unchecked")

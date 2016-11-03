@@ -59,7 +59,7 @@ public final class BinaryStreamIT {
     @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
-    private TopicControl.RemoveCallback removeCallback;
+    private TopicControl.RemovalCallback removalCallback;
     @Mock
     private Topics.CompletionCallback completionCallback;
     @Mock
@@ -85,14 +85,14 @@ public final class BinaryStreamIT {
 
     @After
     public void postConditions() {
-        session.feature(TopicControl.class).removeTopics("test", removeCallback);
-        verify(removeCallback, timed()).onTopicsRemoved();
+        session.feature(TopicControl.class).remove("test", removalCallback);
+        verify(removalCallback, timed()).onTopicsRemoved();
 
         session.close();
 
         verify(listener, timed()).onSessionStateChanged(session, CONNECTED_ACTIVE, CLOSED_BY_CLIENT);
 
-        verifyNoMoreInteractions(listener, stream, addCallback, removeCallback, completionCallback, updateCallback);
+        verifyNoMoreInteractions(listener, stream, addCallback, removalCallback, completionCallback, updateCallback);
     }
 
     @Test
