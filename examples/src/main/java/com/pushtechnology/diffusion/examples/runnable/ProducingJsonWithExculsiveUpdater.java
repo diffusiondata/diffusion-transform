@@ -25,7 +25,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -58,13 +57,23 @@ public final class ProducingJsonWithExculsiveUpdater extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
+        final JSON initialValue;
+        try {
+            initialValue = Transformers.parseJSON().transform("\"hello\"");
+        }
+        catch (TransformationException e) {
+            LOG.error("Initial value could not be parsed as JSON");
+            stop();
+            return;
+        }
+
         session
             .feature(TopicControl.class)
             .addTopicFromValue(
                 "json/random",
                 // This value cannot be transformed into a map, will invoke error handling if the client tries to
                 // process it
-                Diffusion.dataTypes().json().fromJsonString("\"hello\""),
+                initialValue,
                 new TopicControl.AddCallback.Default());
 
         updaterBuilder(JSON.class)
