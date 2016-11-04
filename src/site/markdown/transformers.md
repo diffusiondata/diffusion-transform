@@ -1,11 +1,16 @@
 
 # Transformers
 
-A key component is the `Transformer` interface. This interface provides an abstraction over converting values from one
-type to another. It allows for performing deserialsation, data binding and data manipulation. Importantly it also allows
-for these transformations to be chained and combined. The transformation may fail by throwing a
-`TransformationException`. There is a variation `SafeTransformer` that does not throw this exception and should always
-successfully be applicable.
+A key component is the `Transformer` interface.
+This interface provides an abstraction over converting values from one type to another.
+It allows for performing deserialsation, data binding and data manipulation.
+Importantly it also allows for these transformations to be chained and combined.
+The transformation may fail by throwing a `TransformationException`.
+There is a variation `SafeTransformer` that does not throw this exception and should always successfully be applicable.
+There is another variation `UnsafeTransformer` that was added to simplify exception handling.
+It can throw any type of exception and can be passed to the `transformSafely` methods of the update and stream builders.
+These methods will convert the `UnsafeTransformer` to a `Transformer` that propagates the exception as a `TransformationException`.
+In Java 8 this allow methods that throw exceptions to be used in lambdas or as method references.
 
 Provided are several transformers for working with `JSON`, `Binary` and common Java values. There are transformers for
 converting pojos and beans to `JSON` and back, accessing the byte array of `Binary` values and chaining transformers
