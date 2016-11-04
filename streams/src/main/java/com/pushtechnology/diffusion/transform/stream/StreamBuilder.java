@@ -18,6 +18,7 @@ package com.pushtechnology.diffusion.transform.stream;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * An immutable builder for streams. The builder can be used to chain the {@link Transformer}s that will be applied to
@@ -39,6 +40,15 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @return a new stream builder
      */
     <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer);
+
+    /**
+     * Transform the stream that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new stream builder
+     */
+    <R> StreamBuilder<S, R, TransformedStream<S, R>> transformSafely(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * Create the stream.

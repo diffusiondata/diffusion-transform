@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -29,6 +30,7 @@ import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Unit tests for {@link StreamBuilderImpl}.
@@ -57,6 +59,22 @@ public final class StreamBuilderImplTest {
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
             streamBuilder.transform(Transformers.<String>identity());
+
+        assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
+    }
+
+    @Test
+    public void transformSafely() {
+        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
+
+        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
+            streamBuilder.transformSafely(new UnsafeTransformer<String, String>() {
+                @Override
+                public String transform(String value) throws Exception {
+                    return value;
+                }
+            });
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }

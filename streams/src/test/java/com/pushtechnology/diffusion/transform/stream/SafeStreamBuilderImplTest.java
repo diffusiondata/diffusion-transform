@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Unit tests for {@link SafeStreamBuilderImpl}.
@@ -68,6 +69,22 @@ public final class SafeStreamBuilderImplTest {
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
             streamBuilder.transform(identity(String.class));
+
+        assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
+    }
+
+    @Test
+    public void transformSafely() {
+        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
+            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+
+        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
+            streamBuilder.transformSafely(new UnsafeTransformer<String, String>() {
+                @Override
+                public String transform(String value) throws Exception {
+                    return value;
+                }
+            });
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }

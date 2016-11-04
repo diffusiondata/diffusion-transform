@@ -16,10 +16,12 @@
 package com.pushtechnology.diffusion.transform.stream;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * A {@link SafeStreamBuilder} that does register a transformed stream.
@@ -44,6 +46,11 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     @Override
     public <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer) {
         return new StreamBuilderImpl<>(valueType, chain(transformer, newTransformer));
+    }
+
+    @Override
+    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformSafely(UnsafeTransformer<T, R> newTransformer) {
+        return new StreamBuilderImpl<>(valueType, chain(transformer, toTransformer(newTransformer)));
     }
 
     @Override
