@@ -35,6 +35,7 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Unit tests for {@link BoundSafeUpdaterBuilderImpl}.
@@ -57,6 +58,8 @@ public final class BoundSafeUpdaterBuilderImplTest {
     @Mock
     private SafeTransformer<String, JSON> safeTransformer;
     @Mock
+    private UnsafeTransformer<String, JSON> unsafeTransformer;
+    @Mock
     private TopicUpdateControl.Updater.UpdateCallback callback;
     @Mock
     private TopicUpdateControl.Updater.UpdateContextCallback contextCallback;
@@ -68,12 +71,13 @@ public final class BoundSafeUpdaterBuilderImplTest {
     private BoundSafeUpdaterBuilder<JSON, JSON> updaterBuilder;
 
     @Before
-    public void setUp() throws TransformationException {
+    public void setUp() throws Exception {
         initMocks(this);
 
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
         when(transformer.transform("stringValue")).thenReturn(jsonValue);
         when(safeTransformer.transform("stringValue")).thenReturn(jsonValue);
+        when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
 
@@ -82,7 +86,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, transformer, safeTransformer, jsonValue, delegateUpdater);
+        verifyNoMoreInteractions(callback, transformer, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer);
     }
 
     @Test
@@ -115,6 +119,18 @@ public final class BoundSafeUpdaterBuilderImplTest {
         updater.update("topic", "stringValue", callback);
 
         verify(safeTransformer).transform("stringValue");
+        verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void transformSafelyCreateAndUpdate() throws Exception {
+        final TransformedUpdater<JSON, String> updater = updaterBuilder
+            .transformSafely(unsafeTransformer)
+            .create();
+
+        updater.update("topic", "stringValue", callback);
+
+        verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 

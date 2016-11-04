@@ -16,9 +16,11 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Implementation of {@link UpdaterBuilder}.
@@ -44,6 +46,18 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
     @Override
     public <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
         return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    }
+
+    @Override
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer) {
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
+    }
+
+    @Override
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(
+            UnsafeTransformer<R, T> newTransformer,
+            Class<R> type) {
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
     }
 
     @Override

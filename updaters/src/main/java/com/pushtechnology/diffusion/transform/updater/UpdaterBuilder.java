@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Builder for {@link TransformedUpdater}s.
@@ -43,4 +44,22 @@ public interface UpdaterBuilder<S, T> {
      * @return a new updater builder
      */
     <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
+
+    /**
+     * Transform the updater that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new updater builder
+     */
+    <R> TransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer);
+
+    /**
+     * Transform the updater that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new updater builder
+     */
+    <R> TransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 }

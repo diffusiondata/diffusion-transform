@@ -17,6 +17,7 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * An extension to {@link UpdaterBuilder} that is not bound to a session.
@@ -36,6 +37,12 @@ public interface UnboundUpdaterBuilder
 
     @Override
     <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
+
+    @Override
+    <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer);
+
+    @Override
+    <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Bind an {@link UpdaterBuilder} to a session.
