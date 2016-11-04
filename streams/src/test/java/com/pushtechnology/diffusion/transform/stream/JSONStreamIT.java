@@ -86,7 +86,7 @@ public final class JSONStreamIT {
 
     @After
     public void postConditions() {
-        session.feature(TopicControl.class).remove("test", removalCallback);
+        session.feature(TopicControl.class).remove("?test//", removalCallback);
         verify(removalCallback, timed()).onTopicsRemoved();
 
         session.close();
