@@ -16,7 +16,8 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 /**
- * A transformer. Converts values of one type into values of a different type.
+ * A transformer. Converts values of one type into values of a different
+ * type. It can fail by throwing a {@link TransformationException}.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values

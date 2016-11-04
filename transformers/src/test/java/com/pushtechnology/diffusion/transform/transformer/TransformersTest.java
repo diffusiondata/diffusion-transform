@@ -15,6 +15,19 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsMapContaining;
+import org.junit.Test;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.Bytes;
@@ -22,18 +35,6 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
 
 /**
  * Unit tests for {@link Transformers}.
@@ -194,5 +195,56 @@ public final class TransformersTest {
 
         final String deserialisedValue = Transformers.stringify().transform(serialisedValue);
         assertEquals("{\"key\":\"value\"}", deserialisedValue);
+    }
+
+    @Test
+    public void wrappedUnsafeTransformerTransform() throws TransformationException {
+        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+            @Override
+            public String transform(String value) throws Exception {
+                return value;
+            }
+        });
+
+        final String value = transformer.transform("value");
+        assertEquals("value", value);
+    }
+
+    @Test(expected = TransformationException.class)
+    public void wrappedUnsafeTransformerException() throws TransformationException {
+        final Exception e = new Exception("Intentionally thrown by test");
+        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+            @Override
+            public String transform(String value) throws Exception {
+                throw e;
+            }
+        });
+
+        try {
+            transformer.transform("value");
+        }
+        catch (TransformationException exception) {
+            assertSame(e, exception.getCause());
+            throw exception;
+        }
+    }
+
+    @Test(expected = TransformationException.class)
+    public void wrappedUnsafeTransformerTransformationException() throws TransformationException {
+        final TransformationException e = new TransformationException("Intentionally thrown by test");
+        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+            @Override
+            public String transform(String value) throws Exception {
+                throw e;
+            }
+        });
+
+        try {
+            transformer.transform("value");
+        }
+        catch (TransformationException exception) {
+            assertSame(e, exception);
+            throw exception;
+        }
     }
 }

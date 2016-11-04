@@ -17,13 +17,19 @@ package com.pushtechnology.diffusion.transform.transformer;
 
 /**
  * A transformer. Converts values of one type into values of a different
- * type. It will not throw an exception.
+ * type. It can fail by throwing any exception.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-public interface SafeTransformer<S, T> extends Transformer<S, T> {
-    @Override
-    T transform(S value);
+public interface UnsafeTransformer<S, T> {
+    /**
+     * Transform the value.
+     *
+     * @param value the value to transform
+     * @return the transformed value
+     * @throws Exception if the transformation cannot be applied
+     */
+    T transform(S value) throws Exception;
 }

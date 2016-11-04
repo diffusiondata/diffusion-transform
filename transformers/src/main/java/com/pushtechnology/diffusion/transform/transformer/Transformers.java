@@ -61,28 +61,20 @@ public final class Transformers {
             return JacksonContext.fromMap((Map<String, ?>) value);
         }
     };
-    private static final Transformer<String, JSON> PARSE_JSON_TRANSFORMER = new Transformer<String, JSON>() {
-        @Override
-        public JSON transform(String value) throws TransformationException {
-            try {
+    private static final Transformer<String, JSON> PARSE_JSON_TRANSFORMER = toTransformer(
+        new UnsafeTransformer<String, JSON>() {
+            @Override
+            public JSON transform(String value) throws InvalidDataException {
                 return Diffusion.dataTypes().json().fromJsonString(value);
             }
-            catch (InvalidDataException e) {
-                throw new TransformationException(e);
-            }
-        }
-    };
-    private static final Transformer<JSON, String> STRINGIFY_TRANSFORMER = new Transformer<JSON, String>() {
-        @Override
-        public String transform(JSON value) throws TransformationException {
-            try {
+        });
+    private static final Transformer<JSON, String> STRINGIFY_TRANSFORMER = toTransformer(
+        new UnsafeTransformer<JSON, String>() {
+            @Override
+            public String transform(JSON value) throws InvalidDataException {
                 return value.toJsonString();
             }
-            catch (InvalidDataException e) {
-                throw new TransformationException(e);
-            }
-        }
-    };
+        });
 
     private Transformers() {
     }
@@ -378,5 +370,31 @@ public final class Transformers {
      */
     public static Transformer<JSON, String> stringify() {
         return STRINGIFY_TRANSFORMER;
+    }
+
+    /**
+     * Create a {@link Transformer} from a {@link UnsafeTransformer}.
+     * @param transformer the uncaught transformer
+     * @param <S> the source value type
+     * @param <T> the target value type
+     * @return the transformer
+     */
+    public static <S, T> Transformer<S, T> toTransformer(final UnsafeTransformer<S, T> transformer) {
+        return new Transformer<S, T>() {
+            @Override
+            public T transform(S value) throws TransformationException {
+                try {
+                    return transformer.transform(value);
+                }
+                catch (TransformationException e) {
+                    throw e;
+                }
+                // CHECKSTYLE.OFF: IllegalCatch // Bulkhead
+                catch (Exception e) {
+                    throw new TransformationException(e);
+                }
+                // CHECKSTYLE.ON: IllegalCatch // Bulkhead
+            }
+        };
     }
 }
