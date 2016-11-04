@@ -115,8 +115,8 @@ public final class ProducingBinary extends AbstractClient {
      */
     // CHECKSTYLE.OFF: UncommentedMain
     public static void main(String[] args) throws InterruptedException {
-        final ProducingJson client =
-            new ProducingJson("ws://diffusion.example.com:80", "auth");
+        final ProducingBinary client =
+            new ProducingBinary("ws://diffusion.example.com:80", "auth");
         client.start("auth_secret");
         client.waitForStopped();
     }
