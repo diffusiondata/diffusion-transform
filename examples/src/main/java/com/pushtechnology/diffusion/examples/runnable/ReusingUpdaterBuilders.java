@@ -42,7 +42,7 @@ import com.pushtechnology.diffusion.transform.updater.UnboundTransformedUpdaterB
 /**
  * A client that reuses the updater builders.
  *
- * @author Matt Champion on 10/09/2016
+ * @author Push Technology Limited
  */
 public final class ReusingUpdaterBuilders extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJson.class);
