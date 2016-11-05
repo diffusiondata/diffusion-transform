@@ -39,6 +39,9 @@ public final class Transformers {
     private static final SafeTransformer<byte[], Binary> BYTE_ARRAY_TO_BINARY = new SafeTransformer<byte[], Binary>() {
         @Override
         public Binary transform(byte[] value) {
+            if (value == null) {
+                return null;
+            }
             return Diffusion.dataTypes().binary().readValue(value);
         }
     };
@@ -383,6 +386,10 @@ public final class Transformers {
         return new Transformer<S, T>() {
             @Override
             public T transform(S value) throws TransformationException {
+                if (value == null) {
+                    return null;
+                }
+
                 try {
                     return transformer.transform(value);
                 }

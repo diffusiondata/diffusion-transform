@@ -15,9 +15,17 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToInteger;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.cast;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.integerToBinary;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringify;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toSuperClass;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
@@ -55,6 +63,13 @@ public final class TransformersTest {
     }
 
     @Test
+    public void toObjectNull() throws TransformationException {
+        final Transformer<JSON, TestBean> transformer = Transformers.toObject(TestBean.class);
+        final TestBean asBean = transformer.transform(null);
+        assertNull(asBean);
+    }
+
+    @Test
     public void toType() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("\"some pop culture reference\"");
         final Transformer<JSON, String> transformer = Transformers.toType(new TypeReference<String>() {});
@@ -63,11 +78,25 @@ public final class TransformersTest {
     }
 
     @Test
+    public void toTypeNull() throws TransformationException {
+        final Transformer<JSON, String> transformer = Transformers.toType(new TypeReference<String>() {});
+        final String asString = transformer.transform(null);
+        assertNull(asString);
+    }
+
+    @Test
     public void toMapOf() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("{\"key\": \"value\"}");
         final Transformer<JSON, Map<String, String>> transformer = Transformers.toMapOf(String.class);
         final Map<String, String> asMap = transformer.transform(json);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), equalTo("value")));
+    }
+
+    @Test
+    public void toMapOfNull() throws TransformationException {
+        final Transformer<JSON, Map<String, String>> transformer = Transformers.toMapOf(String.class);
+        final Map<String, String> asMap = transformer.transform(null);
+        assertNull(asMap);
     }
 
     @Test
@@ -84,6 +113,13 @@ public final class TransformersTest {
     }
 
     @Test
+    public void fromPojoNull() throws TransformationException {
+        final Transformer<TestBean, JSON> transformer = Transformers.fromPojo();
+        final JSON json = transformer.transform(null);
+        assertNull(json);
+    }
+
+    @Test
     public void fromMap() throws TransformationException {
         final Map<String, String> sourceMap = new HashMap<>();
         sourceMap.put("key", "value");
@@ -94,23 +130,57 @@ public final class TransformersTest {
     }
 
     @Test
+    public void fromMapNull() throws TransformationException {
+        final Transformer<Map<String, String>, JSON> transformer = Transformers.fromMap();
+        final JSON json = transformer.transform(null);
+        assertNull(json);
+    }
+
+    @Test
     public void identity() {
         final SafeTransformer<String, String> transformer = Transformers.identity();
         assertEquals("a string", transformer.transform("a string"));
     }
 
     @Test
+    public void identityWithType() {
+        final SafeTransformer<String, String> transformer = Transformers.identity(String.class);
+        assertEquals("a string", transformer.transform("a string"));
+    }
+
+    @Test
+    public void identifyNull() throws TransformationException {
+        final Transformer<JSON, JSON> transformer = Transformers.identity();
+        final JSON json = transformer.transform(null);
+        assertNull(json);
+    }
+
+    @Test
     public void jsonToBytes() {
         final JSON json = JSON_DATA_TYPE.fromJsonString("\"some pop culture reference\"");
-        final SafeTransformer<JSON, Bytes> transformer = Transformers.toSuperClass();
+        final SafeTransformer<JSON, Bytes> transformer = toSuperClass();
         assertEquals(json, transformer.transform(json));
+    }
+
+    @Test
+    public void jsonToBytesNull() {
+        final SafeTransformer<JSON, Bytes> transformer = toSuperClass();
+        final Bytes bytes = transformer.transform(null);
+        assertNull(bytes);
     }
 
     @Test
     public void binaryToBytes() {
         final Binary json = BINARY_DATA_TYPE.readValue("some pop culture reference".getBytes());
-        final SafeTransformer<Binary, Bytes> transformer = Transformers.toSuperClass();
+        final SafeTransformer<Binary, Bytes> transformer = toSuperClass();
         assertEquals(json, transformer.transform(json));
+    }
+
+    @Test
+    public void binaryToBytesNull() {
+        final SafeTransformer<Binary, Bytes> transformer = toSuperClass();
+        final Bytes bytes = transformer.transform(null);
+        assertNull(bytes);
     }
 
     @Test
@@ -146,6 +216,12 @@ public final class TransformersTest {
     }
 
     @Test
+    public void projectNull() {
+        final SafeTransformer<Map<String, String>, String> transformer = Transformers.project("key");
+        assertNull(transformer.transform(null));
+    }
+
+    @Test
     public void byteArrayToBinary() {
         final byte[] array = "some pop culture reference".getBytes();
         final SafeTransformer<byte[], Binary> transformer = Transformers.byteArrayToBinary();
@@ -153,11 +229,17 @@ public final class TransformersTest {
     }
 
     @Test
+    public void byteArrayToBinaryNull() {
+        final SafeTransformer<byte[], Binary> transformer = Transformers.byteArrayToBinary();
+        assertNull(transformer.transform(null));
+    }
+
+    @Test
     public void castTypeReference() throws TransformationException {
         final Map map = new HashMap();
 
         final Transformer<Map, Map<String, String>> castingTransformer =
-            Transformers.cast(new TypeReference<Map<String, String>>() {});
+            cast(new TypeReference<Map<String, String>>() {});
 
         final Map<String, String> castMap = castingTransformer.transform(map);
 
@@ -165,10 +247,20 @@ public final class TransformersTest {
     }
 
     @Test
+    public void castTypeReferenceNull() throws TransformationException {
+        final Transformer<Map, Map<String, String>> castingTransformer =
+            cast(new TypeReference<Map<String, String>>() {});
+
+        final Map<String, String> castMap = castingTransformer.transform(null);
+
+        assertNull(castMap);
+    }
+
+    @Test
     public void castClass() throws TransformationException {
         final Object object = "";
 
-        final Transformer<Object, String> castingTransformer = Transformers.cast(String.class);
+        final Transformer<Object, String> castingTransformer = cast(String.class);
 
         final String castObject = castingTransformer.transform(object);
 
@@ -176,30 +268,57 @@ public final class TransformersTest {
     }
 
     @Test
-    public void integer() throws TransformationException {
-        final Binary serialisedValue = Transformers.integerToBinary().transform(5);
+    public void castClassNull() throws TransformationException {
+        final Transformer<Object, String> castingTransformer = cast(String.class);
 
-        final Integer deserialisedValue = Transformers.binaryToInteger().transform(serialisedValue);
+        final String castObject = castingTransformer.transform(null);
+
+        assertNull(castObject);
+    }
+
+    @Test
+    public void integer() throws TransformationException {
+        final Binary serialisedValue = integerToBinary().transform(5);
+
+        final Integer deserialisedValue = binaryToInteger().transform(serialisedValue);
 
         assertEquals(5, (int) deserialisedValue);
     }
 
     @Test
+    public void integerNull() throws TransformationException {
+        final Binary serialisedValue = integerToBinary().transform(null);
+        assertNull(serialisedValue);
+
+        final Integer deserialisedValue = binaryToInteger().transform(null);
+        assertNull(deserialisedValue);
+    }
+
+    @Test
     public void jsonString() throws TransformationException {
-        final JSON serialisedValue = Transformers.parseJSON().transform("{\"key\":\"value\"}");
+        final JSON serialisedValue = parseJSON().transform("{\"key\":\"value\"}");
 
         assertEquals(Diffusion.dataTypes().json().fromJsonString("{\"key\":\"value\"}"), serialisedValue);
         final Map<String, String> map = Transformers.toMapOf(String.class).transform(serialisedValue);
         assertEquals("value", map.get("key"));
         assertEquals(1, map.size());
 
-        final String deserialisedValue = Transformers.stringify().transform(serialisedValue);
+        final String deserialisedValue = stringify().transform(serialisedValue);
         assertEquals("{\"key\":\"value\"}", deserialisedValue);
     }
 
     @Test
+    public void jsonStringNull() throws TransformationException {
+        final JSON serialisedValue = parseJSON().transform(null);
+        assertNull(serialisedValue);
+
+        final String deserialisedValue = stringify().transform(null);
+        assertNull(deserialisedValue);
+    }
+
+    @Test
     public void wrappedUnsafeTransformerTransform() throws TransformationException {
-        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+        final Transformer<String, String> transformer = toTransformer(new UnsafeTransformer<String, String>() {
             @Override
             public String transform(String value) throws Exception {
                 return value;
@@ -210,10 +329,23 @@ public final class TransformersTest {
         assertEquals("value", value);
     }
 
+    @Test
+    public void wrappedUnsafeTransformerTransformNull() throws TransformationException {
+        final Transformer<String, String> transformer = toTransformer(new UnsafeTransformer<String, String>() {
+            @Override
+            public String transform(String value) throws Exception {
+                throw new NullPointerException();
+            }
+        });
+
+        final String value = transformer.transform(null);
+        assertNull(value);
+    }
+
     @Test(expected = TransformationException.class)
     public void wrappedUnsafeTransformerException() throws TransformationException {
         final Exception e = new Exception("Intentionally thrown by test");
-        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+        final Transformer<String, String> transformer = toTransformer(new UnsafeTransformer<String, String>() {
             @Override
             public String transform(String value) throws Exception {
                 throw e;
@@ -232,7 +364,7 @@ public final class TransformersTest {
     @Test(expected = TransformationException.class)
     public void wrappedUnsafeTransformerTransformationException() throws TransformationException {
         final TransformationException e = new TransformationException("Intentionally thrown by test");
-        final Transformer<String, String> transformer = Transformers.toTransformer(new UnsafeTransformer<String, String>() {
+        final Transformer<String, String> transformer = toTransformer(new UnsafeTransformer<String, String>() {
             @Override
             public String transform(String value) throws Exception {
                 throw e;

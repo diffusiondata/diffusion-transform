@@ -31,6 +31,10 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T> {
     @Override
     public final T transform(Binary value) throws TransformationException {
+        if (value == null) {
+            return null;
+        }
+
         final InputStream inputStream = value.asInputStream();
         final DataInputStream dataInputStream = new DataInputStream(inputStream);
 

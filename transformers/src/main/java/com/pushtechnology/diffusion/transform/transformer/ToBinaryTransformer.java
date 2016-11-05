@@ -43,6 +43,10 @@ public abstract class ToBinaryTransformer<S> implements Transformer<S, Binary> {
 
     @Override
     public final Binary transform(S value) throws TransformationException {
+        if (value == null) {
+            return null;
+        }
+
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(initialSize);
         final DataOutputStream dataOutputStream = new DataOutputStream(byteArrayOutputStream);
 
