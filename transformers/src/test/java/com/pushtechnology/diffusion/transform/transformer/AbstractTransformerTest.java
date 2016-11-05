@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -31,6 +32,13 @@ public final class AbstractTransformerTest {
         final IdentityTransformer transformer = new IdentityTransformer();
         final String transformedValue = transformer.transform("value");
         assertEquals("value", transformedValue);
+    }
+
+    @Test
+    public void transformNull() throws TransformationException {
+        final IdentityTransformer transformer = new IdentityTransformer();
+        final String transformedValue = transformer.transform(null);
+        assertNull(transformedValue);
     }
 
     @Test(expected = TransformationException.class)
@@ -62,7 +70,7 @@ public final class AbstractTransformerTest {
     private static final class TransformationExceptionThrowingTransformer extends AbstractTransformer<String, String> {
         @Override
         protected String transformUnsafely(String value) throws Exception {
-            throw new Exception("Intentionally thrown by test");
+            throw new TransformationException("Intentionally thrown by test");
         }
     }
 }

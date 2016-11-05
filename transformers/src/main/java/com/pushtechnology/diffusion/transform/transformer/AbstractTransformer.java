@@ -26,6 +26,10 @@ package com.pushtechnology.diffusion.transform.transformer;
 public abstract class AbstractTransformer<S, T> implements Transformer<S, T> {
     @Override
     public final T transform(S value) throws TransformationException {
+        if (value == null) {
+            return null;
+        }
+
         try {
             return transformUnsafely(value);
         }
