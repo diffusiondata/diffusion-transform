@@ -15,28 +15,30 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
-import java.io.DataOutput;
-import java.io.IOException;
 import java.nio.charset.Charset;
 
+import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
+
 /**
- * Transformer from {@link String} to {@link com.pushtechnology.diffusion.datatype.binary.Binary}.
+ * Transformer from {@link String} to {@link Binary}.
  *
  * @author Push Technology Limited
  */
-/*package*/ final class StringToBinaryTransformer extends ToBinaryTransformer<String> {
-    private final  Charset charset;
+/*package*/ final class StringToBinaryTransformer implements SafeTransformer<String, Binary> {
+    private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
+    private final Charset charset;
 
     /**
      * Constructor.
      */
     StringToBinaryTransformer(Charset charset) {
-        super(64); // A string could be any size so the estimated size makes little difference
         this.charset = charset;
     }
 
     @Override
-    protected void serialiseValue(DataOutput dataOutput, String value) throws TransformationException, IOException {
-        dataOutput.write(value.getBytes(charset));
+    public Binary transform(String value) {
+        return BINARY_DATA_TYPE.readValue(value.getBytes(charset));
     }
 }
