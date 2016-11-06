@@ -64,20 +64,12 @@ public final class ProducingTimestamp extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final Binary initialValue;
-        try {
-            initialValue = chain(
-                chain(
-                    Date::from,
-                    DATE_FORMAT::format),
-                stringToBinary(Charset.forName("UTF-8")))
-                .transform(Instant.now());
-        }
-        catch (TransformationException e) {
-            LOG.error("Initial value could not be generated");
-            stop();
-            return;
-        }
+        final Binary initialValue = chain(
+            chain(
+                Date::from,
+                DATE_FORMAT::format),
+            stringToBinary(Charset.forName("UTF-8")))
+            .transform(Instant.now());
 
         session
             .feature(TopicControl.class)
