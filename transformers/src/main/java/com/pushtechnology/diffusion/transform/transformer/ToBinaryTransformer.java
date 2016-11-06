@@ -18,7 +18,6 @@ package com.pushtechnology.diffusion.transform.transformer;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
-import java.io.IOException;
 
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
@@ -53,9 +52,14 @@ public abstract class ToBinaryTransformer<S> implements Transformer<S, Binary> {
         try {
             serialiseValue(dataOutputStream, value);
         }
-        catch (IOException e) {
+        catch (TransformationException e) {
+            throw e;
+        }
+        // CHECKSTYLE.OFF: IllegalCatch // Bulkhead
+        catch (Exception e) {
             throw new TransformationException(e);
         }
+        // CHECKSTYLE.ON: IllegalCatch // Bulkhead
 
         return BINARY_DATA_TYPE.readValue(byteArrayOutputStream.toByteArray());
     }
@@ -65,9 +69,10 @@ public abstract class ToBinaryTransformer<S> implements Transformer<S, Binary> {
      * @param dataOutput output to write to
      * @param value value to serialise
      * @throws TransformationException if the value cannot be serialised
-     * @throws IOException if the operations on the output failed
+     * @throws java.io.IOException if the operations on the output failed
+     * @throws Exception if the serialisation failed unexpectedly
      */
-    protected abstract void serialiseValue(DataOutput dataOutput, S value) throws TransformationException, IOException;
+    protected abstract void serialiseValue(DataOutput dataOutput, S value) throws Exception;
 
     @Override
     public final String toString() {

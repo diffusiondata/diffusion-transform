@@ -17,7 +17,6 @@ package com.pushtechnology.diffusion.transform.transformer;
 
 import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
@@ -41,9 +40,14 @@ public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T>
         try {
             return deserialiseValue(dataInputStream);
         }
-        catch (IOException e) {
+        catch (TransformationException e) {
+            throw e;
+        }
+        // CHECKSTYLE.OFF: IllegalCatch // Bulkhead
+        catch (Exception e) {
             throw new TransformationException(e);
         }
+        // CHECKSTYLE.ON: IllegalCatch // Bulkhead
     }
 
     /**
@@ -51,7 +55,8 @@ public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T>
      *
      * @param dataInput input to read from
      * @throws TransformationException if the value cannot be deserialised
-     * @throws IOException if the operations on the input failed
+     * @throws java.io.IOException if the operations on the input failed
+     * @throws Exception if the deserialisation failed unexpectedly
      */
-    protected abstract T deserialiseValue(DataInput dataInput) throws TransformationException, IOException;
+    protected abstract T deserialiseValue(DataInput dataInput) throws Exception;
 }
