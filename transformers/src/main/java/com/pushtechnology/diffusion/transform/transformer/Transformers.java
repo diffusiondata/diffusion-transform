@@ -355,7 +355,7 @@ public final class Transformers {
      * @param charset the character set to decode the string with
      * @return the transformer to String
      */
-    public static Transformer<Binary, String> binaryToString(Charset charset) {
+    public static SafeTransformer<Binary, String> binaryToString(Charset charset) {
         return new BinaryToStringTransformer(charset);
     }
 

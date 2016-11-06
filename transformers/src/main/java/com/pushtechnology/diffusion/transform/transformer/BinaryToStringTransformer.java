@@ -24,7 +24,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
  *
  * @author Push Technology Limited
  */
-/*package*/ final class BinaryToStringTransformer implements Transformer<Binary, String> {
+/*package*/ final class BinaryToStringTransformer implements SafeTransformer<Binary, String> {
     private final  Charset charset;
 
     /**
@@ -35,7 +35,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
     }
 
     @Override
-    public String transform(Binary value) throws TransformationException {
+    public String transform(Binary value) {
         return new String(value.toByteArray(), charset);
     }
 }
