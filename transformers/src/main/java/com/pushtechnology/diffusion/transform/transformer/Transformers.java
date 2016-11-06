@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -337,6 +338,24 @@ public final class Transformers {
      */
     public static Transformer<Binary, Integer> binaryToInteger() {
         return BinaryToIntegerTransformer.INSTANCE;
+    }
+
+    /**
+     * Transformer from big integer to Binary.
+     *
+     * @return the transformer to Binary
+     */
+    public static Transformer<BigInteger, Binary> bigIntegerToBinary() {
+        return BigIntegerToBinaryTransformer.INSTANCE;
+    }
+
+    /**
+     * Transformer from Binary to big integer.
+     *
+     * @return the transformer to integer
+     */
+    public static Transformer<Binary, BigInteger> binaryToBigInteger() {
+        return BinaryToBigIntegerTransformer.INSTANCE;
     }
 
     /**
