@@ -341,6 +341,24 @@ public final class Transformers {
     }
 
     /**
+     * Transformer from double to Binary.
+     *
+     * @return the transformer to Binary
+     */
+    public static Transformer<Double, Binary> doubleToBinary() {
+        return DoubleToBinaryTransformer.INSTANCE;
+    }
+
+    /**
+     * Transformer from Binary to double.
+     *
+     * @return the transformer to double
+     */
+    public static Transformer<Binary, Double> binaryToDouble() {
+        return BinaryToDoubleTransformer.INSTANCE;
+    }
+
+    /**
      * Transformer from big integer to Binary.
      *
      * @return the transformer to Binary
