@@ -40,8 +40,8 @@ import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
  *
  * @author Push Technology Limited
  */
-public final class ProducingJsonWithExculsiveUpdater extends AbstractClient {
-    private static final Logger LOG = LoggerFactory.getLogger(ProducingJsonWithExculsiveUpdater.class);
+public final class ProducingJsonWithExclusiveUpdater extends AbstractClient {
+    private static final Logger LOG = LoggerFactory.getLogger(ProducingJsonWithExclusiveUpdater.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;
@@ -51,7 +51,7 @@ public final class ProducingJsonWithExculsiveUpdater extends AbstractClient {
      * @param url The URL to connect to
      * @param principal The principal to connect as
      */
-    public ProducingJsonWithExculsiveUpdater(String url, String principal) {
+    public ProducingJsonWithExclusiveUpdater(String url, String principal) {
         super(url, principal);
     }
 
@@ -120,8 +120,8 @@ public final class ProducingJsonWithExculsiveUpdater extends AbstractClient {
      */
     // CHECKSTYLE.OFF: UncommentedMain
     public static void main(String[] args) throws InterruptedException {
-        final ProducingJsonWithExculsiveUpdater client =
-            new ProducingJsonWithExculsiveUpdater("ws://diffusion.example.com:80", "auth");
+        final ProducingJsonWithExclusiveUpdater client =
+            new ProducingJsonWithExclusiveUpdater("ws://diffusion.example.com:80", "auth");
         client.start("auth_secret");
         client.waitForStopped();
     }
