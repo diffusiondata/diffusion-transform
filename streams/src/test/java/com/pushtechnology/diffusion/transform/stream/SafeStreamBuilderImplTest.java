@@ -74,12 +74,12 @@ public final class SafeStreamBuilderImplTest {
     }
 
     @Test
-    public void transformSafely() {
+    public void transformWith() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity(String.class));
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transformSafely(new UnsafeTransformer<String, String>() {
+            streamBuilder.transformWith(new UnsafeTransformer<String, String>() {
                 @Override
                 public String transform(String value) throws Exception {
                     return value;

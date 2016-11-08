@@ -39,10 +39,10 @@ public interface UnboundUpdaterBuilder
     <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
 
     @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer);
+    <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
 
     @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer, Class<R> type);
+    <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Bind an {@link UpdaterBuilder} to a session.

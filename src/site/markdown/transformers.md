@@ -8,9 +8,10 @@ Importantly it also allows for these transformations to be chained and combined.
 The transformation may fail by throwing a `TransformationException`.
 There is a variation `SafeTransformer` that does not throw this exception and should always successfully be applicable.
 There is another variation `UnsafeTransformer` that was added to simplify exception handling.
-It can throw any type of exception and can be passed to the `transformSafely` methods of the update and stream builders.
+It can throw any type of exception and can be passed to the `transformWith` methods of the update and stream builders.
 These methods will convert the `UnsafeTransformer` to a `Transformer` that propagates the exception as a
 `TransformationException`.
+The different method name is to aid type inference when working with lambdas.
 In Java 8 this allow methods that throw exceptions to be used in lambdas or as method references.
 It is assumed that a transformation applied to nothing results in nothing, null references should be propagated through
 transformers.

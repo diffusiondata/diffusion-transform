@@ -55,7 +55,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer) {
+    public <R> BoundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer) {
         return new BoundTransformedUpdaterBuilderImpl<>(
             updateControl,
             valueType,
@@ -63,7 +63,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundTransformedUpdaterBuilder<S, R> transformSafely(
+    public <R> BoundTransformedUpdaterBuilder<S, R> transformWith(
             UnsafeTransformer<R, T> newTransformer,
             Class<R> type) {
         return new BoundTransformedUpdaterBuilderImpl<>(

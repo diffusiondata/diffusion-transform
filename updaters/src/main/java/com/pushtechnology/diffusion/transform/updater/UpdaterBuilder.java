@@ -52,7 +52,7 @@ public interface UpdaterBuilder<S, T> {
      * @param <R> the new type of the transformed values
      * @return a new updater builder
      */
-    <R> TransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer);
+    <R> TransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
 
     /**
      * Transform the updater that will be built.
@@ -61,5 +61,5 @@ public interface UpdaterBuilder<S, T> {
      * @param <R> the new type of the transformed values
      * @return a new updater builder
      */
-    <R> TransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer, Class<R> type);
+    <R> TransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 }

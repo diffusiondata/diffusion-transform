@@ -49,7 +49,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformSafely(UnsafeTransformer<T, R> newTransformer) {
+    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer) {
         return new StreamBuilderImpl<>(valueType, chain(transformer, toTransformer(newTransformer)));
     }
 

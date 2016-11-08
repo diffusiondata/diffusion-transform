@@ -50,12 +50,12 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer) {
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer) {
         return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
     }
 
     @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transformSafely(
+    public <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(
             UnsafeTransformer<R, T> newTransformer,
             Class<R> type) {
         return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));

@@ -48,7 +48,7 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> StreamBuilder<S, R, TransformedStream<S, R>> transformSafely(UnsafeTransformer<T, R> newTransformer);
+    <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * Create the stream.

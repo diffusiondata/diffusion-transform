@@ -123,9 +123,9 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformSafelyCreateAndUpdate() throws Exception {
+    public void transformWithCreateAndUpdate() throws Exception {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
-            .transformSafely(unsafeTransformer)
+            .transformWith(unsafeTransformer)
             .create(simpleUpdater);
 
         updater.update("topic", "stringValue", callback);

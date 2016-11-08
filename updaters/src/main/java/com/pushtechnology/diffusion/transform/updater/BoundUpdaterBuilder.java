@@ -37,10 +37,10 @@ public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V
     <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
 
     @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer);
+    <R> BoundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
 
     @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transformSafely(UnsafeTransformer<R, T> newTransformer, Class<R> type);
+    <R> BoundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Create the updater.

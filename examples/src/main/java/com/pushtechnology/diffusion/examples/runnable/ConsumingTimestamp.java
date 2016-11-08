@@ -59,7 +59,7 @@ public final class ConsumingTimestamp extends AbstractClient {
             .transform(Transformers.binaryToString(Charset.forName("UTF-8")))
             // This method reference may throw a ParseException that will be
             // converted to a TransformationException automatically
-            .transformSafely(DATE_FORMAT::parse)
+            .transformWith(DATE_FORMAT::parse)
             .transform(Date::toInstant)
             .register(topics, "binary/timestamp", new TransformedStream.Default<Binary, Instant>() {
                 @Override
