@@ -23,7 +23,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
 /**
  * Common {@link Transformer}s.
@@ -31,6 +33,8 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
  * @author Push Technology Limited
  */
 public final class Transformers {
+    private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
+    private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
     private static final SafeTransformer IDENTITY = new SafeTransformer() {
         @Override
         public Object transform(Object value) {
@@ -43,7 +47,7 @@ public final class Transformers {
             if (value == null) {
                 return null;
             }
-            return Diffusion.dataTypes().binary().readValue(value);
+            return BINARY_DATA_TYPE.readValue(value);
         }
     };
     private static final Transformer FROM_POJO_TRANSFORMER = new Transformer() {
@@ -69,7 +73,7 @@ public final class Transformers {
         new UnsafeTransformer<String, JSON>() {
             @Override
             public JSON transform(String value) throws InvalidDataException {
-                return Diffusion.dataTypes().json().fromJsonString(value);
+                return JSON_DATA_TYPE.fromJsonString(value);
             }
         });
     private static final Transformer<JSON, String> STRINGIFY_TRANSFORMER = toTransformer(

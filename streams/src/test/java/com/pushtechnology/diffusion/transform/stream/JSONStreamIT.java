@@ -30,6 +30,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Map;
 
+import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +54,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  * @author Push Technology Limited
  */
 public final class JSONStreamIT {
+    private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
     @Mock
     private Session.Listener listener;
     @Mock
@@ -121,7 +123,7 @@ public final class JSONStreamIT {
             .updater()
             .valueUpdater(JSON.class);
 
-        updater.update("test/topic", Diffusion.dataTypes().json().fromJsonString("{}"), updateCallback);
+        updater.update("test/topic", JSON_DATA_TYPE.fromJsonString("{}"), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
@@ -165,7 +167,7 @@ public final class JSONStreamIT {
             .updater()
             .valueUpdater(JSON.class);
 
-        updater.update("test/topic", Diffusion.dataTypes().json().fromJsonString("{}"), updateCallback);
+        updater.update("test/topic", JSON_DATA_TYPE.fromJsonString("{}"), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())

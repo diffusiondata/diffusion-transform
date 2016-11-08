@@ -298,7 +298,7 @@ public final class TransformersTest {
     public void jsonString() throws TransformationException {
         final JSON serialisedValue = parseJSON().transform("{\"key\":\"value\"}");
 
-        assertEquals(Diffusion.dataTypes().json().fromJsonString("{\"key\":\"value\"}"), serialisedValue);
+        assertEquals(JSON_DATA_TYPE.fromJsonString("{\"key\":\"value\"}"), serialisedValue);
         final Map<String, String> map = Transformers.toMapOf(String.class).transform(serialisedValue);
         assertEquals("value", map.get("key"));
         assertEquals(1, map.size());
