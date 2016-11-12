@@ -87,6 +87,9 @@ public final class Transformers {
     private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = new SafeTransformer<Bytes, byte[]>() {
         @Override
         public byte[] transform(Bytes value) {
+            if (value == null) {
+                return null;
+            }
             return value.toByteArray();
         }
     };

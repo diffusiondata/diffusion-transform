@@ -19,6 +19,7 @@ import static com.pushtechnology.diffusion.client.Diffusion.content;
 import static com.pushtechnology.diffusion.client.Diffusion.dataTypes;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toByteArray;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -61,5 +62,10 @@ public final class BytesToByteArrayTransformerTest {
         final byte[] transformedBytes = toByteArray().transform(json);
 
         assertArrayEquals(bytes, transformedBytes);
+    }
+
+    @Test
+    public void testNull() {
+        assertNull(toByteArray().transform(null));
     }
 }
