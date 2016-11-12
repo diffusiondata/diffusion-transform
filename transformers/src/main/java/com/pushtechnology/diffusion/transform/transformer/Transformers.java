@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
@@ -83,6 +84,12 @@ public final class Transformers {
                 return value.toJsonString();
             }
         });
+    private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = new SafeTransformer<Bytes, byte[]>() {
+        @Override
+        public byte[] transform(Bytes value) {
+            return value.toByteArray();
+        }
+    };
 
     private Transformers() {
     }
@@ -414,6 +421,16 @@ public final class Transformers {
      */
     public static Transformer<JSON, String> stringify() {
         return STRINGIFY_TRANSFORMER;
+    }
+
+    /**
+     * Transformer from any implementation of Bytes to a byte array.
+     * @param <T> the implementation of bytes
+     * @return the transformer to byte array
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Bytes> SafeTransformer<T, byte[]> toByteArray() {
+        return (SafeTransformer<T, byte[]>) TO_BYTE_ARRAY;
     }
 
     /**
