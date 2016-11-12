@@ -51,7 +51,7 @@ public final class Transformers {
             return BINARY_DATA_TYPE.readValue(value);
         }
     };
-    private static final Transformer FROM_POJO_TRANSFORMER = new Transformer() {
+    private static final Transformer FROM_POJO = new Transformer() {
         @Override
         public Object transform(Object value) throws TransformationException {
             if (value == null) {
@@ -61,7 +61,7 @@ public final class Transformers {
         }
     };
     @SuppressWarnings("unchecked")
-    private static final Transformer FROM_MAP_TRANSFORMER = new Transformer() {
+    private static final Transformer FROM_MAP = new Transformer() {
         @Override
         public Object transform(Object value) throws TransformationException {
             if (value == null) {
@@ -70,14 +70,14 @@ public final class Transformers {
             return JacksonContext.fromMap((Map<String, ?>) value);
         }
     };
-    private static final Transformer<String, JSON> PARSE_JSON_TRANSFORMER = toTransformer(
+    private static final Transformer<String, JSON> PARSE_JSON = toTransformer(
         new UnsafeTransformer<String, JSON>() {
             @Override
             public JSON transform(String value) throws InvalidDataException {
                 return JSON_DATA_TYPE.fromJsonString(value);
             }
         });
-    private static final Transformer<JSON, String> STRINGIFY_TRANSFORMER = toTransformer(
+    private static final Transformer<JSON, String> STRINGIFY_JSON = toTransformer(
         new UnsafeTransformer<JSON, String>() {
             @Override
             public String transform(JSON value) throws InvalidDataException {
@@ -319,7 +319,7 @@ public final class Transformers {
      */
     @SuppressWarnings("unchecked")
     public static <T> Transformer<T, JSON> fromPojo() {
-        return FROM_POJO_TRANSFORMER;
+        return FROM_POJO;
     }
 
     /**
@@ -330,7 +330,7 @@ public final class Transformers {
      */
     @SuppressWarnings("unchecked")
     public static <T> Transformer<Map<String, T>, JSON> fromMap() {
-        return FROM_MAP_TRANSFORMER;
+        return FROM_MAP;
     }
 
     /**
@@ -412,7 +412,7 @@ public final class Transformers {
      * @return the transformer to JSON
      */
     public static Transformer<String, JSON> parseJSON() {
-        return PARSE_JSON_TRANSFORMER;
+        return PARSE_JSON;
     }
 
     /**
@@ -420,7 +420,7 @@ public final class Transformers {
      * @return the transformer to String
      */
     public static Transformer<JSON, String> stringify() {
-        return STRINGIFY_TRANSFORMER;
+        return STRINGIFY_JSON;
     }
 
     /**
