@@ -465,4 +465,23 @@ public final class Transformers {
             }
         };
     }
+
+    /**
+     * Create a builder for transformers.
+     * @param <V> Value type
+     * @return The builder
+     */
+    public static <V> SafeTransformerBuilder<V, V> builder() {
+        return new SafeTransformerBuilderImpl<>(Transformers.<V>identity());
+    }
+
+    /**
+     * Create a builder for transformers.
+     * @param valueType The value type
+     * @param <V> Value type
+     * @return The builder
+     */
+    public static <V> SafeTransformerBuilder<V, V> builder(Class<V> valueType) {
+        return new SafeTransformerBuilderImpl<>(identity(valueType));
+    }
 }
