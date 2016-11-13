@@ -57,7 +57,7 @@ public final class TransformerBuilderImplTest {
     public void chainTransformers() throws Exception {
         final TransformerBuilder<String, String> transformerBuilder = new TransformerBuilderImpl<>(transformer)
             .transform(safeTransformer)
-            .transform(unsafeTransformer);
+            .transformWith(unsafeTransformer);
 
         final Transformer<String, String> builtTransformer = transformerBuilder.build();
         final String result = builtTransformer.transform("hello");

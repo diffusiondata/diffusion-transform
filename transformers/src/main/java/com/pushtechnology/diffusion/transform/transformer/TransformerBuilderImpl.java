@@ -38,7 +38,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
     }
 
     @Override
-    public <R> TransformerBuilder<S, R> transform(UnsafeTransformer<T, R> newTransformer) {
+    public <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer) {
         return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
     }
 

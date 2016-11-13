@@ -39,7 +39,7 @@ public interface TransformerBuilder<S, T> {
      * @param <R> the new type of the transformed values
      * @return a new transformer builder
      */
-    <R> TransformerBuilder<S, R> transform(UnsafeTransformer<T, R> newTransformer);
+    <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * @return a new transformer

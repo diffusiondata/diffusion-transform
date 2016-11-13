@@ -91,7 +91,7 @@ public final class SafeTransformerBuilderImplTest {
     public void chainUnsafeTransformers() throws Exception {
         final TransformerBuilder<String, String> transformerBuilder = new SafeTransformerBuilderImpl<>(safeTransformer0)
             .transform(safeTransformer1)
-            .transform(unsafeTransformer);
+            .transformWith(unsafeTransformer);
 
         final Transformer<String, String> builtTransformer = transformerBuilder.build();
         final String result = builtTransformer.transform("hello");
