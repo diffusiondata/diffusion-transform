@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.adder;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 
 /**
  * Topic adder. Supports creating topics.
@@ -31,7 +32,7 @@ public interface TopicAdder<V> {
      * @param callback called with the result
      * @throws TransformationException if the value cannot be transformed
      */
-    void add(String topicPath, V initialValue, TopicControl.AddCallback callback);
+    void add(String topicPath, V initialValue, TopicControl.AddCallback callback) throws TransformationException;
 
     /**
      * Add a new topic without any value.
