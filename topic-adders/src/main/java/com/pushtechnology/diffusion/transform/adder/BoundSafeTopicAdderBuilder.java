@@ -15,15 +15,22 @@
 
 package com.pushtechnology.diffusion.transform.adder;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
+import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
- * Topic adder. Supports creating topics.
+ * An extension to {@link SafeTopicAdderBuilder} that is bound to a session.
  *
- * @param <V> The type of value used to initialise the topic
+ * @param <S> The type of value understood by the topic
+ * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-public interface SafeTopicAdder<V> extends TopicAdder<V> {
+public interface BoundSafeTopicAdderBuilder<S, T> extends
+    SafeTopicAdderBuilder<S, T>,
+    BoundTopicAdderBuilder<S, T, SafeTopicAdder<T>> {
+
     @Override
-    void add(String topicPath, V initialValue, TopicControl.AddCallback callback);
+    <R> BoundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
+
+    @Override
+    <R> BoundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
 }

@@ -15,15 +15,12 @@
 
 package com.pushtechnology.diffusion.transform.adder;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
-
 /**
- * Topic adder. Supports creating topics.
+ * An extension to {@link TopicAdderBuilder} that is bound to a session.
  *
- * @param <V> The type of value used to initialise the topic
+ * @param <S> The type of value understood by the topic
+ * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-public interface SafeTopicAdder<V> extends TopicAdder<V> {
-    @Override
-    void add(String topicPath, V initialValue, TopicControl.AddCallback callback);
+public interface BoundTransformedTopicAdderBuilder<S, T> extends BoundTopicAdderBuilder<S, T, TopicAdder<T>> {
 }
