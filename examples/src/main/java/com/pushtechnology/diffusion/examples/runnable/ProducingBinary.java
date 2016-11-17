@@ -15,8 +15,8 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
+import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.binaryTopicAdderBuilder;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.byteArrayToBinary;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -33,6 +33,7 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.transform.adder.SafeTopicAdder;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.updater.SafeTransformedUpdater;
 
@@ -69,12 +70,13 @@ public final class ProducingBinary extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        session
-            .feature(TopicControl.class)
-            .addTopicFromValue(
-                "binary/random",
-                chain(SERIALISER, byteArrayToBinary()).transform(RandomData.next()),
-                new TopicControl.AddCallback.Default());
+        final SafeTopicAdder<RandomData> adder = binaryTopicAdderBuilder()
+            .transform(byteArrayToBinary())
+            .transform(SERIALISER)
+            .bind(session)
+            .create();
+
+        adder.add("binary/random", RandomData.next(), new TopicControl.AddCallback.Default());
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)

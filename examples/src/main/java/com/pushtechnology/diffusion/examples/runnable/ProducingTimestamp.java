@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
+import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.binaryTopicAdderBuilder;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringToBinary;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -37,6 +37,7 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.transform.adder.SafeTopicAdder;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
 
@@ -64,19 +65,16 @@ public final class ProducingTimestamp extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final Binary initialValue = chain(
-            chain(
-                Date::from,
-                DATE_FORMAT::format),
-            stringToBinary(Charset.forName("UTF-8")))
-            .transform(Instant.now());
+        final SafeTopicAdder<Instant> adder = binaryTopicAdderBuilder()
+            .transform(stringToBinary(Charset.forName("UTF-8")))
+            .transform(DATE_FORMAT::format)
+            .transform(Date::from)
+            .bind(session)
+            .create();
 
-        session
-            .feature(TopicControl.class)
-            .addTopicFromValue(
-                "binary/timestamp",
-                initialValue,
-                new TopicControl.AddCallback.Default());
+        // This value cannot be transformed into a map, will invoke error handling if the client tries to
+        // process it
+        adder.add("binary/timestamp", Instant.now(), new TopicControl.AddCallback.Default());
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)

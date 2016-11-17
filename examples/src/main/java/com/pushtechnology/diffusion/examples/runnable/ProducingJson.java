@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
+import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.jsonTopicAdderBuilder;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -30,6 +32,7 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.adder.TopicAdder;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
@@ -56,24 +59,21 @@ public final class ProducingJson extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final JSON initialValue;
+        final TopicAdder<String> adder = jsonTopicAdderBuilder()
+            .transform(parseJSON())
+            .bind(session)
+            .create();
+
         try {
-            initialValue = Transformers.parseJSON().transform("\"hello\"");
+            // This value cannot be transformed into a map, will invoke error handling if the client tries to
+            // process it
+            adder.add("json/random", "\"hello\"", new TopicControl.AddCallback.Default());
         }
         catch (TransformationException e) {
             LOG.error("Initial value could not be parsed as JSON");
             stop();
             return;
         }
-
-        session
-            .feature(TopicControl.class)
-            .addTopicFromValue(
-                "json/random",
-                // This value cannot be transformed into a map, will invoke error handling if the client tries to
-                // process it
-                initialValue,
-                new TopicControl.AddCallback.Default());
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)
