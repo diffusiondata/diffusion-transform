@@ -19,7 +19,6 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.ch
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
-import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
@@ -27,66 +26,63 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Implementation of {@link UnboundSafeTopicAdderBuilder}.
+ * Implementation of {@link BoundSafeTopicAdderBuilder}.
  *
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-/*package*/ final class UnboundSafeTopicAdderBuilderImpl<S extends Bytes, T>
-    implements UnboundSafeTopicAdderBuilder<S, T> {
+/*package*/ final class BoundSafeTopicAdderBuilderImpl<S extends Bytes, T>
+    implements BoundSafeTopicAdderBuilder<S, T> {
 
     private final TopicType topicType;
     private final SafeTransformer<T, S> transformer;
+    private final TopicControl topicControl;
 
-    UnboundSafeTopicAdderBuilderImpl(TopicType topicType, SafeTransformer<T, S> transformer) {
+    BoundSafeTopicAdderBuilderImpl(TopicType topicType, SafeTransformer<T, S> transformer, TopicControl topicControl) {
         this.topicType = topicType;
         this.transformer = transformer;
+        this.topicControl = topicControl;
     }
 
     @Override
-    public <R> UnboundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer) {
-        return new UnboundSafeTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer));
+    public <R> BoundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer) {
+        return new BoundSafeTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer), topicControl);
     }
 
     @Override
-    public <R> UnboundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type) {
-        return new UnboundSafeTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer));
+    public <R> BoundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type) {
+        return new BoundSafeTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer), topicControl);
     }
 
     @Override
-    public <R> UnboundTransformedTopicAdderBuilder<S, R> transform(Transformer<R, T> newTransformer) {
-        return new UnboundTransformedTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer));
+    public <R> BoundTransformedTopicAdderBuilder<S, R> transform(Transformer<R, T> newTransformer) {
+        return new BoundTransformedTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer), topicControl);
     }
 
     @Override
-    public <R> UnboundTransformedTopicAdderBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
-        return new UnboundTransformedTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer));
+    public <R> BoundTransformedTopicAdderBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
+        return new BoundTransformedTopicAdderBuilderImpl<>(topicType, chain(newTransformer, transformer), topicControl);
     }
 
     @Override
-    public <R> UnboundTransformedTopicAdderBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer) {
-        return new UnboundTransformedTopicAdderBuilderImpl<>(
+    public <R> BoundTransformedTopicAdderBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer) {
+        return new BoundTransformedTopicAdderBuilderImpl<>(
             topicType,
-            chain(toTransformer(newTransformer), transformer));
+            chain(toTransformer(newTransformer), transformer), topicControl);
     }
 
     @Override
-    public <R> UnboundTransformedTopicAdderBuilder<S, R> transformWith(
+    public <R> BoundTransformedTopicAdderBuilder<S, R> transformWith(
             UnsafeTransformer<R, T> newTransformer,
             Class<R> type) {
-        return new UnboundTransformedTopicAdderBuilderImpl<>(
+        return new BoundTransformedTopicAdderBuilderImpl<>(
             topicType,
-            chain(toTransformer(newTransformer), transformer));
+            chain(toTransformer(newTransformer), transformer), topicControl);
     }
 
     @Override
-    public BoundSafeTopicAdderBuilder<S, T> bind(Session session) {
-        return new BoundSafeTopicAdderBuilderImpl<>(topicType, transformer, session.feature(TopicControl.class));
-    }
-
-    @Override
-    public SafeTopicAdder<T> create(Session session) {
-        return new SafeTopicAdderImpl<>(session.feature(TopicControl.class), topicType, transformer);
+    public SafeTopicAdder<T> create() {
+        return new SafeTopicAdderImpl<>(topicControl, topicType, transformer);
     }
 }

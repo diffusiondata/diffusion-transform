@@ -20,9 +20,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.id
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringToBinary;
 import static java.nio.charset.Charset.forName;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.After;
@@ -31,38 +29,32 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
-import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Unit tests for {@link UnboundSafeTopicAdderBuilderImpl}.
+ * Unit tests for {@link BoundSafeTopicAdderBuilderImpl}.
  *
  * @author Push Technology Limited
  */
-public final class UnboundTransformedTopicAdderBuilderImplTest {
-
-    @Mock
-    private Session session;
+public final class BoundTransformedTopicAdderBuilderImplTest {
     @Mock
     private TopicControl control;
 
     @Before
     public void setUp() {
         initMocks(this);
-
-        when(session.feature(TopicControl.class)).thenReturn(control);
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(session, control);
+        verifyNoMoreInteractions(control);
     }
 
     @Test
     public void transform() {
-        final UnboundTransformedTopicAdderBuilder<Binary, String> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class))
+        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
                 .transform(stringToBinary(forName("UTF-8")));
 
         assertNotNull(builder);
@@ -70,8 +62,8 @@ public final class UnboundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void transformToClass() {
-        final UnboundTransformedTopicAdderBuilder<Binary, String> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class))
+        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
                 .transform(stringToBinary(forName("UTF-8")), String.class);
 
         assertNotNull(builder);
@@ -79,8 +71,8 @@ public final class UnboundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void transformWith() {
-        final UnboundTransformedTopicAdderBuilder<Binary, String> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class))
+        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
                 .transformWith(new UnsafeTransformer<String, Binary>() {
                     @Override
                     public Binary transform(String value) throws Exception {
@@ -93,8 +85,8 @@ public final class UnboundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void transformWithToClass() {
-        final UnboundTransformedTopicAdderBuilder<Binary, String> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class))
+        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
                 .transformWith(new UnsafeTransformer<String, Binary>() {
                     @Override
                     public Binary transform(String value) throws Exception {
@@ -107,25 +99,11 @@ public final class UnboundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void create() {
-        final UnboundTransformedTopicAdderBuilderImpl<Binary, String> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, stringToBinary(forName("UTF-8")));
+        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, stringToBinary(forName("UTF-8")), control);
 
-        final TopicAdder<String> adder = builder.create(session);
+        final TopicAdder<String> adder = builder.create();
 
         assertNotNull(adder);
-
-        verify(session).feature(TopicControl.class);
-    }
-
-    @Test
-    public void bind() {
-        final UnboundTransformedTopicAdderBuilder<Binary, Binary> builder =
-            new UnboundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class));
-
-        final BoundTransformedTopicAdderBuilder<Binary, Binary> boundBuilder = builder.bind(session);
-
-        assertNotNull(boundBuilder);
-
-        verify(session).feature(TopicControl.class);
     }
 }

@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.adder;
 
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
@@ -33,4 +34,7 @@ public interface UnboundSafeTopicAdderBuilder<S, T> extends
 
     @Override
     <R> UnboundSafeTopicAdderBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+
+    @Override
+    BoundSafeTopicAdderBuilder<S, T> bind(Session session);
 }
