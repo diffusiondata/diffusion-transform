@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 
 /**
  * An extension to {@link TransformedUpdaterBuilder} that is not bound to a session.
@@ -30,6 +31,9 @@ public interface UnboundTransformedUpdaterBuilder<S, T> extends
 
     @Override
     BoundTransformedUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl);
+
+    @Override
+    BoundTransformedUpdaterBuilder<S, T> bind(Session session);
 
     /**
      * Register an update source.

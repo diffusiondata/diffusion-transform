@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -50,6 +51,13 @@ public interface UnboundUpdaterBuilder
      * @return The bound updater
      */
     BoundUpdaterBuilder<S, T, U, V> bind(TopicUpdateControl updateControl);
+
+    /**
+     * Bind an {@link UpdaterBuilder} to a session.
+     * @param session The session to bind
+     * @return The bound updater
+     */
+    BoundUpdaterBuilder<S, T, U, V> bind(Session session);
 
     /**
      * Create the updater.

@@ -84,8 +84,7 @@ public final class ReusingUpdaterBuilders extends AbstractClient {
             return;
         }
 
-        final BoundTransformedUpdaterBuilder<JSON, RandomData> builder = updateBuilder
-            .bind(session.feature(TopicUpdateControl.class));
+        final BoundTransformedUpdaterBuilder<JSON, RandomData> builder = updateBuilder.bind(session);
         builder.register(
             "json",
             new TransformedUpdateSource.Default<JSON, RandomData>() {

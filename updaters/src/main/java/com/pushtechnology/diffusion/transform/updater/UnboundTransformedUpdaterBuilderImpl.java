@@ -19,6 +19,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.ch
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -68,6 +69,14 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public BoundTransformedUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl) {
         return new BoundTransformedUpdaterBuilderImpl<>(updateControl, valueType, transformer);
+    }
+
+    @Override
+    public BoundTransformedUpdaterBuilder<S, T> bind(Session session) {
+        return new BoundTransformedUpdaterBuilderImpl<>(
+            session.feature(TopicUpdateControl.class),
+            valueType,
+            transformer);
     }
 
     @Override

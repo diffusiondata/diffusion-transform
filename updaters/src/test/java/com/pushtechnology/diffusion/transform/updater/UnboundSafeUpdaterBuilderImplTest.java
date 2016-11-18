@@ -31,6 +31,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
@@ -43,6 +44,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @author Push Technology Limited
  */
 public final class UnboundSafeUpdaterBuilderImplTest {
+    @Mock
+    private Session session;
     @Mock
     private TopicUpdateControl updateControl;
     @Mock
@@ -80,13 +83,21 @@ public final class UnboundSafeUpdaterBuilderImplTest {
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
+        when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
 
         updaterBuilder = new UnboundSafeUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, transformer, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer);
+        verifyNoMoreInteractions(
+            callback,
+            transformer,
+            safeTransformer,
+            jsonValue,
+            delegateUpdater,
+            unsafeTransformer,
+            session);
     }
 
     @Test
@@ -196,6 +207,18 @@ public final class UnboundSafeUpdaterBuilderImplTest {
 
         builder.create();
 
+        verify(updateControl).updater();
+    }
+
+    @Test
+    public void transformAndBindWithSession() throws TransformationException {
+        final BoundSafeUpdaterBuilder<JSON, String> builder = updaterBuilder
+            .transform(safeTransformer)
+            .bind(session);
+
+        builder.create();
+
+        verify(session).feature(TopicUpdateControl.class);
         verify(updateControl).updater();
     }
 }

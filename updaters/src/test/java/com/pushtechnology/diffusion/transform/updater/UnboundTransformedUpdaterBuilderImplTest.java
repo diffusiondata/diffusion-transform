@@ -31,6 +31,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
@@ -42,6 +43,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @author Push Technology Limited
  */
 public final class UnboundTransformedUpdaterBuilderImplTest {
+    @Mock
+    private Session session;
     @Mock
     private TopicUpdateControl updateControl;
     @Mock
@@ -76,13 +79,14 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
+        when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
 
         updaterBuilder = new UnboundTransformedUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, transformer, jsonValue, delegateUpdater, unsafeTransformer);
+        verifyNoMoreInteractions(callback, transformer, jsonValue, delegateUpdater, unsafeTransformer, session);
     }
 
     @Test
@@ -177,6 +181,18 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
 
         builder.create();
 
+        verify(updateControl).updater();
+    }
+
+    @Test
+    public void transformAndBindWithSession() throws TransformationException {
+        final BoundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
+            .transform(transformer)
+            .bind(session);
+
+        builder.create();
+
+        verify(session).feature(TopicUpdateControl.class);
         verify(updateControl).updater();
     }
 }

@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
@@ -37,6 +38,9 @@ public interface UnboundSafeUpdaterBuilder<S, T> extends
 
     @Override
     BoundSafeUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl);
+
+    @Override
+    BoundSafeUpdaterBuilder<S, T> bind(Session session);
 
     /**
      * Register an update source.
