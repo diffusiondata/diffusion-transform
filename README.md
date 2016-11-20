@@ -9,124 +9,13 @@ understood. This library aims to add additional ways of transforming these value
 
 [Additional information](https://pushtechnology.github.io/diffusion-transform/)
 
-## Transformers
+[Transformers](https://pushtechnology.github.io/diffusion-transform/transformers/transformers.html)
 
-A key component is the `Transformer` interface. This interface provides an abstraction over converting values from one
-type to another. It allows for performing deserialsation, data binding and data manipulation. Importantly it also allows
-for these transformations to be chained and combined. The transformation may fail by throwing a
-`TransformationException`. There is a variation `SafeTransformer` that does not throw this exception and should always
-successfully be applicable.
+[Stream builders](https://pushtechnology.github.io/diffusion-transform/streams/stream-builders.html)
 
-Provided are several transformers for working with `JSON`, `Binary` and common Java values. There are transformers for
-converting pojos and beans to `JSON` and back, accessing the byte array of `Binary` values and chaining transformers
-together.
+[Updater builders](https://pushtechnology.github.io/diffusion-transform/updaters/updater-builders.html)
 
-The `@Data` annotation is taken from [Project Lombok](https://projectlombok.org/) to generate a bean like object.
-
-```java
-@Data
-public class TestBean {
-    private String name;
-    private int someNumber;
-}
-```
-
-The `Transformers.toObject` can be used to bind a JSON value to a bean.
-
-```java
-final JSON json = JSON_DATA_TYPE.fromJsonString("{\"name\": \"a name\", \"someNumber\": 7}");
-final Transformer<JSON, TestBean> transformer = Transformers.toObject(TestBean.class);
-final TestBean asBean = transformer.transform(json);
-```
-
-## StreamBuilders
-
-To help with receiving values from topics a `StreamBuilder` can be used to construct a stream that delegates to a
-`TransformedStream`. The `StreamBuilder` makes it easy to chain transformers together. A `StreamBuilder` is
-immutable and allows a new `StreamBuilder` to be created from it that adds an additional transformation.
-
-A `TransformedStream` adds additional error handling capabilities to a `ValueStream` to handle a
-`TransformationException`. Using only `SafeTransformer` this additional error handling can be avoided.
-
-Multiple transformations can be chained together to read a `JSON` value and extract part of it.
-
-```java
-StreamBuilders.newJsonStreamBuilder()
-    .transform(Transformers.toMapOf(BigInteger.class))
-    .transform(Transformers.project("timestamp"))
-    .create(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
-        @Override
-        public void onValue(
-            String topicPath,
-            TopicSpecification topicSpecification,
-            BigInteger oldValue,
-            BigInteger newValue) {
-
-            LOG.info("New timestamp {}", newValue);
-        }
-});
-```
-
-A `StreamBuilder` can also be used to create a fallback stream. A fallback stream receives notifications for any topics
-that do not match the topic selector of any other stream.
-
-A `StreamBuilder` returns a `StreamHandle` when it creates a stream or fallback stream. This can be used to close the
-stream when it is no longer needed. Since the stream provided when registering a stream using the `StreamBuilder` is
-wrapped in an adapter before it is passed to the Diffusion API the `Topics` feature cannot be used to close the stream.
-
-## UpdaterBuilders
-
-To help with updating topics with new values an `UpdaterBuilder` can be used to construct a `TransformedUpdater` that
-applies a transformation to a value before updating the topic with the result. Like the `StreamBuilder` an
-`UpdaterBuilder` makes it easy to chain transformers together. An `UpdaterBuilder` is immutable and allows a new
-`UpdaterBuilder` to be created from it that adds an additional transformation.
-
-Every `UpdaterBuilder` has two properties, safe transformation and session binding. Each of these properties can have
-one of two values. Updater builders can have any combination of these values.
-
-An `UpdaterBuilder` that is safely transforming only uses `SafeTransformer`s. If it is transformed with a `Transformer`
-that is not a `SafeTransformer` the resulting `UpdaterBuilder` is unsafely transforming.
-
-An `UpdaterBuilder` that is not bound must be provided with an `Updater` to create a `TransformedUpdater` or a
-`TopicUpdateControl` to register a `TransformedUpdateSource`. An `UpdaterBuilder` that is bound to a session can create
-a `TransformedUpdater` or register a `TransformedUpdateSource` without any being provided  an `Updater` or
-`TopicUpdateControl`.
-
-A `TransformedUpdater` will throw a `TransformationException` when attempting to update a topic if the transformation
-cannot be applied to the value. Using only `SafeTransformer` this additional exception throwing can be avoided.
-
-A `TransformedUpdater` can be created that converts a bean or pojo to a `JSON` value and applies it to a topic.  
-
-```java
-final TopicUpdateControl.Updater updater = session
-    .feature(TopicUpdateControl.class)
-    .updater();
-
-final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.class)
-    .transform(Transformers.<RandomData>fromPojo())
-    .create(updater);
-
-valueUpdater.update(
-    "json/random",
-    RandomData.next(),
-    new TopicUpdateControl.Updater.UpdateCallback.Default());
-```
-
-A `UpdaterBuilder` can also be used to register a `TransformedUpdateSource`.
-
-```java
-final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.class)
-    .transform(Transformers.<RandomData>fromPojo())
-    .register(session.feature(TopicUpdateControl.class), "json", new TransformedUpdateSource.Default<JSON, RandomData>() {
-        @Override
-        public void onActive(String topicPath, TransformedUpdater<JSON, RandomData> valueUpdater) {
-            valueUpdater.update(
-                "json/random",
-                RandomData.next(),
-                new TopicUpdateControl.Updater.UpdateCallback.Default());
-        }
-    });
-```
+[Topic adder builders](https://pushtechnology.github.io/diffusion-transform/topic-adders/topic-adder-builders.html)
 
 ## Third party components
 
