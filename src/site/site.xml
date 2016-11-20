@@ -6,6 +6,7 @@
             <item name="Transformers" href="transformers/transformers.html" />
             <item name="Stream Builders" href="streams/stream-builders.html" />
             <item name="Updater Builders" href="updaters/updater-builders.html" />
+            <item name="Topic Adder Builders" href="topic-adders/topic-adder-builders.html" />
         </menu>
         <menu ref="reports" />
     </body>
