@@ -11,6 +11,8 @@ understood. This library aims to add additional ways of transforming these value
 
 [Transformers](https://pushtechnology.github.io/diffusion-transform/transformers/transformers.html)
 
+[Transformer builders](https://pushtechnology.github.io/diffusion-transform/transformers/transformer-builders.html)
+
 [Stream builders](https://pushtechnology.github.io/diffusion-transform/streams/stream-builders.html)
 
 [Updater builders](https://pushtechnology.github.io/diffusion-transform/updaters/updater-builders.html)
