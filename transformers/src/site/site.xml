@@ -2,6 +2,9 @@
 <project>
     <body>
         <menu ref="parent" />
+        <menu name="Details">
+            <item name="Transformers" href="transformers.html" />
+        </menu>
         <menu ref="reports" />
     </body>
 </project>
