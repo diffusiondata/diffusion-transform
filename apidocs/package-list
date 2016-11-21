@@ -1,3 +1,4 @@
+com.pushtechnology.diffusion.transform.adder
 com.pushtechnology.diffusion.transform.stream
 com.pushtechnology.diffusion.transform.transformer
 com.pushtechnology.diffusion.transform.updater
