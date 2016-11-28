@@ -66,10 +66,13 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
     }
 
+    // CHECKSTYLE.OFF: MissingDeprecated
+    @Deprecated
     @Override
     public BoundTransformedUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl) {
         return new BoundTransformedUpdaterBuilderImpl<>(updateControl, valueType, transformer);
     }
+    // CHECKSTYLE.ON: MissingDeprecated
 
     @Override
     public BoundTransformedUpdaterBuilder<S, T> bind(Session session) {

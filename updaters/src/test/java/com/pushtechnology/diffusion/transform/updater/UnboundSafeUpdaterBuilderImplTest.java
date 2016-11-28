@@ -199,6 +199,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void transformAndBind() throws TransformationException {
         final BoundSafeUpdaterBuilder<JSON, String> builder = updaterBuilder

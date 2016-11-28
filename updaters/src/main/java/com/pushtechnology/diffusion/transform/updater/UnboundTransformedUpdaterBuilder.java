@@ -29,8 +29,11 @@ public interface UnboundTransformedUpdaterBuilder<S, T> extends
     TransformedUpdaterBuilder<S, T>,
     UnboundUpdaterBuilder<S, T, TransformedUpdater<S, T>, TransformedUpdateSource<S, T, TransformedUpdater<S, T>>> {
 
+    // CHECKSTYLE.OFF: MissingDeprecated
+    @Deprecated
     @Override
     BoundTransformedUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl);
+    // CHECKSTYLE.ON: MissingDeprecated
 
     @Override
     BoundTransformedUpdaterBuilder<S, T> bind(Session session);
