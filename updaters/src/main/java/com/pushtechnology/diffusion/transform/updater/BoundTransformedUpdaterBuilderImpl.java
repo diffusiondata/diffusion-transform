@@ -34,7 +34,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     private final Class<S> valueType;
     private final Transformer<T, S> transformer;
 
-    public BoundTransformedUpdaterBuilderImpl(
+    BoundTransformedUpdaterBuilderImpl(
             TopicUpdateControl updateControl,
             Class<S> valueType,
             Transformer<T, S> transformer) {
