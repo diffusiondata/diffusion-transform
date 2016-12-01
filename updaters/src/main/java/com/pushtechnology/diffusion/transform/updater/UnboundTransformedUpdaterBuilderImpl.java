@@ -91,8 +91,4 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
             topicPath,
             new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
     }
-
-    public TransformedUpdater<S, T> create(TopicUpdateControl.Updater updater, Class<T> type) {
-        return new TransformedUpdaterImpl<>(updater.valueUpdater(valueType), transformer);
-    }
 }

@@ -99,15 +99,6 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
     }
 
     @Test
-    public void createWithClassAndUpdate() throws TransformationException {
-        final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater, JSON.class);
-
-        updater.update("topic", jsonValue, callback);
-
-        verify(delegateUpdater).update("topic", jsonValue, callback);
-    }
-
-    @Test
     public void untransformedValueCache() {
         final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
 
