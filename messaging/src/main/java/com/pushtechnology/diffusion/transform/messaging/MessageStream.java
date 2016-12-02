@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.messaging;
 
-import com.pushtechnology.diffusion.client.features.Stream;
+import com.pushtechnology.diffusion.client.callbacks.Stream;
 
 /**
  * A stream of values received as messages.
