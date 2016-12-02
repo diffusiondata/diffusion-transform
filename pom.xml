@@ -21,6 +21,7 @@
         <module>topic-adders</module>
         <module>transformers</module>
         <module>updaters</module>
+        <module>messaging</module>
     </modules>
 
     <repositories>
