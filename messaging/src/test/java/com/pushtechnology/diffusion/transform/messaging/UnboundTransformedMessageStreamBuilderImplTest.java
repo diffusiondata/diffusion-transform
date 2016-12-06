@@ -40,8 +40,6 @@ public final class UnboundTransformedMessageStreamBuilderImplTest {
     @Mock
     private Messaging messaging;
     @Mock
-    private Messaging.MessageStream stream;
-    @Mock
     private Session session;
     @Mock
     private Transformer<Content, String> contentTransformer;
