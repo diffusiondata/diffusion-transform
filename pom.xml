@@ -108,7 +108,7 @@
             <dependency>
                 <groupId>com.pushtechnology.diffusion</groupId>
                 <artifactId>diffusion-client</artifactId>
-                <version>5.9.3</version>
+                <version>5.9.7</version>
             </dependency>
 
 
@@ -279,7 +279,7 @@
                 <configuration>
                     <excludePackageNames>com.pushtechnology.diffusion.examples.*</excludePackageNames>
                     <links>
-                        <link>https://docs.pushtechnology.com/docs/5.9.1/java/</link>
+                        <link>https://docs.pushtechnology.com/docs/5.9.7/java/</link>
                     </links>
                 </configuration>
                 <reportSets>
