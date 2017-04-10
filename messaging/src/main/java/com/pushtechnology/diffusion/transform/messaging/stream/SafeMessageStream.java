@@ -13,27 +13,13 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
-
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
-import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 /**
- * A builder for {@link TransformedMessageStream}s that has been bound to a session.
+ * A stream of values received as messages and safely transformed.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface BoundTransformedMessageStreamBuilder<V> extends
-        BoundMessageStreamBuilder<V, TransformedMessageStream<V>>,
-        TransformedMessageStreamBuilder<V> {
-
-    @Override
-    <R> BoundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
-
-    @Override
-    <R> BoundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
-
-    @Override
-    MessageStreamHandle register(TransformedMessageStream<V> stream);
+public interface SafeMessageStream<V> extends MessageStream<V> {
 }

@@ -13,31 +13,33 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
-import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link TransformedMessageStream}s that has not been bound to a session.
+ * A builder for {@link MessageStream}s.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface UnboundTransformedMessageStreamBuilder<V> extends
-        UnboundMessageStreamBuilder<V, TransformedMessageStream<V>>,
-        TransformedMessageStreamBuilder<V> {
+public interface MessageStreamBuilder<V> {
+    /**
+     * Transform the stream that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new stream builder
+     */
+    <R> TransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
 
-    @Override
-    <R> UnboundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
-
-    @Override
-    <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
-
-    @Override
-    BoundTransformedMessageStreamBuilder<V> bind(Session session);
-
-    @Override
-    MessageStreamHandle register(Session session, TransformedMessageStream<V> stream);
+    /**
+     * Transform the stream that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new stream builder
+     */
+    <R> TransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 }

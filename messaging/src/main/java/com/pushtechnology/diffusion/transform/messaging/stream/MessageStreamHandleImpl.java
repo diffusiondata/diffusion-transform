@@ -13,13 +13,26 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
+
+import com.pushtechnology.diffusion.client.features.Messaging;
 
 /**
- * A stream of values received as messages and safely transformed.
+ * Implementation of {@link MessageStreamHandle}.
  *
- * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface SafeMessageStream<V> extends MessageStream<V> {
+/*package*/ class MessageStreamHandleImpl implements MessageStreamHandle {
+    private final Messaging messaging;
+    private final Messaging.MessageStream stream;
+
+    MessageStreamHandleImpl(Messaging messaging, Messaging.MessageStream stream) {
+        this.messaging = messaging;
+        this.stream = stream;
+    }
+
+    @Override
+    public void close() {
+        messaging.removeMessageStream(stream);
+    }
 }

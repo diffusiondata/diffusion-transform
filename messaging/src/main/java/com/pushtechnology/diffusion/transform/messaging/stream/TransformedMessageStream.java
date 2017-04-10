@@ -13,7 +13,7 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;

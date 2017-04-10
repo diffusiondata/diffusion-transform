@@ -13,9 +13,8 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
@@ -29,16 +28,20 @@ import org.mockito.Mock;
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
+import com.pushtechnology.diffusion.transform.messaging.stream.BoundTransformedMessageStreamBuilder;
+import com.pushtechnology.diffusion.transform.messaging.stream.BoundTransformedMessageStreamBuilderImpl;
+import com.pushtechnology.diffusion.transform.messaging.stream.TransformedMessageStream;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Unit tests for {@link UnboundSafeMessageStreamBuilderImpl}.
+ * Unit tests for {@link BoundTransformedMessageStreamBuilderImpl}.
  *
  * @author Push Technology Limited
  */
-public final class UnboundSafeMessageStreamBuilderImplTest {
+public final class BoundTransformedMessageStreamBuilderImplTest {
+
     @Mock
     private Messaging messaging;
     @Mock
@@ -50,9 +53,7 @@ public final class UnboundSafeMessageStreamBuilderImplTest {
     @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
-    private SafeTransformer<String, String> safeStringTransformer;
-    @Mock
-    private SafeMessageStream<String> messageStream;
+    private TransformedMessageStream<String> messageStream;
 
     @Before
     public void setUp() {
@@ -63,45 +64,27 @@ public final class UnboundSafeMessageStreamBuilderImplTest {
 
     @Test
     public void transform() {
-        final UnboundSafeMessageStreamBuilder<String> builder =
-            new UnboundSafeMessageStreamBuilderImpl<>(contentTransformer);
-        final UnboundTransformedMessageStreamBuilder<String> newBuilder = builder.transform(stringTransformer);
+        final BoundTransformedMessageStreamBuilder<String> builder =
+            new BoundTransformedMessageStreamBuilderImpl<>(contentTransformer, session);
+        final BoundTransformedMessageStreamBuilder<String> newBuilder = builder.transform(stringTransformer);
 
         assertNotSame(builder, newBuilder);
     }
 
     @Test
     public void transformWith() {
-        final UnboundSafeMessageStreamBuilder<String> builder =
-            new UnboundSafeMessageStreamBuilderImpl<>(contentTransformer);
-        final UnboundTransformedMessageStreamBuilder<String> newBuilder = builder.transformWith(unsafeTransformer);
+        final BoundTransformedMessageStreamBuilder<String> builder =
+            new BoundTransformedMessageStreamBuilderImpl<>(contentTransformer, session);
+        final BoundTransformedMessageStreamBuilder<String> newBuilder = builder.transformWith(unsafeTransformer);
 
         assertNotSame(builder, newBuilder);
-    }
-
-    @Test
-    public void transformSafe() {
-        final UnboundSafeMessageStreamBuilder<String> builder =
-            new UnboundSafeMessageStreamBuilderImpl<>(contentTransformer);
-        final UnboundSafeMessageStreamBuilder<String> newBuilder = builder.transform(safeStringTransformer);
-
-        assertNotSame(builder, newBuilder);
-    }
-
-    @Test
-    public void bind() throws Exception {
-        final BoundSafeMessageStreamBuilder<String> builder =
-            new UnboundSafeMessageStreamBuilderImpl<>(contentTransformer)
-                .bind(session);
-
-        assertNotNull(builder);
     }
 
     @Test
     public void register() {
-        final UnboundSafeMessageStreamBuilder<String> builder =
-            new UnboundSafeMessageStreamBuilderImpl<>(contentTransformer);
-        builder.register(session, messageStream);
+        final BoundTransformedMessageStreamBuilder<String> builder =
+            new BoundTransformedMessageStreamBuilderImpl<>(contentTransformer, session);
+        builder.register(messageStream);
 
         verify(session).feature(Messaging.class);
         verify(messaging).addFallbackMessageStream(isA(Messaging.MessageStream.class));

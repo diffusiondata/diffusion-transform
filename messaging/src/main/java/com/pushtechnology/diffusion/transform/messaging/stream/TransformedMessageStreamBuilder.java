@@ -13,23 +13,13 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
-
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 /**
- * A builder for {@link SafeMessageStream}s.
+ * A builder for {@link TransformedMessageStream}s.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface SafeMessageStreamBuilder<V> extends MessageStreamBuilder<V> {
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     */
-    <R> SafeMessageStreamBuilder<R> transform(SafeTransformer<V, R> newTransformer);
+public interface TransformedMessageStreamBuilder<V> extends MessageStreamBuilder<V> {
 }

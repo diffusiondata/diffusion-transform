@@ -13,14 +13,28 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
+
+import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Handle to a message stream to allow it to be closed.
+ * A builder for {@link MessageStream}s that has been bound to a session.
  *
+ * @param <V> the type of values
+ * @param <S> the type of stream
  * @author Push Technology Limited
  */
-public interface MessageStreamHandle extends AutoCloseable {
+public interface BoundMessageStreamBuilder<V, S extends MessageStream<V>> extends MessageStreamBuilder<V> {
     @Override
-    void close();
+    <R> BoundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
+
+    @Override
+    <R> BoundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
+
+    /**
+     * Register a message stream.
+     * @param stream the stream to register
+     */
+    MessageStreamHandle register(S stream);
 }

@@ -13,37 +13,27 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
-import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link MessageStream}s that has not been bound to a session.
+ * A builder for {@link TransformedMessageStream}s that has been bound to a session.
  *
  * @param <V> the type of values
- * @param <S> the type of stream
  * @author Push Technology Limited
  */
-public interface UnboundMessageStreamBuilder<V, S extends MessageStream<V>> extends MessageStreamBuilder<V> {
-    @Override
-    <R> UnboundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
+public interface BoundTransformedMessageStreamBuilder<V> extends
+        BoundMessageStreamBuilder<V, TransformedMessageStream<V>>,
+        TransformedMessageStreamBuilder<V> {
 
     @Override
-    <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
+    <R> BoundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
 
-    /**
-     * Bind the stream that will be built.
-     * @param session the session to bind to
-     * @return a new builder that creates handlers for a session
-     */
-    BoundMessageStreamBuilder<V, S> bind(Session session);
+    @Override
+    <R> BoundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
-    /**
-     * Register a message stream.
-     * @param session the session to register the stream with
-     * @param stream the stream to register
-     */
-    MessageStreamHandle register(Session session, S stream);
+    @Override
+    MessageStreamHandle register(TransformedMessageStream<V> stream);
 }

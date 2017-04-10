@@ -13,28 +13,31 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link MessageStream}s that has been bound to a session.
+ * A builder for {@link TransformedMessageStream}s that has not been bound to a session.
  *
  * @param <V> the type of values
- * @param <S> the type of stream
  * @author Push Technology Limited
  */
-public interface BoundMessageStreamBuilder<V, S extends MessageStream<V>> extends MessageStreamBuilder<V> {
-    @Override
-    <R> BoundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
+public interface UnboundTransformedMessageStreamBuilder<V> extends
+        UnboundMessageStreamBuilder<V, TransformedMessageStream<V>>,
+        TransformedMessageStreamBuilder<V> {
 
     @Override
-    <R> BoundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
+    <R> UnboundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
 
-    /**
-     * Register a message stream.
-     * @param stream the stream to register
-     */
-    MessageStreamHandle register(S stream);
+    @Override
+    <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
+
+    @Override
+    BoundTransformedMessageStreamBuilder<V> bind(Session session);
+
+    @Override
+    MessageStreamHandle register(Session session, TransformedMessageStream<V> stream);
 }

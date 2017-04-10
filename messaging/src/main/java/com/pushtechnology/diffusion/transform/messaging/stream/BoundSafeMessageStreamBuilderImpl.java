@@ -13,7 +13,7 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
@@ -21,22 +21,37 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
+import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Implementation of {@link BoundTransformedMessageStreamBuilder}.
+ * Implementation of {@link BoundSafeMessageStreamBuilder}.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-/*package*/ final class BoundTransformedMessageStreamBuilderImpl<V> implements BoundTransformedMessageStreamBuilder<V> {
-    private final Transformer<Content, V> transformer;
+/*package*/ class BoundSafeMessageStreamBuilderImpl<V> implements BoundSafeMessageStreamBuilder<V> {
+    private final SafeTransformer<Content, V> transformer;
     private final Session session;
 
-    BoundTransformedMessageStreamBuilderImpl(Transformer<Content, V> transformer, Session session) {
+    BoundSafeMessageStreamBuilderImpl(SafeTransformer<Content, V> transformer, Session session) {
         this.transformer = transformer;
         this.session = session;
+    }
+
+    @Override
+    public <R> BoundSafeMessageStreamBuilder<R> transform(SafeTransformer<V, R> newTransformer) {
+        return new BoundSafeMessageStreamBuilderImpl<>(chain(transformer, newTransformer), session);
+    }
+
+    @Override
+    public MessageStreamHandle register(SafeMessageStream<V> stream) {
+        final Messaging.MessageStream adapter = new SafeMessageStreamAdapter<>(transformer, stream);
+        final Messaging messaging = session.feature(Messaging.class);
+        final MessageStreamHandleImpl handle = new MessageStreamHandleImpl(messaging, adapter);
+        messaging.addFallbackMessageStream(adapter);
+        return handle;
     }
 
     @Override
@@ -49,14 +64,5 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new BoundTransformedMessageStreamBuilderImpl<>(
             chain(transformer, toTransformer(newTransformer)),
             session);
-    }
-
-    @Override
-    public MessageStreamHandle register(TransformedMessageStream<V> stream) {
-        final Messaging.MessageStream adapter = new TransformedMessageStreamAdapter<>(transformer, stream);
-        final Messaging messaging = session.feature(Messaging.class);
-        final MessageStreamHandleImpl handle = new MessageStreamHandleImpl(messaging, adapter);
-        messaging.addFallbackMessageStream(adapter);
-        return handle;
     }
 }

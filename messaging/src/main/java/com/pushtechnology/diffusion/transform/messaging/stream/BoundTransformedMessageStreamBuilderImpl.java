@@ -13,7 +13,7 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
@@ -21,46 +21,39 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Implementation of {@link UnboundSafeMessageStreamBuilder}.
+ * Implementation of {@link BoundTransformedMessageStreamBuilder}.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-/*package*/ final class UnboundSafeMessageStreamBuilderImpl<V> implements UnboundSafeMessageStreamBuilder<V> {
-    private final SafeTransformer<Content, V> transformer;
+/*package*/ final class BoundTransformedMessageStreamBuilderImpl<V> implements BoundTransformedMessageStreamBuilder<V> {
+    private final Transformer<Content, V> transformer;
+    private final Session session;
 
-    UnboundSafeMessageStreamBuilderImpl(SafeTransformer<Content, V> transformer) {
+    BoundTransformedMessageStreamBuilderImpl(Transformer<Content, V> transformer, Session session) {
         this.transformer = transformer;
+        this.session = session;
     }
 
     @Override
-    public <R> UnboundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer) {
-        return new UnboundTransformedMessageStreamBuilderImpl<>(chain(transformer, newTransformer));
+    public <R> BoundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer) {
+        return new BoundTransformedMessageStreamBuilderImpl<>(chain(transformer, newTransformer), session);
     }
 
     @Override
-    public <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer) {
-        return new UnboundTransformedMessageStreamBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
+    public <R> BoundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer) {
+        return new BoundTransformedMessageStreamBuilderImpl<>(
+            chain(transformer, toTransformer(newTransformer)),
+            session);
     }
 
     @Override
-    public <R> UnboundSafeMessageStreamBuilder<R> transform(SafeTransformer<V, R> newTransformer) {
-        return new UnboundSafeMessageStreamBuilderImpl<>(chain(transformer, newTransformer));
-    }
-
-    @Override
-    public BoundSafeMessageStreamBuilder<V> bind(Session session) {
-        return new BoundSafeMessageStreamBuilderImpl<>(transformer, session);
-    }
-
-    @Override
-    public MessageStreamHandle register(Session session, SafeMessageStream<V> stream) {
-        final Messaging.MessageStream adapter = new SafeMessageStreamAdapter<>(transformer, stream);
+    public MessageStreamHandle register(TransformedMessageStream<V> stream) {
+        final Messaging.MessageStream adapter = new TransformedMessageStreamAdapter<>(transformer, stream);
         final Messaging messaging = session.feature(Messaging.class);
         final MessageStreamHandleImpl handle = new MessageStreamHandleImpl(messaging, adapter);
         messaging.addFallbackMessageStream(adapter);

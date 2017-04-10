@@ -13,33 +13,37 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link MessageStream}s.
+ * A builder for {@link MessageStream}s that has not been bound to a session.
  *
  * @param <V> the type of values
+ * @param <S> the type of stream
  * @author Push Technology Limited
  */
-public interface MessageStreamBuilder<V> {
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     */
-    <R> TransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
+public interface UnboundMessageStreamBuilder<V, S extends MessageStream<V>> extends MessageStreamBuilder<V> {
+    @Override
+    <R> UnboundTransformedMessageStreamBuilder<R> transform(Transformer<V, R> newTransformer);
+
+    @Override
+    <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
+     * Bind the stream that will be built.
+     * @param session the session to bind to
+     * @return a new builder that creates handlers for a session
      */
-    <R> TransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
+    BoundMessageStreamBuilder<V, S> bind(Session session);
+
+    /**
+     * Register a message stream.
+     * @param session the session to register the stream with
+     * @param stream the stream to register
+     */
+    MessageStreamHandle register(Session session, S stream);
 }

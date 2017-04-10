@@ -13,27 +13,23 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
-import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
+import com.pushtechnology.diffusion.client.callbacks.Stream;
 
 /**
- * A builder for {@link SafeMessageStream}s that has not been bound to a session.
+ * A stream of values received as messages.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface UnboundSafeMessageStreamBuilder<V> extends
-        UnboundMessageStreamBuilder<V, SafeMessageStream<V>>,
-        SafeMessageStreamBuilder<V> {
+public interface MessageStream<V> extends Stream {
 
-    @Override
-    <R> UnboundSafeMessageStreamBuilder<R> transform(SafeTransformer<V, R> newTransformer);
-
-    @Override
-    BoundSafeMessageStreamBuilder<V> bind(Session session);
-
-    @Override
-    MessageStreamHandle register(Session session, SafeMessageStream<V> stream);
+    /**
+     * Notified when a message is received.
+     *
+     * @param path the path to which the message was sent
+     * @param message the message
+     */
+    void onMessageReceived(String path, V message);
 }

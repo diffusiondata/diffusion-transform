@@ -13,26 +13,42 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
+package com.pushtechnology.diffusion.transform.messaging.stream;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamHandle;
+import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamHandleImpl;
 
 /**
- * Implementation of {@link MessageStreamHandle}.
+ * Unit tests for {@link MessageStreamHandleImpl}.
  *
  * @author Push Technology Limited
  */
-/*package*/ class MessageStreamHandleImpl implements MessageStreamHandle {
-    private final Messaging messaging;
-    private final Messaging.MessageStream stream;
+public final class MessageStreamHandleImplTest {
+    @Mock
+    private Messaging messaging;
+    @Mock
+    private Messaging.MessageStream stream;
 
-    MessageStreamHandleImpl(Messaging messaging, Messaging.MessageStream stream) {
-        this.messaging = messaging;
-        this.stream = stream;
+    @Before
+    public void setUp() {
+        initMocks(this);
     }
 
-    @Override
+    @Test
     public void close() {
-        messaging.removeMessageStream(stream);
+        final MessageStreamHandle handle = new MessageStreamHandleImpl(messaging, stream);
+
+        handle.close();
+
+        verify(messaging).removeMessageStream(stream);
     }
+
 }

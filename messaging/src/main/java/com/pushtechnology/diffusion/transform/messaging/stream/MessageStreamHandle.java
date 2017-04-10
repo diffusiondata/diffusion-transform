@@ -13,23 +13,14 @@
  * limitations under the License.
  *******************************************************************************/
 
-package com.pushtechnology.diffusion.transform.messaging;
-
-import com.pushtechnology.diffusion.client.callbacks.Stream;
+package com.pushtechnology.diffusion.transform.messaging.stream;
 
 /**
- * A stream of values received as messages.
+ * Handle to a message stream to allow it to be closed.
  *
- * @param <V> the type of values
  * @author Push Technology Limited
  */
-public interface MessageStream<V> extends Stream {
-
-    /**
-     * Notified when a message is received.
-     *
-     * @param path the path to which the message was sent
-     * @param message the message
-     */
-    void onMessageReceived(String path, V message);
+public interface MessageStreamHandle extends AutoCloseable {
+    @Override
+    void close();
 }
