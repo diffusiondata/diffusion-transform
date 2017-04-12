@@ -74,6 +74,7 @@
                     <plugin>
                         <artifactId>diffusion-maven-plugin</artifactId>
                         <groupId>com.pushtechnology.diffusion.maven.plugin</groupId>
+                        <version>1.0.2</version>
                         <configuration>
                             <systemProperties>
                                 <systemProperty>
@@ -114,6 +115,7 @@
 
                     <plugin>
                         <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.19.1</version>
                         <executions>
                             <execution>
                                 <id>test</id>
