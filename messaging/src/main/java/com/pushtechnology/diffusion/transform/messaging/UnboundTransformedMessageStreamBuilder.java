@@ -36,5 +36,8 @@ public interface UnboundTransformedMessageStreamBuilder<V> extends
     <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
     @Override
+    BoundTransformedMessageStreamBuilder<V> bind(Session session);
+
+    @Override
     MessageStreamHandle register(Session session, TransformedMessageStream<V> stream);
 }

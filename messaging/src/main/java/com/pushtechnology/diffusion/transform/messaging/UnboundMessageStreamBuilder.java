@@ -34,6 +34,13 @@ public interface UnboundMessageStreamBuilder<V, S extends MessageStream<V>> exte
     <R> UnboundTransformedMessageStreamBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
+     * Bind the stream that will be built.
+     * @param session the session to bind to
+     * @return a new builder that creates handlers for a session
+     */
+    BoundMessageStreamBuilder<V, S> bind(Session session);
+
+    /**
      * Register a message stream.
      * @param session the session to register the stream with
      * @param stream the stream to register

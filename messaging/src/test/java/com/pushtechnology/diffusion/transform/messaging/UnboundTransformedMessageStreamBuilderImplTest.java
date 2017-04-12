@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.messaging;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.isA;
 import static org.mockito.Mockito.verify;
@@ -73,6 +74,15 @@ public final class UnboundTransformedMessageStreamBuilderImplTest {
         final UnboundTransformedMessageStreamBuilder<String> newBuilder = builder.transformWith(unsafeTransformer);
 
         assertNotSame(builder, newBuilder);
+    }
+
+    @Test
+    public void bind() throws Exception {
+        final BoundTransformedMessageStreamBuilder<String> builder =
+            new UnboundTransformedMessageStreamBuilderImpl<>(contentTransformer)
+                .bind(session);
+
+        assertNotNull(builder);
     }
 
     @Test

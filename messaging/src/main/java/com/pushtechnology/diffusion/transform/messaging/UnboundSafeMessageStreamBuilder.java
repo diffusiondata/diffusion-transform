@@ -32,5 +32,8 @@ public interface UnboundSafeMessageStreamBuilder<V> extends
     <R> UnboundSafeMessageStreamBuilder<R> transform(SafeTransformer<V, R> newTransformer);
 
     @Override
+    BoundSafeMessageStreamBuilder<V> bind(Session session);
+
+    @Override
     MessageStreamHandle register(Session session, SafeMessageStream<V> stream);
 }

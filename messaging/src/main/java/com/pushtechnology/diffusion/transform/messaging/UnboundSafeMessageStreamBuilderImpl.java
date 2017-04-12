@@ -54,6 +54,11 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
+    public BoundSafeMessageStreamBuilder<V> bind(Session session) {
+        return new BoundSafeMessageStreamBuilderImpl<>(transformer, session);
+    }
+
+    @Override
     public MessageStreamHandle register(Session session, SafeMessageStream<V> stream) {
         final Messaging.MessageStream adapter = new SafeMessageStreamAdapter<>(transformer, stream);
         final Messaging messaging = session.feature(Messaging.class);
