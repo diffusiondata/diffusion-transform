@@ -98,6 +98,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.pushtechnology.diffusion.transform</groupId>
+                <artifactId>messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Push Technology dependencies -->
             <dependency>
                 <groupId>com.pushtechnology.diffusion</groupId>
