@@ -17,6 +17,9 @@ package com.pushtechnology.diffusion.transform.messaging.handler;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.session.SessionId;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
@@ -44,4 +47,24 @@ public interface TransformedMessageHandler<V> extends MessageHandler<V> {
         SessionId sessionId,
         Map<String, String> sessionProperties,
         TransformationException e);
+
+    /**
+     * Default implementation of a {@link TransformedMessageHandler}.
+     *
+     * @param <V> the type of the transformed values
+     */
+    class Default<V> extends MessageHandler.Default<V> implements TransformedMessageHandler<V> {
+        private static final Logger LOG = LoggerFactory.getLogger(TransformedMessageHandler.Default.class);
+
+        @Override
+        public void onTransformationException(
+                String path,
+                Content value,
+                SessionId sessionId,
+                Map<String, String> sessionProperties,
+                TransformationException e) {
+
+            LOG.warn("{} transformation error, path={}, session={}, value={}", this, path, sessionId, value, e);
+        }
+    }
 }

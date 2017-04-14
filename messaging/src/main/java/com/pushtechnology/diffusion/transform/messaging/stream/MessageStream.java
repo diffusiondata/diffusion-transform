@@ -15,6 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.messaging.stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pushtechnology.diffusion.client.callbacks.Stream;
 
 /**
@@ -32,4 +35,22 @@ public interface MessageStream<V> extends Stream {
      * @param message the message
      */
     void onMessageReceived(String path, V message);
+
+    /**
+     * Default implementation of a {@link MessageStream}.
+     *
+     * @param <V> the type of the transformed values
+     */
+    class Default<V> extends Stream.Default implements MessageStream<V> {
+        private static final Logger LOG = LoggerFactory.getLogger(MessageStream.Default.class);
+
+        @Override
+        public void onMessageReceived(String path, V message) {
+            LOG.debug(
+                "{} - message received on path {} : {}",
+                this,
+                path,
+                message);
+        }
+    }
 }

@@ -17,6 +17,9 @@ package com.pushtechnology.diffusion.transform.messaging.handler;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pushtechnology.diffusion.client.session.SessionId;
 
 /**
@@ -49,4 +52,38 @@ public interface MessageHandler<V> {
      *        registered
      */
     void onClose(String path);
+
+    /**
+     * Default implementation of a {@link MessageHandler}.
+     *
+     * @param <V> the type of the transformed values
+     */
+    class Default<V> implements MessageHandler<V> {
+        private static final Logger LOG = LoggerFactory.getLogger(MessageHandler.Default.class);
+
+        @Override
+        public void onRegistered(String path) {
+            LOG.debug("{} registered for {}", this, path);
+        }
+
+        @Override
+        public void onMessageReceived(
+                String path,
+                V message,
+                SessionId sessionId,
+                Map<String, String> sessionProperties) {
+
+            LOG.debug(
+                "{} - message received on path {} from {} : {}",
+                this,
+                path,
+                sessionId,
+                message);
+        }
+
+        @Override
+        public void onClose(String path) {
+            LOG.debug("{} stream closed, path {}", this, path);
+        }
+    }
 }

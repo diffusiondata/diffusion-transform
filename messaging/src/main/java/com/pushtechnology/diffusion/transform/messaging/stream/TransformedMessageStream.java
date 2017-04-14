@@ -15,6 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.messaging.stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 
@@ -37,4 +40,18 @@ public interface TransformedMessageStream<V> extends MessageStream<V> {
         String path,
         Content value,
         TransformationException e);
+
+    /**
+     * Default implementation of a {@link TransformedMessageStream}.
+     *
+     * @param <V> the type of the transformed values
+     */
+    class Default<V> extends MessageStream.Default<V> implements TransformedMessageStream<V> {
+        private static final Logger LOG = LoggerFactory.getLogger(TransformedMessageStream.Default.class);
+
+        @Override
+        public void onTransformationException(String path, Content value, TransformationException e) {
+            LOG.warn("{} transformation error, path={}, value={}", this, path, value, e);
+        }
+    }
 }
