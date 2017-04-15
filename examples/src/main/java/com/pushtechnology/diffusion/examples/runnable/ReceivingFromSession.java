@@ -57,12 +57,7 @@ public final class ReceivingFromSession extends AbstractClient {
             .bind(session)
             .register(
                 "json/random",
-                new TransformedMessageHandler<String>() {
-                    @Override
-                    public void onRegistered(String path) {
-                        LOG.debug("{} registered, path={}", this, path);
-                    }
-
+                new TransformedMessageHandler.Default<String>() {
                     @Override
                     public void onTransformationException(
                             String path,
@@ -80,11 +75,6 @@ public final class ReceivingFromSession extends AbstractClient {
                             SessionId sessionId,
                             Map<String, String> sessionProperties) {
                         LOG.warn("{} message, path={}, message={}", this, path, message);
-                    }
-
-                    @Override
-                    public void onClose(String path) {
-                        LOG.debug("{} stream closed, path={}", this, path);
                     }
                 });
     }

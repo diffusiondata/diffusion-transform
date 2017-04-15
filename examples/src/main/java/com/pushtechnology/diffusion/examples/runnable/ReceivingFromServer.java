@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamBuilders;
@@ -53,7 +52,7 @@ public final class ReceivingFromServer extends AbstractClient {
             .transform(bytes -> Diffusion.dataTypes().json().readValue(bytes))
             .transform(Transformers.stringify())
             .bind(session)
-            .register(new TransformedMessageStream<String>() {
+            .register(new TransformedMessageStream.Default<String>() {
                 @Override
                 public void onTransformationException(String path, Content value, TransformationException e) {
                     LOG.warn("{} transformation error, path={}, message={}", this, path, value, e);
@@ -62,16 +61,6 @@ public final class ReceivingFromServer extends AbstractClient {
                 @Override
                 public void onMessageReceived(String path, String message) {
                     LOG.warn("{} message, path={}, message={}", this, path, message);
-                }
-
-                @Override
-                public void onClose() {
-                    LOG.debug("{} stream closed", this);
-                }
-
-                @Override
-                public void onError(ErrorReason errorReason) {
-                    LOG.warn("{} error, reason={}", this, errorReason);
                 }
             });
     }
