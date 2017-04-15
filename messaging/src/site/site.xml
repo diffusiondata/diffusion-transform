@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <body>
+        <menu ref="parent" />
+        <menu name="Details">
+            <item name="Messaging" href="messaging.html" />
+            <item name="Message Stream Builders" href="message-stream-builders.html" />
+            <item name="Message Handler Builders" href="message-handler-builders.html" />
+        </menu>
+        <menu ref="reports" />
+    </body>
+</project>

@@ -8,6 +8,9 @@
             <item name="Stream Builders" href="streams/stream-builders.html" />
             <item name="Updater Builders" href="updaters/updater-builders.html" />
             <item name="Topic Adder Builders" href="topic-adders/topic-adder-builders.html" />
+            <item name="Messaging" href="messaging/messaging.html" />
+            <item name="Message Stream Builders" href="messaging/message-stream-builders.html" />
+            <item name="Message Handler Builders" href="messaging/message-handler-builders.html" />
         </menu>
         <menu ref="reports" />
     </body>
