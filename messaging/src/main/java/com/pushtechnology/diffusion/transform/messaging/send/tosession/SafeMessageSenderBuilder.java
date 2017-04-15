@@ -25,11 +25,11 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  */
 public interface SafeMessageSenderBuilder<V> extends MessageSenderBuilder<V> {
     /**
-     * Transform the stream that will be built.
+     * Transform the sender that will be built.
      *
      * @param newTransformer the new transformer
      * @param <R> the new type of the transformed values
-     * @return a new stream builder
+     * @return a new sender builder
      */
     <R> SafeMessageSenderBuilder<R> transform(SafeTransformer<R, V> newTransformer);
 }
