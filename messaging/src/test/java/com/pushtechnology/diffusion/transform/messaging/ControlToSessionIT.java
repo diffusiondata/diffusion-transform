@@ -22,9 +22,9 @@ import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
 import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
-import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamBuilders;
-import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamHandle;
-import com.pushtechnology.diffusion.transform.messaging.stream.TransformedMessageStream;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverHandle;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageStream;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
@@ -76,8 +76,8 @@ public final class ControlToSessionIT {
 
     @Test
     public void sendToHandler() throws TransformationException {
-        final MessageStreamHandle handle = MessageStreamBuilders
-            .newMessageStreamBuilder()
+        final MessageReceiverHandle handle = MessageReceiverBuilders
+            .newMessageReceiverBuilder()
             .transform(Transformers.<Content>toByteArray())
             .transform(Transformers.byteArrayToBinary())
             .transform(Transformers.binaryToInteger())

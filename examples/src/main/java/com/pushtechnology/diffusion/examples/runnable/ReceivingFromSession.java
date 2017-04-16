@@ -24,8 +24,8 @@ import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.session.SessionId;
-import com.pushtechnology.diffusion.transform.messaging.handler.MessageHandlerBuilders;
-import com.pushtechnology.diffusion.transform.messaging.handler.TransformedMessageHandler;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageHandler;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
@@ -49,8 +49,8 @@ public final class ReceivingFromSession extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        MessageHandlerBuilders
-            .newMessageHandlerBuilder()
+        MessageReceiverBuilders
+            .newMessageReceiverBuilder()
             .transform(Transformers.toByteArray())
             .transform(bytes -> Diffusion.dataTypes().json().readValue(bytes))
             .transform(Transformers.stringify())

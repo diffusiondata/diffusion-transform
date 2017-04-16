@@ -22,9 +22,9 @@ import com.pushtechnology.diffusion.client.features.Messaging.SendCallback;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.messaging.handler.MessageHandlerBuilders;
-import com.pushtechnology.diffusion.transform.messaging.handler.MessageHandlerHandle;
-import com.pushtechnology.diffusion.transform.messaging.handler.TransformedMessageHandler;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverHandle;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageHandler;
 import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
 import com.pushtechnology.diffusion.transform.messaging.send.MessageToHandlerSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
@@ -78,8 +78,8 @@ public final class SessionToHandlerIT {
 
     @Test
     public void sendToHandler() throws TransformationException {
-        final MessageHandlerHandle handle = MessageHandlerBuilders
-            .newMessageHandlerBuilder()
+        final MessageReceiverHandle handle = MessageReceiverBuilders
+            .newMessageReceiverBuilder()
             .transform(Transformers.<Content>toByteArray())
             .transform(Transformers.byteArrayToBinary())
             .transform(Transformers.binaryToInteger())

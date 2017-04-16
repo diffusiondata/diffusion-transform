@@ -9,8 +9,7 @@
             <item name="Updater Builders" href="updaters/updater-builders.html" />
             <item name="Topic Adder Builders" href="topic-adders/topic-adder-builders.html" />
             <item name="Messaging" href="messaging/messaging.html" />
-            <item name="Message Stream Builders" href="messaging/message-stream-builders.html" />
-            <item name="Message Handler Builders" href="messaging/message-handler-builders.html" />
+            <item name="Message Receiver Builders" href="messaging/message-receiver-builders.html" />
             <item name="Message Sender Builders" href="messaging/message-sender-builders.html" />
         </menu>
         <menu ref="reports" />

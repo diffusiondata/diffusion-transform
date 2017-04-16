@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamBuilders;
-import com.pushtechnology.diffusion.transform.messaging.stream.TransformedMessageStream;
+import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageStream;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
@@ -46,8 +46,8 @@ public final class ReceivingFromServer extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        MessageStreamBuilders
-            .newMessageStreamBuilder()
+        MessageReceiverBuilders
+            .newMessageReceiverBuilder()
             .transform(Transformers.toByteArray())
             .transform(bytes -> Diffusion.dataTypes().json().readValue(bytes))
             .transform(Transformers.stringify())
