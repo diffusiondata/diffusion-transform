@@ -20,7 +20,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link TransformedMessageStream}s that has not been bound to a session.
+ * A builder for transformed message receivers that has not been bound to a session.
  *
  * @param <V> the type of values
  * @author Push Technology Limited

@@ -19,27 +19,27 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link MessageStream}s.
+ * A builder for message receivers.
  *
  * @param <V> the type of values
  * @author Push Technology Limited
  */
 public interface MessageReceiverBuilder<V> {
     /**
-     * Transform the stream that will be built.
+     * Transform the stream or handler that will be built.
      *
      * @param newTransformer the new transformer
      * @param <R> the new type of the transformed values
-     * @return a new stream builder
+     * @return a new message receiver builder
      */
     <R> TransformedMessageReceiverBuilder<R> transform(Transformer<V, R> newTransformer);
 
     /**
-     * Transform the stream that will be built.
+     * Transform the stream or handler that will be built.
      *
      * @param newTransformer the new transformer
      * @param <R> the new type of the transformed values
-     * @return a new stream builder
+     * @return a new message receiver builder
      */
     <R> TransformedMessageReceiverBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 }

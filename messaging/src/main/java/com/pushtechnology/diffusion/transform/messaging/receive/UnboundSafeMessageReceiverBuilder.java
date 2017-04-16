@@ -19,7 +19,7 @@ import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
- * A builder for {@link SafeMessageStream}s that has not been bound to a session.
+ * A builder for safe message receivers that has not been bound to a session.
  *
  * @param <V> the type of values
  * @author Push Technology Limited

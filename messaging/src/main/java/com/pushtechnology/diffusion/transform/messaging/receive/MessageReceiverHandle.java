@@ -16,7 +16,7 @@
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
 /**
- * Handle to a message stream to allow it to be closed.
+ * Handle to a message receiver to allow it to be closed.
  *
  * @author Push Technology Limited
  */

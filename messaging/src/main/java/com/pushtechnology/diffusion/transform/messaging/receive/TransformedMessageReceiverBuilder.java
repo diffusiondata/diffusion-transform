@@ -16,7 +16,7 @@
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
 /**
- * A builder for {@link TransformedMessageStream}s.
+ * A builder for transformed message receivers.
  *
  * @param <V> the type of values
  * @author Push Technology Limited

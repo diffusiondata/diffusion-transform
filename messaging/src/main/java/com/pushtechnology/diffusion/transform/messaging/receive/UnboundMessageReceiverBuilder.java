@@ -20,7 +20,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * A builder for {@link MessageStream}s that has not been bound to a session.
+ * A builder for message receivers that has not been bound to a session.
  *
  * @param <V> the type of values
  * @param <S> the type of stream
@@ -36,7 +36,7 @@ public interface UnboundMessageReceiverBuilder<V, S extends MessageStream<V>, H 
     <R> UnboundTransformedMessageReceiverBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
-     * Bind the stream that will be built.
+     * Bind the stream or handler that will be built.
      * @param session the session to bind to
      * @return a new builder that creates handlers for a session
      */
