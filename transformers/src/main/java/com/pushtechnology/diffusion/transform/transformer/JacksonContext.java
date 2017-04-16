@@ -43,7 +43,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     /**
      * The instance of the context.
      */
-    /*package*/ static final JacksonContext INSTANCE = new JacksonContext();
+    /*package*/ static final JacksonContext JACKSON_CONTEXT = new JacksonContext();
 
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 

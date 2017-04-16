@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
+
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -57,7 +59,7 @@ public final class Transformers {
             if (value == null) {
                 return null;
             }
-            return JacksonContext.INSTANCE.fromPojo(value);
+            return JACKSON_CONTEXT.fromPojo(value);
         }
     };
     @SuppressWarnings("unchecked")
@@ -67,7 +69,7 @@ public final class Transformers {
             if (value == null) {
                 return null;
             }
-            return JacksonContext.INSTANCE.fromMap((Map<String, ?>) value);
+            return JACKSON_CONTEXT.fromMap((Map<String, ?>) value);
         }
     };
     private static final Transformer<String, JSON> PARSE_JSON = toTransformer(
@@ -271,7 +273,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.INSTANCE.toObject(value, type);
+                return JACKSON_CONTEXT.toObject(value, type);
             }
         };
     }
@@ -290,7 +292,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.INSTANCE.toType(value, typeReference);
+                return JACKSON_CONTEXT.toType(value, typeReference);
             }
         };
     }
@@ -309,7 +311,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.INSTANCE.toMapOf(value, type);
+                return JACKSON_CONTEXT.toMapOf(value, type);
             }
         };
     }

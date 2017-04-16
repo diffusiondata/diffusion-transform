@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -42,14 +43,14 @@ public final class JacksonContextTest {
     @Test
     public void toObject() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("\"some pop culture reference\"");
-        final String asString = JacksonContext.INSTANCE.toObject(json, String.class);
+        final String asString = JACKSON_CONTEXT.toObject(json, String.class);
         assertEquals(asString, "some pop culture reference");
     }
 
     @Test
     public void toBean() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("{\"name\": \"a name\", \"someNumber\": 7}");
-        final TestBean asBean = JacksonContext.INSTANCE.toObject(json, TestBean.class);
+        final TestBean asBean = JACKSON_CONTEXT.toObject(json, TestBean.class);
         assertEquals(asBean.getName(), "a name");
         assertEquals(asBean.getSomeNumber(), 7);
     }
@@ -57,21 +58,21 @@ public final class JacksonContextTest {
     @Test
     public void toType() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("\"some pop culture reference\"");
-        final String asString = JacksonContext.INSTANCE.toType(json, new TypeReference<String>() {});
+        final String asString = JACKSON_CONTEXT.toType(json, new TypeReference<String>() {});
         assertEquals(asString, "some pop culture reference");
     }
 
     @Test
     public void toMap() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("{\"key\": \"value\"}");
-        final Map<String, ?> asMap = JacksonContext.INSTANCE.toMap(json);
+        final Map<String, ?> asMap = JACKSON_CONTEXT.toMap(json);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), CoreMatchers.<Object>equalTo("value")));
     }
 
     @Test
     public void toMapOf() throws TransformationException {
         final JSON json = JSON_DATA_TYPE.fromJsonString("{\"key\": \"value\"}");
-        final Map<String, String> asMap = JacksonContext.INSTANCE.toMapOf(json, String.class);
+        final Map<String, String> asMap = JACKSON_CONTEXT.toMapOf(json, String.class);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), equalTo("value")));
     }
 
@@ -81,8 +82,8 @@ public final class JacksonContextTest {
         bean.setName("a name");
         bean.setSomeNumber(7);
 
-        final JSON json = JacksonContext.INSTANCE.fromPojo(bean);
-        final Map<String, ?> asMap = JacksonContext.INSTANCE.toMap(json);
+        final JSON json = JACKSON_CONTEXT.fromPojo(bean);
+        final Map<String, ?> asMap = JACKSON_CONTEXT.toMap(json);
         assertThat(asMap, new IsMapContaining<>(equalTo("name"), CoreMatchers.<Object>equalTo("a name")));
         assertThat(asMap, new IsMapContaining<>(equalTo("someNumber"), CoreMatchers.<Object>equalTo(7)));
     }
@@ -91,8 +92,8 @@ public final class JacksonContextTest {
     public void fromMap() throws TransformationException {
         final Map<String, String> sourceMap = new HashMap<>();
         sourceMap.put("key", "value");
-        final JSON json = JacksonContext.INSTANCE.fromMap(sourceMap);
-        final Map<String, String> asMap = JacksonContext.INSTANCE.toMapOf(json, String.class);
+        final JSON json = JACKSON_CONTEXT.fromMap(sourceMap);
+        final Map<String, String> asMap = JACKSON_CONTEXT.toMapOf(json, String.class);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), equalTo("value")));
     }
 }

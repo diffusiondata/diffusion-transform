@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToInteger;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.cast;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.integerToBinary;
@@ -107,7 +108,7 @@ public final class TransformersTest {
 
         final Transformer<TestBean, JSON> transformer = Transformers.fromPojo();
         final JSON json = transformer.transform(bean);
-        final Map<String, ?> asMap = JacksonContext.INSTANCE.toMap(json);
+        final Map<String, ?> asMap = JACKSON_CONTEXT.toMap(json);
         assertThat(asMap, new IsMapContaining<>(equalTo("name"), CoreMatchers.<Object>equalTo("a name")));
         assertThat(asMap, new IsMapContaining<>(equalTo("someNumber"), CoreMatchers.<Object>equalTo(7)));
     }
@@ -125,7 +126,7 @@ public final class TransformersTest {
         sourceMap.put("key", "value");
         final Transformer<Map<String, String>, JSON> transformer = Transformers.fromMap();
         final JSON json = transformer.transform(sourceMap);
-        final Map<String, String> asMap = JacksonContext.INSTANCE.toMapOf(json, String.class);
+        final Map<String, String> asMap = JACKSON_CONTEXT.toMapOf(json, String.class);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), equalTo("value")));
     }
 
