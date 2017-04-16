@@ -21,6 +21,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -53,9 +54,10 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     private final ObjectReader simpleMapReader;
     private final ObjectWriter simpleMapWriter;
 
-    private JacksonContext() {
+    private JacksonContext(Module... modules) {
         factory = new CBORFactory();
         mapper = new ObjectMapper(factory);
+        mapper.registerModules(modules);
         typeFactory = mapper.getTypeFactory();
         final JavaType simpleMapType = typeFactory.constructMapType(Map.class, String.class, Object.class);
         simpleMapReader = mapper.readerFor(simpleMapType);
