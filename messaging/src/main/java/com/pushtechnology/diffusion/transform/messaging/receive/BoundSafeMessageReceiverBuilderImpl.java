@@ -68,6 +68,15 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
+    public MessageReceiverHandle register(String selector, SafeMessageStream<V> stream) {
+        final Messaging.MessageStream adapter = new SafeMessageStreamAdapter<>(transformer, stream);
+        final Messaging messaging = session.feature(Messaging.class);
+        final StreamHandle handle = new StreamHandle(messaging, adapter);
+        messaging.addMessageStream(selector, adapter);
+        return handle;
+    }
+
+    @Override
     public MessageReceiverHandle register(String path, SafeMessageHandler<V> handler, String... properties) {
         final HandlerHandle handle = new HandlerHandle();
         final SafeMessageHandlerAdapter adapter = new SafeMessageHandlerAdapter<>(transformer, handler, handle);

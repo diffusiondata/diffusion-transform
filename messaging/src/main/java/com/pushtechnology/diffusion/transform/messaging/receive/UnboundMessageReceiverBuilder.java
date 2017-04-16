@@ -43,11 +43,20 @@ public interface UnboundMessageReceiverBuilder<V, S extends MessageStream<V>, H 
     BoundMessageReceiverBuilder<V, S, H> bind(Session session);
 
     /**
-     * Register a message stream.
+     * Register a message stream. Stream receives all messages not passed to
+     * sstreams registered with a selector.
      * @param session the session to register the stream with
      * @param stream the stream to register
      */
     MessageReceiverHandle register(Session session, S stream);
+
+    /**
+     * Register a message stream.
+     * @param session the session to register the stream with
+     * @param selector the selector for the paths to register the stream for.
+     * @param stream the stream to register
+     */
+    MessageReceiverHandle register(Session session, String selector, S stream);
 
     /**
      * Register a message handler.

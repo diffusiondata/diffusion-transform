@@ -42,6 +42,9 @@ public interface UnboundTransformedMessageReceiverBuilder<V> extends
     MessageReceiverHandle register(Session session, TransformedMessageStream<V> stream);
 
     @Override
+    MessageReceiverHandle register(Session session, String selector, TransformedMessageStream<V> stream);
+
+    @Override
     MessageReceiverHandle register(
         Session session,
         String path,

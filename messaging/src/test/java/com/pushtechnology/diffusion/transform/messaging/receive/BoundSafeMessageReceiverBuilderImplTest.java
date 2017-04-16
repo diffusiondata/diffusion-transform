@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
 import static org.junit.Assert.assertNotSame;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -95,5 +96,15 @@ public final class BoundSafeMessageReceiverBuilderImplTest {
 
         verify(session).feature(Messaging.class);
         verify(messaging).addFallbackMessageStream(isA(Messaging.MessageStream.class));
+    }
+
+    @Test
+    public void registerWithSelector() {
+        final BoundSafeMessageReceiverBuilder<String> builder =
+            new BoundSafeMessageReceiverBuilderImpl<>(contentTransformer, session);
+        builder.register("selector", messageStream);
+
+        verify(session).feature(Messaging.class);
+        verify(messaging).addMessageStream(eq("selector"), isA(Messaging.MessageStream.class));
     }
 }

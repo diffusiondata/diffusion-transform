@@ -34,5 +34,8 @@ public interface BoundSafeMessageReceiverBuilder<V> extends
     MessageReceiverHandle register(SafeMessageStream<V> stream);
 
     @Override
+    MessageReceiverHandle register(String selector, SafeMessageStream<V> stream);
+
+    @Override
     MessageReceiverHandle register(String path, SafeMessageHandler<V> handler, String... properties);
 }

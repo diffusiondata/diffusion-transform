@@ -38,5 +38,8 @@ public interface UnboundSafeMessageReceiverBuilder<V> extends
     MessageReceiverHandle register(Session session, SafeMessageStream<V> stream);
 
     @Override
+    MessageReceiverHandle register(Session session, String selector, SafeMessageStream<V> stream);
+
+    @Override
     MessageReceiverHandle register(Session session, String path, SafeMessageHandler<V> stream, String... properties);
 }

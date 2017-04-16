@@ -35,10 +35,18 @@ public interface BoundMessageReceiverBuilder<V, S extends MessageStream<V>, H ex
     <R> BoundTransformedMessageReceiverBuilder<R> transformWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
-     * Register a message stream.
+     * Register a message stream. Stream receives all messages not passed to
+     * sstreams registered with a selector.
      * @param stream the stream to register
      */
     MessageReceiverHandle register(S stream);
+
+    /**
+     * Register a message stream.
+     * @param selector the selector for the paths to register the stream for.
+     * @param stream the stream to register
+     */
+    MessageReceiverHandle register(String selector, S stream);
 
     /**
      * Register a message handler.

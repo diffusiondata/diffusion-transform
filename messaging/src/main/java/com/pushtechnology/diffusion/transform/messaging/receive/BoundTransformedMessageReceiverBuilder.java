@@ -38,5 +38,8 @@ public interface BoundTransformedMessageReceiverBuilder<V> extends
     MessageReceiverHandle register(TransformedMessageStream<V> stream);
 
     @Override
+    MessageReceiverHandle register(String selector, TransformedMessageStream<V> stream);
+
+    @Override
     MessageReceiverHandle register(String path, TransformedMessageHandler<V> handler, String... properties);
 }
