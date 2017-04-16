@@ -28,6 +28,7 @@ import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
@@ -43,6 +44,8 @@ public final class BoundTransformedMessageReceiverBuilderImplTest {
     @Mock
     private Messaging messaging;
     @Mock
+    private MessagingControl messagingControl;
+    @Mock
     private Session session;
     @Mock
     private SafeTransformer<Content, String> contentTransformer;
@@ -52,12 +55,15 @@ public final class BoundTransformedMessageReceiverBuilderImplTest {
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
     private TransformedMessageStream<String> messageStream;
+    @Mock
+    private TransformedMessageHandler<String> messageHandler;
 
     @Before
     public void setUp() {
         initMocks(this);
 
         when(session.feature(Messaging.class)).thenReturn(messaging);
+        when(session.feature(MessagingControl.class)).thenReturn(messagingControl);
     }
 
     @Test
@@ -96,5 +102,15 @@ public final class BoundTransformedMessageReceiverBuilderImplTest {
 
         verify(session).feature(Messaging.class);
         verify(messaging).addMessageStream(eq("selector"), isA(Messaging.MessageStream.class));
+    }
+
+    @Test
+    public void registerHandler() {
+        final BoundTransformedMessageReceiverBuilder<String> builder =
+            new BoundTransformedMessageReceiverBuilderImpl<>(contentTransformer, session);
+        builder.register("selector", messageHandler);
+
+        verify(session).feature(MessagingControl.class);
+        verify(messagingControl).addMessageHandler(eq("selector"), isA(MessagingControl.MessageHandler.class));
     }
 }
