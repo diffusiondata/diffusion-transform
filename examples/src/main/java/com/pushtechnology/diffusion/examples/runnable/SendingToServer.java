@@ -35,12 +35,12 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
- * A client that sends JSON messages to a path.
+ * A client that sends JSON messages to the server.
  *
  * @author Matt Champion 13/04/2017
  */
-public final class SendingToPath extends AbstractClient {
-    private static final Logger LOG = LoggerFactory.getLogger(SendingToPath.class);
+public final class SendingToServer extends AbstractClient {
+    private static final Logger LOG = LoggerFactory.getLogger(SendingToServer.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;
@@ -50,7 +50,7 @@ public final class SendingToPath extends AbstractClient {
      * @param url The URL to connect to
      * @param principal The principal to connect as
      */
-    public SendingToPath(String url, String principal) {
+    public SendingToServer(String url, String principal) {
         super(url, principal);
     }
 
@@ -96,8 +96,8 @@ public final class SendingToPath extends AbstractClient {
      */
     // CHECKSTYLE.OFF: UncommentedMain
     public static void main(String[] args) throws InterruptedException {
-        final SendingToPath client =
-            new SendingToPath("ws://diffusion.example.com:80", "auth");
+        final SendingToServer client =
+            new SendingToServer("ws://diffusion.example.com:80", "auth");
         client.start("auth_secret");
         client.waitForStopped();
     }
