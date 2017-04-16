@@ -11,7 +11,7 @@
             <item name="Messaging" href="messaging/messaging.html" />
             <item name="Message Stream Builders" href="messaging/message-stream-builders.html" />
             <item name="Message Handler Builders" href="messaging/message-handler-builders.html" />
-            <item name="Message Sender Builders to Handlers" href="messaging/message-sender-builders-to-handler.html" />
+            <item name="Message Sender Builders" href="messaging/message-sender-builders.html" />
         </menu>
         <menu ref="reports" />
     </body>

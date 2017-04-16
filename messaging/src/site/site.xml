@@ -6,7 +6,7 @@
             <item name="Messaging" href="messaging.html" />
             <item name="Message Stream Builders" href="message-stream-builders.html" />
             <item name="Message Handler Builders" href="message-handler-builders.html" />
-            <item name="Message Sender Builders to Handlers" href="message-sender-builders-to-handler.html" />
+            <item name="Message Sender Builders" href="message-sender-builders.html" />
         </menu>
         <menu ref="reports" />
     </body>

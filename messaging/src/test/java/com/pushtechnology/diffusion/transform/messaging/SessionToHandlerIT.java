@@ -25,8 +25,8 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.transform.messaging.handler.MessageHandlerBuilders;
 import com.pushtechnology.diffusion.transform.messaging.handler.MessageHandlerHandle;
 import com.pushtechnology.diffusion.transform.messaging.handler.TransformedMessageHandler;
-import com.pushtechnology.diffusion.transform.messaging.send.tohandler.MessageSender;
-import com.pushtechnology.diffusion.transform.messaging.send.tohandler.MessageToHandlerSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageToHandlerSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
@@ -88,11 +88,11 @@ public final class SessionToHandlerIT {
 
         verify(handler, timed()).onRegistered("message/path");
 
-        final MessageSender<Integer> sender = MessageToHandlerSenderBuilders
+        final MessageToHandlerSender<Integer> sender = MessageSenderBuilders
             .newMessageSenderBuilder()
             .transform(Transformers.<Binary, Bytes>cast(Bytes.class))
             .transform(Transformers.integerToBinary())
-            .build(session);
+            .buildToHandlerSender(session);
 
         sender.send("message/path", 5, sendCallback);
 

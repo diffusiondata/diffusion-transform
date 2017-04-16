@@ -20,8 +20,8 @@ import com.pushtechnology.diffusion.client.features.control.topics.MessagingCont
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.messaging.send.tosession.MessageSender;
-import com.pushtechnology.diffusion.transform.messaging.send.tosession.MessageToSessionSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
 import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamBuilders;
 import com.pushtechnology.diffusion.transform.messaging.stream.MessageStreamHandle;
 import com.pushtechnology.diffusion.transform.messaging.stream.TransformedMessageStream;
@@ -84,11 +84,11 @@ public final class ControlToSessionIT {
             .bind(session)
             .register(stream);
 
-        final MessageSender<Integer> sender = MessageToSessionSenderBuilders
+        final MessageToSessionSender<Integer> sender = MessageSenderBuilders
             .newMessageSenderBuilder()
             .transform(Transformers.<Binary, Bytes>cast(Bytes.class))
             .transform(Transformers.integerToBinary())
-            .build(controlSession);
+            .buildToSessionSender(controlSession);
 
         sender.send(session.getSessionId(), "message/path", 5, sendCallback);
 
