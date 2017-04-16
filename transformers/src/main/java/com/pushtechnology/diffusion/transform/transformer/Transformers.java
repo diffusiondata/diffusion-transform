@@ -57,7 +57,7 @@ public final class Transformers {
             if (value == null) {
                 return null;
             }
-            return JacksonContext.fromPojo(value);
+            return JacksonContext.INSTANCE.fromPojo(value);
         }
     };
     @SuppressWarnings("unchecked")
@@ -67,7 +67,7 @@ public final class Transformers {
             if (value == null) {
                 return null;
             }
-            return JacksonContext.fromMap((Map<String, ?>) value);
+            return JacksonContext.INSTANCE.fromMap((Map<String, ?>) value);
         }
     };
     private static final Transformer<String, JSON> PARSE_JSON = toTransformer(
@@ -271,7 +271,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.toObject(value, type);
+                return JacksonContext.INSTANCE.toObject(value, type);
             }
         };
     }
@@ -290,7 +290,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.toType(value, typeReference);
+                return JacksonContext.INSTANCE.toType(value, typeReference);
             }
         };
     }
@@ -309,7 +309,7 @@ public final class Transformers {
                 if (value == null) {
                     return null;
                 }
-                return JacksonContext.toMapOf(value, type);
+                return JacksonContext.INSTANCE.toMapOf(value, type);
             }
         };
     }

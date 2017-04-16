@@ -107,7 +107,7 @@ public final class TransformersTest {
 
         final Transformer<TestBean, JSON> transformer = Transformers.fromPojo();
         final JSON json = transformer.transform(bean);
-        final Map<String, ?> asMap = JacksonContext.toMap(json);
+        final Map<String, ?> asMap = JacksonContext.INSTANCE.toMap(json);
         assertThat(asMap, new IsMapContaining<>(equalTo("name"), CoreMatchers.<Object>equalTo("a name")));
         assertThat(asMap, new IsMapContaining<>(equalTo("someNumber"), CoreMatchers.<Object>equalTo(7)));
     }
@@ -125,7 +125,7 @@ public final class TransformersTest {
         sourceMap.put("key", "value");
         final Transformer<Map<String, String>, JSON> transformer = Transformers.fromMap();
         final JSON json = transformer.transform(sourceMap);
-        final Map<String, String> asMap = JacksonContext.toMapOf(json, String.class);
+        final Map<String, String> asMap = JacksonContext.INSTANCE.toMapOf(json, String.class);
         assertThat(asMap, new IsMapContaining<>(equalTo("key"), equalTo("value")));
     }
 

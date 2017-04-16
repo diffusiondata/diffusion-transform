@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.fasterxml.jackson.dataformat.cbor.CBORParser;
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.datatype.Bytes;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
@@ -55,25 +54,6 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     private final ObjectReader simpleMapReader = mapper.readerFor(simpleMapType);
     private final ObjectWriter simpleMapWriter = mapper.writerFor(simpleMapType);
 
-    private static CBORParser getParser(Bytes value) throws TransformationException {
-        try {
-            return INSTANCE.factory.createParser(value.asInputStream());
-        }
-        catch (IOException e) {
-            throw new TransformationException(e);
-        }
-    }
-
-    private static void closeParser(CBORParser parser) throws TransformationException {
-        try {
-            parser.close();
-        }
-        catch (IOException e) {
-            // Could this just discard the exception? The stream the parser operates on is a ByteArrayInputStream
-            throw new TransformationException(e);
-        }
-    }
-
     private JacksonContext() {
     }
 
@@ -85,10 +65,10 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @return the object
      * @throws TransformationException if the {@link JSON} value could not be bound to the provided type
      */
-    public static <T> T toObject(JSON json, Class<T> type) throws TransformationException {
+    public <T> T toObject(JSON json, Class<T> type) throws TransformationException {
         final CBORParser parser = getParser(json);
         try {
-            return INSTANCE.mapper.readValue(parser, type);
+            return mapper.readValue(parser, type);
         }
         catch (IOException e) {
             throw new TransformationException(e);
@@ -106,10 +86,10 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @return the object
      * @throws TransformationException if the {@link JSON} value could not be bound to the provided type
      */
-    public static <T> T toType(JSON json, TypeReference<T> type) throws TransformationException {
+    public <T> T toType(JSON json, TypeReference<T> type) throws TransformationException {
         final CBORParser parser = getParser(json);
         try {
-            return INSTANCE.mapper.readValue(parser, type);
+            return mapper.readValue(parser, type);
         }
         catch (IOException e) {
             throw new TransformationException(e);
@@ -125,10 +105,10 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @return The map
      * @throws TransformationException if the {@link JSON} value could not be bound to a map
      */
-    public static Map<String, Object> toMap(JSON json) throws TransformationException {
+    public Map<String, Object> toMap(JSON json) throws TransformationException {
         final CBORParser parser = getParser(json);
         try {
-            return INSTANCE.simpleMapReader.readValue(parser);
+            return simpleMapReader.readValue(parser);
         }
         catch (IOException e) {
             throw new TransformationException(e);
@@ -146,11 +126,11 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @throws TransformationException if the {@link JSON} value could not be bound to a map of string to the provided
      *  type
      */
-    public static <T> Map<String, T> toMapOf(JSON json, Class<T> type) throws TransformationException {
+    public <T> Map<String, T> toMapOf(JSON json, Class<T> type) throws TransformationException {
         final CBORParser parser = getParser(json);
         try {
-            final MapType mapType = INSTANCE.typeFactory.constructMapType(Map.class, String.class, type);
-            return INSTANCE.mapper.readValue(parser, mapType);
+            final MapType mapType = typeFactory.constructMapType(Map.class, String.class, type);
+            return mapper.readValue(parser, mapType);
         }
         catch (IOException e) {
             throw new TransformationException(e);
@@ -166,10 +146,10 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @return the JSON
      * @throws TransformationException if the pojo cannot be bound as {@link JSON}
      */
-    public static <T> JSON fromPojo(T pojo) throws TransformationException {
+    public <T> JSON fromPojo(T pojo) throws TransformationException {
         final byte[] pojoBytes;
         try {
-            pojoBytes = INSTANCE.mapper.writeValueAsBytes(pojo);
+            pojoBytes = mapper.writeValueAsBytes(pojo);
         }
         catch (JsonProcessingException e) {
             throw new TransformationException(e);
@@ -183,14 +163,33 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * @return the JSON
      * @throws TransformationException if the map cannot be bound as {@link JSON}
      */
-    public static <T> JSON fromMap(Map<String, T> map) throws TransformationException {
+    public <T> JSON fromMap(Map<String, T> map) throws TransformationException {
         final byte[] mapBytes;
         try {
-            mapBytes = INSTANCE.simpleMapWriter.writeValueAsBytes(map);
+            mapBytes = simpleMapWriter.writeValueAsBytes(map);
         }
         catch (JsonProcessingException e) {
             throw new TransformationException(e);
         }
         return JSON_DATA_TYPE.readValue(mapBytes);
+    }
+
+    private CBORParser getParser(JSON value) throws TransformationException {
+        try {
+            return factory.createParser(value.asInputStream());
+        }
+        catch (IOException e) {
+            throw new TransformationException(e);
+        }
+    }
+
+    private void closeParser(CBORParser parser) throws TransformationException {
+        try {
+            parser.close();
+        }
+        catch (IOException e) {
+            // Could this just discard the exception? The stream the parser operates on is a ByteArrayInputStream
+            throw new TransformationException(e);
+        }
     }
 }
