@@ -12,7 +12,7 @@ Sending to the server requires the `send_to_message_handler` permission.
 
 Message streams and message handlers both receive messages.
 Message streams receive messages sent to sessions.
-Message handlers receive messages to sent to the server.
+Message handlers receive messages sent to the server.
 Message handlers need to be registered with the server to intercept the messages,
 this needs the `register_handler` permission.
 

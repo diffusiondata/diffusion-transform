@@ -1,7 +1,7 @@
 
 # MessageSenderBuilders
 
-To help with sending messages to handlers a `MessageSenderBuilder` can be used to construct
+To help with sending messages a `MessageSenderBuilder` can be used to construct
 `MessageToSessionSender`s and `MessageToHandlerSender`s.
 The `MessageSenderBuilder` makes it easy to chain transformers together.
 A `MessageSenderBuilder` is immutable and allows a new `MessageSenderBuilder` to be created from it that adds
