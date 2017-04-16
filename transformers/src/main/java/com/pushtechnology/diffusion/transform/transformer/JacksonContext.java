@@ -40,11 +40,11 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  *
  * @author Push Technology Limited
  */
-/*package*/ enum JacksonContext {
+/*package*/ final class JacksonContext {
     /**
      * The instance of the context.
      */
-    INSTANCE;
+    /*package*/ static final JacksonContext INSTANCE = new JacksonContext();
 
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 
@@ -72,6 +72,9 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
             // Could this just discard the exception? The stream the parser operates on is a ByteArrayInputStream
             throw new TransformationException(e);
         }
+    }
+
+    private JacksonContext() {
     }
 
     /**
