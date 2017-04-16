@@ -47,14 +47,19 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 
-    private final CBORFactory factory = new CBORFactory();
-    private final ObjectMapper mapper = new ObjectMapper(factory);
-    private final TypeFactory typeFactory = mapper.getTypeFactory();
-    private final JavaType simpleMapType = typeFactory.constructMapType(Map.class, String.class, Object.class);
-    private final ObjectReader simpleMapReader = mapper.readerFor(simpleMapType);
-    private final ObjectWriter simpleMapWriter = mapper.writerFor(simpleMapType);
+    private final CBORFactory factory;
+    private final ObjectMapper mapper;
+    private final TypeFactory typeFactory;
+    private final ObjectReader simpleMapReader;
+    private final ObjectWriter simpleMapWriter;
 
     private JacksonContext() {
+        factory = new CBORFactory();
+        mapper = new ObjectMapper(factory);
+        typeFactory = mapper.getTypeFactory();
+        final JavaType simpleMapType = typeFactory.constructMapType(Map.class, String.class, Object.class);
+        simpleMapReader = mapper.readerFor(simpleMapType);
+        simpleMapWriter = mapper.writerFor(simpleMapType);
     }
 
     /**
