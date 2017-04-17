@@ -19,6 +19,10 @@ understood. This library aims to add additional ways of transforming these value
 
 [Topic adder builders](https://pushtechnology.github.io/diffusion-transform/topic-adders/topic-adder-builders.html)
 
+[Message receivers](https://pushtechnology.github.io/diffusion-transform/messaging/message-receiver-builders.html)
+
+[Message senders](https://pushtechnology.github.io/diffusion-transform/messaging/message-sender-builders.html)
+
 ## Third party components
 
 This library uses Jackson data binding and CBOR data format libraries to work with `JSON` values.
