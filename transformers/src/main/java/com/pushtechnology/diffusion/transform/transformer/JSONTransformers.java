@@ -32,7 +32,8 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  * <p>
  * Many of the transformations are supported by Jackson. The behaviour of
  * Jackson can be customised by providing modules when constructing the
- * {@link JSONTransformers}.
+ * {@link JSONTransformers} that will be registered with the
+ * {@link com.fasterxml.jackson.databind.ObjectMapper}.
  *
  * @author Matt Champion 19/04/2017
  */

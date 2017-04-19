@@ -4,6 +4,7 @@
         <menu ref="parent" />
         <menu name="Details">
             <item name="Transformers" href="transformers.html" />
+            <item name="JSON Transformers" href="json-transformers.html" />
             <item name="Transformer Builders" href="transformer-builders.html" />
         </menu>
         <menu ref="reports" />
