@@ -40,11 +40,11 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  *
  * @author Push Technology Limited
  */
-public final class JacksonContext {
+/*package*/ final class JacksonContext {
     /**
      * The instance of the context.
      */
-    public static final JacksonContext JACKSON_CONTEXT = new JacksonContext();
+    /*package*/ static final JacksonContext JACKSON_CONTEXT = new JacksonContext();
 
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 
@@ -58,7 +58,7 @@ public final class JacksonContext {
      * Constructor.
      * @param modules the modules to register with the object mapper
      */
-    public JacksonContext(Module... modules) {
+    /*package*/ JacksonContext(Module... modules) {
         factory = new CBORFactory();
         mapper = new ObjectMapper(factory);
         mapper.registerModules(modules);
