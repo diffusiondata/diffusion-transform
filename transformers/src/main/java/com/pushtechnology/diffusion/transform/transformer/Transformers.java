@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import static com.pushtechnology.diffusion.transform.transformer.JSONTransformers.JSON_TRANSFORMERS;
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
 
 import java.math.BigInteger;
@@ -24,11 +25,9 @@ import java.util.Map;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.Bytes;
-import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
 /**
  * Common {@link Transformer}s.
@@ -37,7 +36,6 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  */
 public final class Transformers {
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
-    private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
     private static final SafeTransformer IDENTITY = new SafeTransformer() {
         @Override
         public Object transform(Object value) {
@@ -53,39 +51,6 @@ public final class Transformers {
             return BINARY_DATA_TYPE.readValue(value);
         }
     };
-    private static final Transformer FROM_POJO = new Transformer() {
-        @Override
-        public Object transform(Object value) throws TransformationException {
-            if (value == null) {
-                return null;
-            }
-            return JACKSON_CONTEXT.fromPojo(value);
-        }
-    };
-    @SuppressWarnings("unchecked")
-    private static final Transformer FROM_MAP = new Transformer() {
-        @Override
-        public Object transform(Object value) throws TransformationException {
-            if (value == null) {
-                return null;
-            }
-            return JACKSON_CONTEXT.fromMap((Map<String, ?>) value);
-        }
-    };
-    private static final Transformer<String, JSON> PARSE_JSON = toTransformer(
-        new UnsafeTransformer<String, JSON>() {
-            @Override
-            public JSON transform(String value) throws InvalidDataException {
-                return JSON_DATA_TYPE.fromJsonString(value);
-            }
-        });
-    private static final Transformer<JSON, String> STRINGIFY_JSON = toTransformer(
-        new UnsafeTransformer<JSON, String>() {
-            @Override
-            public String transform(JSON value) throws InvalidDataException {
-                return value.toJsonString();
-            }
-        });
     private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = new SafeTransformer<Bytes, byte[]>() {
         @Override
         public byte[] transform(Bytes value) {
@@ -324,7 +289,7 @@ public final class Transformers {
      */
     @SuppressWarnings("unchecked")
     public static <T> Transformer<T, JSON> fromPojo() {
-        return FROM_POJO;
+        return JSON_TRANSFORMERS.fromPojo();
     }
 
     /**
@@ -335,7 +300,7 @@ public final class Transformers {
      */
     @SuppressWarnings("unchecked")
     public static <T> Transformer<Map<String, T>, JSON> fromMap() {
-        return FROM_MAP;
+        return JSON_TRANSFORMERS.fromMap();
     }
 
     /**
@@ -417,7 +382,7 @@ public final class Transformers {
      * @return the transformer to JSON
      */
     public static Transformer<String, JSON> parseJSON() {
-        return PARSE_JSON;
+        return JSON_TRANSFORMERS.parseJSON();
     }
 
     /**
@@ -425,7 +390,7 @@ public final class Transformers {
      * @return the transformer to String
      */
     public static Transformer<JSON, String> stringify() {
-        return STRINGIFY_JSON;
+        return JSON_TRANSFORMERS.stringify();
     }
 
     /**
