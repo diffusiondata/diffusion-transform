@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.verification.VerificationWithTimeout;
 
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.Messaging.SendCallback;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.Bytes;
@@ -79,9 +78,7 @@ public final class SessionToHandlerIT {
     @Test
     public void sendToHandler() throws TransformationException {
         final MessageReceiverHandle handle = MessageReceiverBuilders
-            .newMessageReceiverBuilder()
-            .transform(Transformers.<Content>toByteArray())
-            .transform(Transformers.byteArrayToBinary())
+            .newBinaryMessageReceiverBuilder()
             .transform(Transformers.binaryToInteger())
             .bind(controlSession)
             .register("message/path", handler);

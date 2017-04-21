@@ -15,7 +15,15 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
+import static com.pushtechnology.diffusion.client.Diffusion.dataTypes;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
+
 import com.pushtechnology.diffusion.client.content.Content;
+import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.datatype.json.JSONDataType;
+import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
@@ -24,6 +32,26 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  * @author Matt Champion 12/04/2017
  */
 public final class MessageReceiverBuilders {
+
+    private static final BinaryDataType BINARY_DATA_TYPE = dataTypes().binary();
+    private static final SafeTransformer<Content, Binary> CONTENT_TO_BINARY = chain(
+        Transformers.<Content>toByteArray(),
+        new SafeTransformer<byte[], Binary>() {
+            @Override
+            public Binary transform(byte[] bytes) {
+                return BINARY_DATA_TYPE.readValue(bytes);
+            }
+        });
+    private static final JSONDataType JSON_DATA_TYPE = dataTypes().json();
+    private static final SafeTransformer<Content, JSON> CONTENT_TO_JSON = chain(
+        Transformers.<Content>toByteArray(),
+        new SafeTransformer<byte[], JSON>() {
+            @Override
+            public JSON transform(byte[] bytes) {
+                return JSON_DATA_TYPE.readValue(bytes);
+            }
+        });
+
     private MessageReceiverBuilders() {
     }
 
@@ -34,5 +62,23 @@ public final class MessageReceiverBuilders {
      */
     public static UnboundSafeMessageReceiverBuilder<Content> newMessageReceiverBuilder() {
         return new UnboundSafeMessageReceiverBuilderImpl<>(Transformers.<Content>identity());
+    }
+
+    /**
+     * Create a {@link UnboundSafeMessageReceiverBuilder} from a {@link JSON} source.
+     *
+     * @return the message stream builder
+     */
+    public static UnboundSafeMessageReceiverBuilder<JSON> newJSONMessageReceiverBuilder() {
+        return new UnboundSafeMessageReceiverBuilderImpl<>(CONTENT_TO_JSON);
+    }
+
+    /**
+     * Create a {@link UnboundSafeMessageReceiverBuilder} from a {@link Binary} source.
+     *
+     * @return the message stream builder
+     */
+    public static UnboundSafeMessageReceiverBuilder<Binary> newBinaryMessageReceiverBuilder() {
+        return new UnboundSafeMessageReceiverBuilderImpl<>(CONTENT_TO_BINARY);
     }
 }

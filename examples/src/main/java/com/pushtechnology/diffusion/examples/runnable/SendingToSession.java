@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders.newMessageSenderBuilder;
+import static com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders.newJSONMessageSenderBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.Collection;
@@ -30,8 +30,6 @@ import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.types.ErrorReport;
-import com.pushtechnology.diffusion.datatype.Bytes;
-import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
@@ -58,8 +56,7 @@ public final class SendingToSession extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        final MessageToSessionSender<RandomData> sender = newMessageSenderBuilder()
-            .transform(Transformers.<JSON, Bytes>cast(Bytes.class))
+        final MessageToSessionSender<RandomData> sender = newJSONMessageSenderBuilder()
             .transform(Transformers.<RandomData>fromPojo())
             .bind(session)
             .buildToSessionSender();

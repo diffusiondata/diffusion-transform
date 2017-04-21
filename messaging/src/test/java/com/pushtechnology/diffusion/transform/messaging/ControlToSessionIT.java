@@ -15,16 +15,13 @@ import org.mockito.Mock;
 import org.mockito.verification.VerificationWithTimeout;
 
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl.SendCallback;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.datatype.Bytes;
-import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
-import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
 import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
 import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverHandle;
 import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageStream;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
@@ -77,16 +74,13 @@ public final class ControlToSessionIT {
     @Test
     public void sendToHandler() throws TransformationException {
         final MessageReceiverHandle handle = MessageReceiverBuilders
-            .newMessageReceiverBuilder()
-            .transform(Transformers.<Content>toByteArray())
-            .transform(Transformers.byteArrayToBinary())
+            .newBinaryMessageReceiverBuilder()
             .transform(Transformers.binaryToInteger())
             .bind(session)
             .register(stream);
 
         final MessageToSessionSender<Integer> sender = MessageSenderBuilders
-            .newMessageSenderBuilder()
-            .transform(Transformers.<Binary, Bytes>cast(Bytes.class))
+            .newBinaryMessageSenderBuilder()
             .transform(Transformers.integerToBinary())
             .buildToSessionSender(controlSession);
 

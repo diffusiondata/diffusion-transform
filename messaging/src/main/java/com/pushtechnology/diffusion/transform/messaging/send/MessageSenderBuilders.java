@@ -16,6 +16,8 @@
 package com.pushtechnology.diffusion.transform.messaging.send;
 
 import com.pushtechnology.diffusion.datatype.Bytes;
+import com.pushtechnology.diffusion.datatype.binary.Binary;
+import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
@@ -34,5 +36,23 @@ public final class MessageSenderBuilders {
      */
     public static UnboundSafeMessageSenderBuilder<Bytes> newMessageSenderBuilder() {
         return new UnboundSafeMessageSenderBuilderImpl<>(Transformers.<Bytes>identity());
+    }
+
+    /**
+     * Create a {@link SafeMessageSenderBuilder} from a {@link JSON} source.
+     *
+     * @return the message sender builder
+     */
+    public static UnboundSafeMessageSenderBuilder<JSON> newJSONMessageSenderBuilder() {
+        return new UnboundSafeMessageSenderBuilderImpl<>(Transformers.<JSON>identity());
+    }
+
+    /**
+     * Create a {@link SafeMessageSenderBuilder} from a {@link Binary} source.
+     *
+     * @return the message sender builder
+     */
+    public static UnboundSafeMessageSenderBuilder<Binary> newBinaryMessageSenderBuilder() {
+        return new UnboundSafeMessageSenderBuilderImpl<>(Transformers.<Binary>identity());
     }
 }

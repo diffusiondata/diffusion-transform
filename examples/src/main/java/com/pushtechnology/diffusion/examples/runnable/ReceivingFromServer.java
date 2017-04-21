@@ -18,7 +18,6 @@ package com.pushtechnology.diffusion.examples.runnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
@@ -47,9 +46,7 @@ public final class ReceivingFromServer extends AbstractClient {
     @Override
     public void onStarted(Session session) {
         MessageReceiverBuilders
-            .newMessageReceiverBuilder()
-            .transform(Transformers.toByteArray())
-            .transform(bytes -> Diffusion.dataTypes().json().readValue(bytes))
+            .newJSONMessageReceiverBuilder()
             .transform(Transformers.stringify())
             .bind(session)
             .register(new TransformedMessageStream.Default<String>() {
