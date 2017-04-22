@@ -45,8 +45,8 @@ import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
  *
  * @author Push Technology Limited
  */
-public final class ProducingJSONTimestamp extends AbstractClient {
-    private static final Logger LOG = LoggerFactory.getLogger(ProducingJSONTimestamp.class);
+public final class ProducingJsonTimestamp extends AbstractClient {
+    private static final Logger LOG = LoggerFactory.getLogger(ProducingJsonTimestamp.class);
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;
@@ -56,7 +56,7 @@ public final class ProducingJSONTimestamp extends AbstractClient {
      * @param url The URL to connect to
      * @param principal The principal to connect as
      */
-    public ProducingJSONTimestamp(String url, String principal) {
+    public ProducingJsonTimestamp(String url, String principal) {
         super(url, principal);
     }
 
@@ -113,8 +113,8 @@ public final class ProducingJSONTimestamp extends AbstractClient {
      */
     // CHECKSTYLE.OFF: UncommentedMain
     public static void main(String[] args) throws InterruptedException {
-        final ProducingJSONTimestamp client =
-            new ProducingJSONTimestamp("ws://diffusion.example.com:80", "auth");
+        final ProducingJsonTimestamp client =
+            new ProducingJsonTimestamp("ws://diffusion.example.com:80", "auth");
         client.start("auth_secret");
         client.waitForStopped();
     }
