@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,8 +45,9 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     /**
      * The instance of the context.
      */
-    /*package*/ static final JacksonContext JACKSON_CONTEXT = new JacksonContext();
-
+    /*package*/ static final JacksonContext JACKSON_CONTEXT = new JacksonContext(
+        new Module[0],
+        Collections.<CBORFactory.Feature, Boolean>emptyMap());
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 
     private final CBORFactory factory;
@@ -58,10 +60,20 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
      * Constructor.
      * @param modules the modules to register with the object mapper
      */
-    /*package*/ JacksonContext(Module... modules) {
+    /*package*/ JacksonContext(
+            Module[] modules,
+            Map<CBORFactory.Feature, Boolean> cborFeatures) {
+
+        // Create and configure factory
         factory = new CBORFactory();
+        for (Map.Entry<CBORFactory.Feature, Boolean> feature : cborFeatures.entrySet()) {
+            factory.configure(feature.getKey(), feature.getValue());
+        }
+
+        // Create and configure mapper
         mapper = new ObjectMapper(factory);
         mapper.registerModules(modules);
+
         typeFactory = mapper.getTypeFactory();
         final JavaType simpleMapType = typeFactory.constructMapType(Map.class, String.class, Object.class);
         simpleMapReader = mapper.readerFor(simpleMapType);

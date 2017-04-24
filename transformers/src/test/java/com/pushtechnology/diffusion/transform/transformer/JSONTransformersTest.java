@@ -20,9 +20,11 @@ import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringify;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -146,5 +148,19 @@ public final class JSONTransformersTest {
 
         final String deserialisedValue = stringify().transform(null);
         assertNull(deserialisedValue);
+    }
+
+    @Test
+    public void transformersFromBuilder() throws TransformationException {
+        final JSONTransformers transformers = JSONTransformers
+            .builder()
+            .build();
+
+        final JSON json = transformers.fromPojo().transform(new Date(0L));
+
+        final Integer timestamp = transformers.toObject(Integer.class).transform(json);
+
+        assertNotNull(timestamp);
+        assertEquals(0, (int) timestamp);
     }
 }

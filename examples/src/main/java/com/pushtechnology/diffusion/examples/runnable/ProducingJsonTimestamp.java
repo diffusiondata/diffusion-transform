@@ -72,7 +72,10 @@ public final class ProducingJsonTimestamp extends AbstractClient {
 
         // Create an instance of JSONTransformers with a Jackson module to
         // handle the serialisation of the Java 8 time classes
-        final JSONTransformers jsonTransformers = new JSONTransformers(new JavaTimeModule());
+        final JSONTransformers jsonTransformers = JSONTransformers
+            .builder()
+            .registerModule(new JavaTimeModule())
+            .build();
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
         final TransformedUpdater<JSON, LocalDateTime> valueUpdater = updaterBuilder(JSON.class)

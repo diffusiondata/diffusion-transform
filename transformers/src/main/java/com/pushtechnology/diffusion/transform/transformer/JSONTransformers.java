@@ -18,10 +18,16 @@ package com.pushtechnology.diffusion.transform.transformer;
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -84,7 +90,15 @@ public final class JSONTransformers {
      * @param modules th modules to register
      */
     public JSONTransformers(Module... modules) {
-        jacksonContext = new JacksonContext(modules);
+        jacksonContext = new JacksonContext(
+            modules,
+            Collections.<CBORFactory.Feature, Boolean>emptyMap());
+    }
+
+    private JSONTransformers(Collection<Module> modules, Map<CBORFactory.Feature, Boolean> cborFeatures) {
+        final Module[] modulesArray = new Module[modules.size()];
+        modules.toArray(modulesArray);
+        jacksonContext = new JacksonContext(modulesArray, cborFeatures);
     }
 
     private JSONTransformers(JacksonContext jacksonContext) {
@@ -184,5 +198,58 @@ public final class JSONTransformers {
      */
     public Transformer<JSON, String> stringify() {
         return STRINGIFY_JSON;
+    }
+
+    /**
+     * @return a new immutable builder for {@link JSONTransformers}
+     */
+    public static Builder builder() {
+        return new Builder(
+            new ArrayList<Module>(),
+            new HashMap<CBORFactory.Feature, Boolean>());
+    }
+
+    /**
+     * Immutable builder for {@link JSONTransformers}.
+     * <p>
+     * Allows for Jackson to be customised.
+     */
+    public static final class Builder {
+        private final List<Module> modules;
+        private final Map<CBORFactory.Feature, Boolean> cborFeatures;
+
+        private Builder(
+                List<Module> modules,
+                Map<CBORFactory.Feature, Boolean> cborFeatures) {
+            this.modules = modules;
+            this.cborFeatures = cborFeatures;
+        }
+
+        /**
+         * Register a new Jackson module.
+         * @return a new builder
+         */
+        public Builder registerModule(Module module) {
+            final List<Module> newModules = new ArrayList<>(modules);
+            newModules.add(module);
+            return new Builder(newModules, cborFeatures);
+        }
+
+        /**
+         * Configure a CBOR feature.
+         * @return a new builder
+         */
+        public Builder configure(CBORFactory.Feature feature, boolean enabled) {
+            final Map<CBORFactory.Feature, Boolean> newCborFeatures = new HashMap<>(cborFeatures);
+            newCborFeatures.put(feature, enabled);
+            return new Builder(modules, cborFeatures);
+        }
+
+        /**
+         * @return a new instance of {@link JSONTransformers}
+         */
+        public JSONTransformers build() {
+            return new JSONTransformers(modules, cborFeatures);
+        }
     }
 }
