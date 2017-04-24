@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
@@ -94,19 +95,22 @@ public final class JSONTransformers {
         jacksonContext = new JacksonContext(
             modules,
             Collections.<CBORFactory.Feature, Boolean>emptyMap(),
-            Collections.<SerializationFeature, Boolean>emptyMap());
+            Collections.<SerializationFeature, Boolean>emptyMap(),
+            Collections.<DeserializationFeature, Boolean>emptyMap());
     }
 
     private JSONTransformers(
             Collection<Module> modules,
             Map<CBORFactory.Feature, Boolean> cborFeatures,
-            Map<SerializationFeature, Boolean> serializationFeature) {
+            Map<SerializationFeature, Boolean> serializationFeatures,
+            Map<DeserializationFeature, Boolean> deserializationFeatures) {
         final Module[] modulesArray = new Module[modules.size()];
         modules.toArray(modulesArray);
         jacksonContext = new JacksonContext(
             modulesArray,
             cborFeatures,
-            serializationFeature);
+            serializationFeatures,
+            deserializationFeatures);
     }
 
     private JSONTransformers(JacksonContext jacksonContext) {
@@ -215,7 +219,8 @@ public final class JSONTransformers {
         return new Builder(
             new ArrayList<Module>(),
             new HashMap<CBORFactory.Feature, Boolean>(),
-            new HashMap<SerializationFeature, Boolean>());
+            new HashMap<SerializationFeature, Boolean>(),
+            new HashMap<DeserializationFeature, Boolean>());
     }
 
     /**
@@ -227,14 +232,17 @@ public final class JSONTransformers {
         private final List<Module> modules;
         private final Map<CBORFactory.Feature, Boolean> cborFeatures;
         private final Map<SerializationFeature, Boolean> serializationFeatures;
+        private final Map<DeserializationFeature, Boolean> deserializationFeatures;
 
         private Builder(
                 List<Module> modules,
                 Map<CBORFactory.Feature, Boolean> cborFeatures,
-                Map<SerializationFeature, Boolean> serializationFeatures) {
+                Map<SerializationFeature, Boolean> serializationFeatures,
+                Map<DeserializationFeature, Boolean> deserializationFeatures) {
             this.modules = modules;
             this.cborFeatures = cborFeatures;
             this.serializationFeatures = serializationFeatures;
+            this.deserializationFeatures = deserializationFeatures;
         }
 
         /**
@@ -244,7 +252,7 @@ public final class JSONTransformers {
         public Builder registerModule(Module module) {
             final List<Module> newModules = new ArrayList<>(modules);
             newModules.add(module);
-            return new Builder(newModules, cborFeatures, serializationFeatures);
+            return new Builder(newModules, cborFeatures, serializationFeatures, deserializationFeatures);
         }
 
         /**
@@ -254,7 +262,7 @@ public final class JSONTransformers {
         public Builder configure(CBORFactory.Feature feature, boolean enabled) {
             final Map<CBORFactory.Feature, Boolean> newCborFeatures = new HashMap<>(cborFeatures);
             newCborFeatures.put(feature, enabled);
-            return new Builder(modules, cborFeatures, serializationFeatures);
+            return new Builder(modules, cborFeatures, serializationFeatures, deserializationFeatures);
         }
 
         /**
@@ -265,7 +273,18 @@ public final class JSONTransformers {
             final Map<SerializationFeature, Boolean> newSerializationFeatures =
                 new HashMap<>(serializationFeatures);
             newSerializationFeatures.put(feature, enabled);
-            return new Builder(modules, cborFeatures, newSerializationFeatures);
+            return new Builder(modules, cborFeatures, newSerializationFeatures, deserializationFeatures);
+        }
+
+        /**
+         * Configure a deserialisation feature.
+         * @return a new builder
+         */
+        public Builder configure(DeserializationFeature feature, boolean enabled) {
+            final Map<DeserializationFeature, Boolean> newDeserializationFeatures =
+                new HashMap<>(deserializationFeatures);
+            newDeserializationFeatures.put(feature, enabled);
+            return new Builder(modules, cborFeatures, serializationFeatures, newDeserializationFeatures);
         }
 
         /**
@@ -275,7 +294,8 @@ public final class JSONTransformers {
             return new JSONTransformers(
                 modules,
                 cborFeatures,
-                serializationFeatures);
+                serializationFeatures,
+                deserializationFeatures);
         }
     }
 }
