@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -50,6 +51,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     /*package*/ static final JacksonContext JACKSON_CONTEXT = new JacksonContext(
         new Module[0],
         Collections.<CBORFactory.Feature, Boolean>emptyMap(),
+        Collections.<MapperFeature, Boolean>emptyMap(),
         Collections.<SerializationFeature, Boolean>emptyMap(),
         Collections.<DeserializationFeature, Boolean>emptyMap());
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
@@ -67,6 +69,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
     /*package*/ JacksonContext(
             Module[] modules,
             Map<CBORFactory.Feature, Boolean> cborFeatures,
+            Map<MapperFeature, Boolean> mapperFeatures,
             Map<SerializationFeature, Boolean> serializationFeatures,
             Map<DeserializationFeature, Boolean> deserializationFeatures) {
 
@@ -79,6 +82,9 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
         // Create and configure mapper
         mapper = new ObjectMapper(factory);
         mapper.registerModules(modules);
+        for (Map.Entry<MapperFeature, Boolean> feature : mapperFeatures.entrySet()) {
+            mapper.configure(feature.getKey(), feature.getValue());
+        }
         for (Map.Entry<SerializationFeature, Boolean> feature : serializationFeatures.entrySet()) {
             mapper.configure(feature.getKey(), feature.getValue());
         }
