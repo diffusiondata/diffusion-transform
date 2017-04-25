@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS;
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -75,6 +77,8 @@ public final class ProducingJsonTimestamp extends AbstractClient {
         final JSONTransformers jsonTransformers = JSONTransformers
             .builder()
             .registerModule(new JavaTimeModule())
+            .configure(WRITE_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
+            .configure(READ_DATE_TIMESTAMPS_AS_NANOSECONDS, false)
             .build();
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
