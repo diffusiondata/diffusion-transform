@@ -114,7 +114,7 @@
             <dependency>
                 <groupId>com.pushtechnology.diffusion</groupId>
                 <artifactId>diffusion-client</artifactId>
-                <version>5.9.7</version>
+                <version>5.9.13</version>
             </dependency>
 
 
