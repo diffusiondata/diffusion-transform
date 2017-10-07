@@ -30,7 +30,7 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
     /**
      * Instance of {@link BinaryToBigIntegerTransformer}.
      */
-    public static final Transformer<BigInteger, Binary> INSTANCE = new BigIntegerToBinaryTransformer();
+    public static final SafeTransformer<BigInteger, Binary> INSTANCE = new BigIntegerToBinaryTransformer();
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
 
     private BigIntegerToBinaryTransformer() {

@@ -344,7 +344,7 @@ public final class Transformers {
      *
      * @return the transformer to Binary
      */
-    public static Transformer<BigInteger, Binary> bigIntegerToBinary() {
+    public static SafeTransformer<BigInteger, Binary> bigIntegerToBinary() {
         return BigIntegerToBinaryTransformer.INSTANCE;
     }
 
