@@ -15,12 +15,9 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.binaryTopicAdderBuilder;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringToBinary;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -36,8 +33,7 @@ import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.adder.SafeTopicAdder;
+import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
 
@@ -65,24 +61,14 @@ public final class ProducingTimestamp extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final SafeTopicAdder<Instant> adder = binaryTopicAdderBuilder()
-            .transform(stringToBinary(Charset.forName("UTF-8")))
-            .transform(DATE_FORMAT::format)
-            .transform(Date::from)
-            .bind(session)
-            .create();
-
-        // This value cannot be transformed into a map, will invoke error handling if the client tries to
-        // process it
-        adder.add("binary/timestamp", Instant.now(), new TopicControl.AddCallback.Default());
+        session.feature(TopicControl.class).addTopic("binary/timestamp", TopicType.STRING);
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)
             .updater();
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
-        final TransformedUpdater<Binary, Instant> valueUpdater = updaterBuilder(Binary.class)
-            .transform(stringToBinary(Charset.forName("UTF-8")))
+        final TransformedUpdater<String, Instant> valueUpdater = updaterBuilder(String.class)
             .transform(DATE_FORMAT::format, Date.class)
             .transform(Date::from, Instant.class)
             .create(updater);

@@ -15,9 +15,8 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.stream.StreamBuilders.newBinaryStreamBuilder;
+import static com.pushtechnology.diffusion.transform.stream.StreamBuilders.newStreamBuilder;
 
-import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -29,9 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
-import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.transform.stream.TransformedStream;
-import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
  * A client that consumes Binary topics containing a string based timestamp.
@@ -55,13 +52,12 @@ public final class ConsumingTimestamp extends AbstractClient {
     public void onConnected(Session session) {
         final Topics topics = session.feature(Topics.class);
 
-        newBinaryStreamBuilder()
-            .transform(Transformers.binaryToString(Charset.forName("UTF-8")))
+        newStreamBuilder(String.class)
             // This method reference may throw a ParseException that will be
             // converted to a TransformationException automatically
             .transformWith(DATE_FORMAT::parse)
             .transform(Date::toInstant)
-            .register(topics, "binary/timestamp", new TransformedStream.Default<Binary, Instant>() {
+            .register(topics, "binary/timestamp", new TransformedStream.Default<String, Instant>() {
                 @Override
                 public void onValue(
                     String topicPath,
