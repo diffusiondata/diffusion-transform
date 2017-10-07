@@ -19,6 +19,8 @@ import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeRea
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToBigInteger;
+import static java.math.BigInteger.TEN;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
@@ -27,8 +29,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -115,18 +117,18 @@ public final class BinaryUpdateIT {
         final TopicSpecification specification0 = specificationCaptor.getValue();
         assertEquals(TopicType.BINARY, specification0.getType());
 
-        final TransformedUpdater<Binary, Integer> valueUpdater = UpdaterBuilders
+        final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .transform(Transformers.integerToBinary())
+            .transform(Transformers.bigIntegerToBinary())
             .create(session.feature(TopicUpdateControl.class).updater());
 
-        valueUpdater.update("test/topic", 5, updateCallback);
+        valueUpdater.update("test/topic", TEN, updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
             .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Binary.class), valueCaptor.capture());
         final Binary value = valueCaptor.getValue();
-        assertEquals(5, new DataInputStream(value.asInputStream()).readInt());
+        assertEquals(TEN, binaryToBigInteger().transform(value));
 
         topics.unsubscribe("?test//", completionCallback);
         verify(completionCallback, timed().times(2)).onComplete();
@@ -156,18 +158,18 @@ public final class BinaryUpdateIT {
         final TopicSpecification specification0 = specificationCaptor.getValue();
         assertEquals(TopicType.BINARY, specification0.getType());
 
-        final TransformedUpdater<Binary, Integer> valueUpdater = UpdaterBuilders
+        final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .transform(Transformers.integerToBinary())
+            .transform(Transformers.bigIntegerToBinary())
             .create(session.feature(TopicUpdateControl.class).updater());
 
-        valueUpdater.update("test/topic", 5, updateCallback);
+        valueUpdater.update("test/topic", TEN, updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
             .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Binary.class), valueCaptor.capture());
         final Binary value = valueCaptor.getValue();
-        assertEquals(5, new DataInputStream(value.asInputStream()).readInt());
+        assertEquals(TEN, binaryToBigInteger().transform(value));
 
         topics.unsubscribe("?test//", completionCallback);
         verify(completionCallback, timed().times(2)).onComplete();
