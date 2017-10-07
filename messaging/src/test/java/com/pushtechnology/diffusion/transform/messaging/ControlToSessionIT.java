@@ -3,10 +3,13 @@ package com.pushtechnology.diffusion.transform.messaging;
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
+import static java.math.BigInteger.TEN;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.math.BigInteger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +36,7 @@ public final class ControlToSessionIT {
     @Mock
     private Session.Listener listener;
     @Mock
-    private TransformedMessageStream<Integer> stream;
+    private TransformedMessageStream<BigInteger> stream;
     @Mock
     private SendCallback sendCallback;
 
@@ -75,20 +78,20 @@ public final class ControlToSessionIT {
     public void sendToHandler() throws TransformationException {
         final MessageReceiverHandle handle = MessageReceiverBuilders
             .newBinaryMessageReceiverBuilder()
-            .transform(Transformers.binaryToInteger())
+            .transform(Transformers.binaryToBigInteger())
             .bind(session)
             .register(stream);
 
-        final MessageToSessionSender<Integer> sender = MessageSenderBuilders
+        final MessageToSessionSender<BigInteger> sender = MessageSenderBuilders
             .newBinaryMessageSenderBuilder()
-            .transform(Transformers.integerToBinary())
+            .transform(Transformers.bigIntegerToBinary())
             .buildToSessionSender(controlSession);
 
-        sender.send(session.getSessionId(), "message/path", 5, sendCallback);
+        sender.send(session.getSessionId(), "message/path", TEN, sendCallback);
 
         verify(sendCallback, timed()).onComplete();
 
-        verify(stream, timed()).onMessageReceived("message/path", 5);
+        verify(stream, timed()).onMessageReceived("message/path", TEN);
 
         handle.close();
         verify(stream, timed()).onClose();
