@@ -19,8 +19,9 @@ import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeRea
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToInteger;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.integerToBinary;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.bigIntegerToBinary;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToBigInteger;
+import static java.math.BigInteger.TEN;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.eq;
@@ -28,6 +29,8 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.math.BigInteger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,7 +58,7 @@ public final class BinaryStreamIT {
     @Mock
     private Session.Listener listener;
     @Mock
-    private TransformedStream<Binary, Integer> stream;
+    private TransformedStream<Binary, BigInteger> stream;
     @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
@@ -67,7 +70,7 @@ public final class BinaryStreamIT {
     @Captor
     private ArgumentCaptor<TopicSpecification> specificationCaptor;
     @Captor
-    private ArgumentCaptor<Integer> valueCaptor;
+    private ArgumentCaptor<BigInteger> valueCaptor;
 
     private Session session;
 
@@ -100,7 +103,7 @@ public final class BinaryStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
-            .transform(binaryToInteger())
+            .transform(binaryToBigInteger())
             .createFallback(topics, stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -119,13 +122,13 @@ public final class BinaryStreamIT {
             .updater()
             .valueUpdater(Binary.class);
 
-        updater.update("test/topic", integerToBinary().transform(0), updateCallback);
+        updater.update("test/topic", bigIntegerToBinary().transform(TEN), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
-            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Integer.class), valueCaptor.capture());
-        final Integer value = valueCaptor.getValue();
-        assertEquals(0, (int) value);
+            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(BigInteger.class), valueCaptor.capture());
+        final BigInteger value = valueCaptor.getValue();
+        assertEquals(TEN, value);
 
         topics.unsubscribe("?test//", completionCallback);
         verify(completionCallback, timed().times(2)).onComplete();
@@ -143,7 +146,7 @@ public final class BinaryStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
-            .transform(binaryToInteger())
+            .transform(binaryToBigInteger())
             .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -162,13 +165,13 @@ public final class BinaryStreamIT {
             .updater()
             .valueUpdater(Binary.class);
 
-        updater.update("test/topic", integerToBinary().transform(0), updateCallback);
+        updater.update("test/topic", bigIntegerToBinary().transform(TEN), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
-            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Integer.class), valueCaptor.capture());
-        final Integer value = valueCaptor.getValue();
-        assertEquals(0, (int) value);
+            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(BigInteger.class), valueCaptor.capture());
+        final BigInteger value = valueCaptor.getValue();
+        assertEquals(TEN, value);
 
         topics.unsubscribe("?test//", completionCallback);
         verify(completionCallback, timed().times(2)).onComplete();
