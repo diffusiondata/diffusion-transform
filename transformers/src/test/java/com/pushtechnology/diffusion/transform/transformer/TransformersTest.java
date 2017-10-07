@@ -16,9 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToInteger;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.cast;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.integerToBinary;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringify;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toSuperClass;
@@ -275,24 +273,6 @@ public final class TransformersTest {
         final String castObject = castingTransformer.transform(null);
 
         assertNull(castObject);
-    }
-
-    @Test
-    public void integer() throws TransformationException {
-        final Binary serialisedValue = integerToBinary().transform(5);
-
-        final Integer deserialisedValue = binaryToInteger().transform(serialisedValue);
-
-        assertEquals(5, (int) deserialisedValue);
-    }
-
-    @Test
-    public void integerNull() throws TransformationException {
-        final Binary serialisedValue = integerToBinary().transform(null);
-        assertNull(serialisedValue);
-
-        final Integer deserialisedValue = binaryToInteger().transform(null);
-        assertNull(deserialisedValue);
     }
 
     @Test

@@ -19,7 +19,6 @@ import static com.pushtechnology.diffusion.transform.transformer.JSONTransformer
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
 
 import java.math.BigInteger;
-import java.nio.charset.Charset;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -304,42 +303,6 @@ public final class Transformers {
     }
 
     /**
-     * Transformer from integer to Binary.
-     *
-     * @return the transformer to Binary
-     */
-    public static Transformer<Integer, Binary> integerToBinary() {
-        return IntegerToBinaryTransformer.INSTANCE;
-    }
-
-    /**
-     * Transformer from Binary to integer.
-     *
-     * @return the transformer to integer
-     */
-    public static Transformer<Binary, Integer> binaryToInteger() {
-        return BinaryToIntegerTransformer.INSTANCE;
-    }
-
-    /**
-     * Transformer from double to Binary.
-     *
-     * @return the transformer to Binary
-     */
-    public static Transformer<Double, Binary> doubleToBinary() {
-        return DoubleToBinaryTransformer.INSTANCE;
-    }
-
-    /**
-     * Transformer from Binary to double.
-     *
-     * @return the transformer to double
-     */
-    public static Transformer<Binary, Double> binaryToDouble() {
-        return BinaryToDoubleTransformer.INSTANCE;
-    }
-
-    /**
      * Transformer from big integer to Binary.
      *
      * @return the transformer to Binary
@@ -355,26 +318,6 @@ public final class Transformers {
      */
     public static Transformer<Binary, BigInteger> binaryToBigInteger() {
         return BinaryToBigIntegerTransformer.INSTANCE;
-    }
-
-    /**
-     * Transformer from String to Binary.
-     *
-     * @param charset the character set to encode the string with
-     * @return the transformer to Binary
-     */
-    public static SafeTransformer<String, Binary> stringToBinary(Charset charset) {
-        return new StringToBinaryTransformer(charset);
-    }
-
-    /**
-     * Transformer from Binary to String.
-     *
-     * @param charset the character set to decode the string with
-     * @return the transformer to String
-     */
-    public static SafeTransformer<Binary, String> binaryToString(Charset charset) {
-        return new BinaryToStringTransformer(charset);
     }
 
     /**
