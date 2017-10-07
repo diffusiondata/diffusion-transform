@@ -16,12 +16,13 @@
 package com.pushtechnology.diffusion.transform.adder;
 
 import static com.pushtechnology.diffusion.client.topics.details.TopicType.BINARY;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.bigIntegerToBinary;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringToBinary;
-import static java.nio.charset.Charset.forName;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.math.BigInteger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,18 +54,18 @@ public final class BoundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void transform() {
-        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+        final BoundTransformedTopicAdderBuilder<Binary, BigInteger> builder =
             new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
-                .transform(stringToBinary(forName("UTF-8")));
+                .transform(bigIntegerToBinary());
 
         assertNotNull(builder);
     }
 
     @Test
     public void transformToClass() {
-        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
+        final BoundTransformedTopicAdderBuilder<Binary, BigInteger> builder =
             new BoundTransformedTopicAdderBuilderImpl<>(BINARY, identity(Binary.class), control)
-                .transform(stringToBinary(forName("UTF-8")), String.class);
+                .transform(bigIntegerToBinary(), BigInteger.class);
 
         assertNotNull(builder);
     }
@@ -99,10 +100,10 @@ public final class BoundTransformedTopicAdderBuilderImplTest {
 
     @Test
     public void create() {
-        final BoundTransformedTopicAdderBuilder<Binary, String> builder =
-            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, stringToBinary(forName("UTF-8")), control);
+        final BoundTransformedTopicAdderBuilder<Binary, BigInteger> builder =
+            new BoundTransformedTopicAdderBuilderImpl<>(BINARY, bigIntegerToBinary(), control);
 
-        final TopicAdder<String> adder = builder.create();
+        final TopicAdder<BigInteger> adder = builder.create();
 
         assertNotNull(adder);
     }
