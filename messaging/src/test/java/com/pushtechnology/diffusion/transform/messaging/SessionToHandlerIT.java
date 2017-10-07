@@ -3,11 +3,13 @@ package com.pushtechnology.diffusion.transform.messaging;
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
+import static java.math.BigInteger.TEN;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.math.BigInteger;
 import java.util.Collections;
 
 import org.junit.After;
@@ -37,7 +39,7 @@ public final class SessionToHandlerIT {
     @Mock
     private Session.Listener listener;
     @Mock
-    private TransformedMessageHandler<Integer> handler;
+    private TransformedMessageHandler<BigInteger> handler;
     @Mock
     private SendCallback sendCallback;
 
@@ -79,25 +81,25 @@ public final class SessionToHandlerIT {
     public void sendToHandler() throws TransformationException {
         final MessageReceiverHandle handle = MessageReceiverBuilders
             .newBinaryMessageReceiverBuilder()
-            .transform(Transformers.binaryToInteger())
+            .transform(Transformers.binaryToBigInteger())
             .bind(controlSession)
             .register("message/path", handler);
 
         verify(handler, timed()).onRegistered("message/path");
 
-        final MessageToHandlerSender<Integer> sender = MessageSenderBuilders
+        final MessageToHandlerSender<BigInteger> sender = MessageSenderBuilders
             .newMessageSenderBuilder()
             .transform(Transformers.<Binary, Bytes>cast(Bytes.class))
-            .transform(Transformers.integerToBinary())
+            .transform(Transformers.bigIntegerToBinary())
             .buildToHandlerSender(session);
 
-        sender.send("message/path", 5, sendCallback);
+        sender.send("message/path", TEN, sendCallback);
 
         verify(sendCallback, timed()).onComplete();
 
         verify(handler, timed()).onMessageReceived(
             "message/path",
-            5,
+            TEN,
             session.getSessionId(),
             Collections.<String, String>emptyMap());
 
