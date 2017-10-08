@@ -107,16 +107,9 @@
             <!-- Push Technology dependencies -->
             <dependency>
                 <groupId>com.pushtechnology.diffusion</groupId>
-                <artifactId>diffusion-api</artifactId>
-                <version>[5.8.0,)</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.pushtechnology.diffusion</groupId>
                 <artifactId>diffusion-client</artifactId>
-                <version>5.9.13</version>
+                <version>[5.8.0,6.0.0)</version>
             </dependency>
-
 
             <!-- Third party dependencies -->
             <dependency>
