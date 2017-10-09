@@ -284,7 +284,7 @@
                 <configuration>
                     <excludePackageNames>com.pushtechnology.diffusion.examples.*</excludePackageNames>
                     <links>
-                        <link>https://docs.pushtechnology.com/docs/5.9.7/java/</link>
+                        <link>https://docs.pushtechnology.com/docs/6.0.0/java/</link>
                     </links>
                 </configuration>
                 <reportSets>
