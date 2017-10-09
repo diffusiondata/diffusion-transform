@@ -42,6 +42,7 @@ import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class ProducingJson extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJson.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

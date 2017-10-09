@@ -28,6 +28,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> The type of value used to initialise the topic
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class TopicAdderImpl<V> implements TopicAdder<V> {
     private final TopicControl topicControl;
     private final TopicType topicType;

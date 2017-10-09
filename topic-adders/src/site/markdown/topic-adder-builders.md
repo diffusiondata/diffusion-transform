@@ -1,6 +1,9 @@
 
 # TopicAdderBuilders
 
+_Deprecated since 2.0.0. The ability to initialise a topic with a value when creating it has been deprecated in the
+Diffusion API._
+
 To help with creating topics with initial values a `TopicAdderBuilder` can be used to construct a `TopicAdder` that
 applies a transformation to a value before creating the topic with the result.
 Like the `StreamBuilder` a `TopicAdderBuilder` makes it easy to chain transformers together.

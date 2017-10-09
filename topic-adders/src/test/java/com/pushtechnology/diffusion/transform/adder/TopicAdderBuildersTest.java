@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class TopicAdderBuildersTest {
 
     @Test

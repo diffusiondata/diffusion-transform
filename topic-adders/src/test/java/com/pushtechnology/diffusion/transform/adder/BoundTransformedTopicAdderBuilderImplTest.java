@@ -38,6 +38,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class BoundTransformedTopicAdderBuilderImplTest {
     @Mock
     private TopicControl control;

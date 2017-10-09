@@ -22,7 +22,9 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
  *
  * @param <V> The type of value used to initialise the topic
  * @author Push Technology Limited
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public interface SafeTopicAdder<V> extends TopicAdder<V> {
     @Override
     void add(String topicPath, V initialValue, TopicControl.AddCallback callback);

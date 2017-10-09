@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <V> The type of value used to initialise the topic
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class SafeTopicAdderImpl<V> implements SafeTopicAdder<V> {
     private final TopicControl topicControl;
     private final TopicType topicType;

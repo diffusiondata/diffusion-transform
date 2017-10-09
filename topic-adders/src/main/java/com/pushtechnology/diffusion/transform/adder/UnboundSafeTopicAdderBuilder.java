@@ -24,7 +24,9 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <S> The type of value understood by the topic
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public interface UnboundSafeTopicAdderBuilder<S, T> extends
     SafeTopicAdderBuilder<S, T>,
     UnboundTopicAdderBuilder<S, T, SafeTopicAdder<T>> {

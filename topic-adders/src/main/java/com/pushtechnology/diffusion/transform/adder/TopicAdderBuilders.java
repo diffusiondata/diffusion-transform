@@ -27,7 +27,9 @@ import com.pushtechnology.diffusion.datatype.recordv2.RecordV2;
  * Factory for creating instances of {@link TopicAdderBuilder}s.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public final class TopicAdderBuilders {
     private TopicAdderBuilders() {
     }

@@ -23,7 +23,9 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  *
  * @param <V> The type of value used to initialise the topic
  * @author Push Technology Limited
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public interface TopicAdder<V> {
     /**
      * Add a new topic with an initial value.

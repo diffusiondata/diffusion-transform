@@ -55,6 +55,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class AddJSONTopicIT {
     @Mock
     private Session.Listener listener;

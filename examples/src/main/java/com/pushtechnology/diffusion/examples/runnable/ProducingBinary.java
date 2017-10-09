@@ -44,6 +44,7 @@ import com.pushtechnology.diffusion.transform.updater.SafeTransformedUpdater;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class ProducingBinary extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingBinary.class);
     private static final SafeTransformer<RandomData, Binary> SERIALISER = Transformers

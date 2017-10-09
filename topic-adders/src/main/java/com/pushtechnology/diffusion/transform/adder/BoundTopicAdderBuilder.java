@@ -25,7 +25,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @param <U> The type of adder created by this builder
  * @author Push Technology Limited
+ * @deprecated since 2.0.0
  */
+@Deprecated
 public interface BoundTopicAdderBuilder<S, T, U extends TopicAdder<T>> extends TopicAdderBuilder<S, T> {
     @Override
     <R> BoundTransformedTopicAdderBuilder<S, R> transform(Transformer<R, T> newTransformer);

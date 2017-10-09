@@ -53,6 +53,7 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class AddBinaryTopicIT {
     @Mock
     private Session.Listener listener;

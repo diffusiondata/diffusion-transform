@@ -46,6 +46,7 @@ import com.pushtechnology.diffusion.transform.updater.UnboundTransformedUpdaterB
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class ReusingUpdaterBuilders extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJson.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

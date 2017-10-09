@@ -33,6 +33,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class UnboundSafeTopicAdderBuilderImpl<S extends Bytes, T>
     implements UnboundSafeTopicAdderBuilder<S, T> {
 
