@@ -62,6 +62,10 @@
                                     <name>diffusion.home</name>
                                     <value>${env.DIFFUSION_HOME}</value>
                                 </systemProperty>
+                                <systemProperty>
+                                    <name>diffusion.management.enabled</name>
+                                    <value>false</value>
+                                </systemProperty>
                             </systemProperties>
                         </configuration>
                         <executions>
