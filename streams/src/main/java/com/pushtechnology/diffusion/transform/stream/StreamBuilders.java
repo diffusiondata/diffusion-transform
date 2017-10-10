@@ -19,6 +19,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.id
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.datatype.recordv2.RecordV2;
 
 /**
  * Factory for creating instances of {@link SafeStreamBuilder}s and {@link StreamBuilder}s.
@@ -46,7 +47,7 @@ public final class StreamBuilders {
      * @return The stream builder
      */
     public static SafeStreamBuilder<Binary, Binary> newBinaryStreamBuilder() {
-        return new SafeStreamBuilderImpl<>(Binary.class, identity(Binary.class));
+        return newStreamBuilder(Binary.class);
     }
 
     /**
@@ -55,6 +56,42 @@ public final class StreamBuilders {
      * @return The stream builder
      */
     public static SafeStreamBuilder<JSON, JSON> newJsonStreamBuilder() {
-        return new SafeStreamBuilderImpl<>(JSON.class, identity(JSON.class));
+        return newStreamBuilder(JSON.class);
+    }
+
+    /**
+     * Create a {@link StreamBuilder} from a {@link String} source.
+     *
+     * @return The stream builder
+     */
+    public static SafeStreamBuilder<String, String> newStringStreamBuilder() {
+        return newStreamBuilder(String.class);
+    }
+
+    /**
+     * Create a {@link StreamBuilder} from a {@link Long} source.
+     *
+     * @return The stream builder
+     */
+    public static SafeStreamBuilder<Long, Long> newInt64StreamBuilder() {
+        return newStreamBuilder(Long.class);
+    }
+
+    /**
+     * Create a {@link StreamBuilder} from a {@link Double} source.
+     *
+     * @return The stream builder
+     */
+    public static SafeStreamBuilder<Double, Double> newDoubleStreamBuilder() {
+        return newStreamBuilder(Double.class);
+    }
+
+    /**
+     * Create a {@link StreamBuilder} from a {@link RecordV2} source.
+     *
+     * @return The stream builder
+     */
+    public static SafeStreamBuilder<RecordV2, RecordV2> newRecordV2StreamBuilder() {
+        return newStreamBuilder(RecordV2.class);
     }
 }
