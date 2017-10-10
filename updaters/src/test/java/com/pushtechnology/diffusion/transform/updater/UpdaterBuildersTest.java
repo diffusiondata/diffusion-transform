@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.datatype.recordv2.RecordV2;
 
 /**
  * Unit tests for {@link UpdaterBuilders}.
@@ -31,22 +32,50 @@ public final class UpdaterBuildersTest {
 
     @Test
     public void safeBuilder() {
-        final SafeUpdaterBuilder<JSON, JSON> jsonUpdater = UpdaterBuilders.updaterBuilder(JSON.class);
+        final SafeUpdaterBuilder<JSON, JSON> updater = UpdaterBuilders.updaterBuilder(JSON.class);
 
-        assertTrue(jsonUpdater instanceof UnboundSafeUpdaterBuilderImpl);
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 
     @Test
     public void jsonSafeBuilder() {
-        final SafeUpdaterBuilder<JSON, JSON> jsonUpdater = UpdaterBuilders.jsonUpdaterBuilder();
+        final SafeUpdaterBuilder<JSON, JSON> updater = UpdaterBuilders.jsonUpdaterBuilder();
 
-        assertTrue(jsonUpdater instanceof UnboundSafeUpdaterBuilderImpl);
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 
     @Test
     public void binarySafeBuilder() {
-        final SafeUpdaterBuilder<Binary, Binary> binaryUpdater = UpdaterBuilders.binaryUpdaterBuilder();
+        final SafeUpdaterBuilder<Binary, Binary> updater = UpdaterBuilders.binaryUpdaterBuilder();
 
-        assertTrue(binaryUpdater instanceof UnboundSafeUpdaterBuilderImpl);
+        assertTrue(updater  instanceof UnboundSafeUpdaterBuilderImpl);
+    }
+
+    @Test
+    public void stringSafeBuilder() {
+        final SafeUpdaterBuilder<String, String> updater = UpdaterBuilders.stringUpdaterBuilder();
+
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
+    }
+
+    @Test
+    public void int64SafeBuilder() {
+        final SafeUpdaterBuilder<Long, Long> updater = UpdaterBuilders.int64UpdaterBuilder();
+
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
+    }
+
+    @Test
+    public void doubleSafeBuilder() {
+        final SafeUpdaterBuilder<Double, Double> updater = UpdaterBuilders.doubleUpdaterBuilder();
+
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
+    }
+
+    @Test
+    public void recordV2SafeBuilder() {
+        final SafeUpdaterBuilder<RecordV2, RecordV2> updater = UpdaterBuilders.recordV2UpdaterBuilder();
+
+        assertTrue(updater instanceof UnboundSafeUpdaterBuilderImpl);
     }
 }

@@ -19,7 +19,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.id
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.Transformers;
+import com.pushtechnology.diffusion.datatype.recordv2.RecordV2;
 
 /**
  * Factory for creating instances of {@link UpdaterBuilder}s.
@@ -39,7 +39,7 @@ public final class UpdaterBuilders {
     public static <V> UnboundSafeUpdaterBuilder<V, V> updaterBuilder(Class<V> valueType) {
         return new UnboundSafeUpdaterBuilderImpl<>(
             valueType,
-            Transformers.<V>identity());
+            identity());
     }
 
     /**
@@ -47,7 +47,7 @@ public final class UpdaterBuilders {
      * @return The builder
      */
     public static UnboundSafeUpdaterBuilder<JSON, JSON> jsonUpdaterBuilder() {
-        return new UnboundSafeUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
+        return updaterBuilder(JSON.class);
     }
 
     /**
@@ -55,6 +55,38 @@ public final class UpdaterBuilders {
      * @return The builder
      */
     public static UnboundSafeUpdaterBuilder<Binary, Binary> binaryUpdaterBuilder() {
-        return new UnboundSafeUpdaterBuilderImpl<>(Binary.class, identity(Binary.class));
+        return updaterBuilder(Binary.class);
+    }
+
+    /**
+     * Create a builder for {@link String} updaters.
+     * @return The builder
+     */
+    public static UnboundSafeUpdaterBuilder<String, String> stringUpdaterBuilder() {
+        return updaterBuilder(String.class);
+    }
+
+    /**
+     * Create a builder for {@link Long} updaters.
+     * @return The builder
+     */
+    public static UnboundSafeUpdaterBuilder<Long, Long> int64UpdaterBuilder() {
+        return updaterBuilder(Long.class);
+    }
+
+    /**
+     * Create a builder for {@link Double} updaters.
+     * @return The builder
+     */
+    public static UnboundSafeUpdaterBuilder<Double, Double> doubleUpdaterBuilder() {
+        return updaterBuilder(Double.class);
+    }
+
+    /**
+     * Create a builder for {@link RecordV2} updaters.
+     * @return The builder
+     */
+    public static UnboundSafeUpdaterBuilder<RecordV2, RecordV2> recordV2UpdaterBuilder() {
+        return updaterBuilder(RecordV2.class);
     }
 }
