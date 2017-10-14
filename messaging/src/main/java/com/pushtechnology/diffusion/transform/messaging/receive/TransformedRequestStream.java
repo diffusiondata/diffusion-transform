@@ -21,6 +21,9 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
 /**
  * A transformed request stream.
  *
+ * @param <T> the type of request understood by Diffusion
+ * @param <U> the type of request
+ * @param <V> the type of response
  * @author Push Technology Limited
  */
 public interface TransformedRequestStream<T, U, V> extends Stream {
