@@ -29,7 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 /**
  * Factory for creating instances of message receivers.
  *
- * @author Matt Champion 12/04/2017
+ * @author Push Technology Limited
  */
 public final class MessageReceiverBuilders {
 

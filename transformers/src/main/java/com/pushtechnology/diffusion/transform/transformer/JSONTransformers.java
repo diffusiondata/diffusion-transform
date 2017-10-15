@@ -44,7 +44,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  * {@link JSONTransformers} that will be registered with the
  * {@link com.fasterxml.jackson.databind.ObjectMapper}.
  *
- * @author Matt Champion 19/04/2017
+ * @author Push Technology Limited
  */
 public final class JSONTransformers {
     /**

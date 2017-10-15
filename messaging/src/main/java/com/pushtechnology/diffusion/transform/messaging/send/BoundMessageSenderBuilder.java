@@ -24,7 +24,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of values
  * @param <T> the type of to session sender
  * @param <U> the type of to handler sender
- * @author Matt Champion 10/04/2017
+ * @author Push Technology Limited
  */
 public interface BoundMessageSenderBuilder<V, T, U> extends MessageSenderBuilder<V> {
     @Override

@@ -31,7 +31,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 /**
  * A client that receives JSON messages sent to a path.
  *
- * @author Matt Champion 13/04/2017
+ * @author Push Technology Limited
  */
 public final class ReceivingFromSession extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ReceivingFromSession.class);

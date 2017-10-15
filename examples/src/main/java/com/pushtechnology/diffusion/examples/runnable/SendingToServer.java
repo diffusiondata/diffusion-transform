@@ -35,7 +35,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 /**
  * A client that sends JSON messages to the server.
  *
- * @author Matt Champion 13/04/2017
+ * @author Push Technology Limited
  */
 public final class SendingToServer extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(SendingToServer.class);

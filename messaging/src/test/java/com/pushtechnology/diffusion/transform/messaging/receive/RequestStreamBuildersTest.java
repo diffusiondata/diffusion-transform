@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Unit tests for {@link RequestStreamBuilders}.
  *
- * @author Matt Champion 14/10/2017
+ * @author Push Technology Limited
  */
 public final class RequestStreamBuildersTest {
 

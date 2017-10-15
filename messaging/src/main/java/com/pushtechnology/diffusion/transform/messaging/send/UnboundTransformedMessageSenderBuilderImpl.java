@@ -29,7 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * Implementation of {@link UnboundTransformedMessageSenderBuilder}.
  *
  * @param <V> the type of values
- * @author Matt Champion 11/04/2017
+ * @author Push Technology Limited
  */
 /*package*/ final class UnboundTransformedMessageSenderBuilderImpl<V> implements
     UnboundTransformedMessageSenderBuilder<V> {

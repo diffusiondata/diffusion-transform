@@ -35,7 +35,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 /**
  * Unit tests for {@link SafeMessageToSessionSenderImpl}.
  *
- * @author Matt Champion 11/04/2017
+ * @author Push Technology Limited
  */
 public final class SafeMessageToSessionSenderImplTest {
     @Mock

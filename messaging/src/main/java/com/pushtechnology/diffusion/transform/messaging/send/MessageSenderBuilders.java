@@ -23,7 +23,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 /**
  * Factory for creating instances of {@link SafeMessageSenderBuilder}s.
  *
- * @author Matt Champion 12/04/2017
+ * @author Push Technology Limited
  */
 public final class MessageSenderBuilders {
     private MessageSenderBuilders() {

@@ -26,7 +26,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * Implementation of {@link com.pushtechnology.diffusion.transform.messaging.send.tohandler.SafeMessageSender}.
  *
  * @param <V> the type of values
- * @author Matt Champion 11/04/2017
+ * @author Push Technology Limited
  */
 /*package*/ final class SafeMessageToSessionSenderImpl<V> implements SafeMessageToSessionSender<V> {
     private final MessagingControl messagingControl;

@@ -30,7 +30,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
  * Integration test for sending messages from a session to a handler.
- * @author Matt Champion 12/04/2017
+ * @author Push Technology Limited
  */
 public final class ControlToSessionIT {
     @Mock

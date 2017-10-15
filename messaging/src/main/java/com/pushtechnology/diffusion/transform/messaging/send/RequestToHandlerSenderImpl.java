@@ -28,7 +28,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <T> the type of response understood by Diffusion
  * @param <U> the type of request
  * @param <V> the type of response
- * @author Matt Champion 11/10/2017
+ * @author Push Technology Limited
  */
 /*package*/ final class RequestToHandlerSenderImpl<S, T, U, V> implements RequestToHandlerSender<U, V> {
     private final Messaging messaging;

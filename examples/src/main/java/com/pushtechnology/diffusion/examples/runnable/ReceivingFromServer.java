@@ -28,7 +28,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
 /**
  * A client that receives JSON messages sent specifically to it.
  *
- * @author Matt Champion 13/04/2017
+ * @author Push Technology Limited
  */
 public final class ReceivingFromServer extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ReceivingFromServer.class);

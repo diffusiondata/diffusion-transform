@@ -38,7 +38,7 @@ import org.mockito.junit.MockitoRule;
 /**
  * Unit tests for {@link TransformedRequestStreamAdapter}.
  *
- * @author Matt Champion 13/10/2017
+ * @author Push Technology Limited
  */
 public final class TransformedRequestStreamAdapterTest {
     @Rule

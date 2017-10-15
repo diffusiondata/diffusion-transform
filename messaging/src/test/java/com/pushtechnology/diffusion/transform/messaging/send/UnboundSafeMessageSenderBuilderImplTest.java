@@ -40,7 +40,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 /**
  * Unit tests for {@link UnboundSafeMessageSenderBuilderImpl}.
  *
- * @author Matt Champion 11/04/2017
+ * @author Push Technology Limited
  */
 public final class UnboundSafeMessageSenderBuilderImplTest {
     @Mock

@@ -38,7 +38,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 /**
  * Unit tests for {@link RequestToHandlerSenderImpl}.
  *
- * @author Matt Champion 11/10/2017
+ * @author Push Technology Limited
  */
 public final class RequestToHandlerSenderImplTest {
     @Rule
