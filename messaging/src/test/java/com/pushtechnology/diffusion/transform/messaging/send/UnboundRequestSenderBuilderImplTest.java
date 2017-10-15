@@ -75,7 +75,7 @@ public final class UnboundRequestSenderBuilderImplTest {
 
     @Test
     public void transformRequestAndSend() throws Exception {
-        final UnboundRequestSenderBuilder<String, String> builder = new UnboundRequestSenderBuilderImpl<>(
+        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
             JSON.class,
             JSON.class,
             transformer,
@@ -90,7 +90,7 @@ public final class UnboundRequestSenderBuilderImplTest {
 
     @Test
     public void transformRequestWithAndSend() throws Exception {
-        final UnboundRequestSenderBuilder<String, String> builder = new UnboundRequestSenderBuilderImpl<>(
+        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
             JSON.class,
             JSON.class,
             transformer,
@@ -105,7 +105,7 @@ public final class UnboundRequestSenderBuilderImplTest {
 
     @Test
     public void transformResponse() throws Exception {
-        final UnboundRequestSenderBuilder<String, String> builder = new UnboundRequestSenderBuilderImpl<>(
+        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
             JSON.class,
             JSON.class,
             transformer,
@@ -120,7 +120,7 @@ public final class UnboundRequestSenderBuilderImplTest {
 
     @Test
     public void transformResponseWith() throws Exception {
-        final UnboundRequestSenderBuilder<String, String> builder = new UnboundRequestSenderBuilderImpl<>(
+        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
             JSON.class,
             JSON.class,
             transformer,
@@ -135,7 +135,7 @@ public final class UnboundRequestSenderBuilderImplTest {
 
     @Test
     public void bind() throws Exception {
-        final BoundRequestSenderBuilder<String, String> builder = new UnboundRequestSenderBuilderImpl<>(
+        final BoundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
             JSON.class,
             JSON.class,
             transformer,
@@ -143,6 +143,5 @@ public final class UnboundRequestSenderBuilderImplTest {
             .bind(session);
 
         assertNotNull(builder);
-        verify(session).feature(Messaging.class);
     }
 }

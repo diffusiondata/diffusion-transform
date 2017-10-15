@@ -31,7 +31,7 @@ public final class RequestBuilders {
      *
      * @return the request sender builder
      */
-    public static <U, V> UnboundRequestSenderBuilder<U, V> requestSenderBuilder(
+    public static <U, V> UnboundRequestSenderBuilder<V, U, V> requestSenderBuilder(
             Class<U> requestType,
             Class<V> responseType) {
         return new UnboundRequestSenderBuilderImpl<>(requestType, responseType, identity(), identity());

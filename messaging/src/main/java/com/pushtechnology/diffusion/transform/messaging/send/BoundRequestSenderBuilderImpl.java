@@ -19,6 +19,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.ch
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -31,8 +32,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-/*package*/ final class BoundRequestSenderBuilderImpl<S, T, U, V> implements BoundRequestSenderBuilder<U, V> {
-    private final Messaging messaging;
+/*package*/ final class BoundRequestSenderBuilderImpl<S, T, U, V> implements BoundRequestSenderBuilder<T, U, V> {
+    private final Session session;
     private final Class<S> rawRequestType;
     private final Class<T> rawResponseType;
     private final Transformer<U, S> requestTransformer;
@@ -42,13 +43,13 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
      * Constructor.
      */
     /*package*/ BoundRequestSenderBuilderImpl(
-        Messaging messaging,
+        Session session,
         Class<S> rawRequestType,
         Class<T> rawResponseType,
         Transformer<U, S> requestTransformer,
         Transformer<T, V> responseTransformer) {
 
-        this.messaging = messaging;
+        this.session = session;
         this.rawRequestType = rawRequestType;
         this.rawResponseType = rawResponseType;
         this.requestTransformer = requestTransformer;
@@ -56,9 +57,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<R, V> transformRequest(Transformer<R, U> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
-            messaging,
+            session,
             rawRequestType,
             rawResponseType,
             chain(newTransformer, requestTransformer),
@@ -66,9 +67,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
-            messaging,
+            session,
             rawRequestType,
             rawResponseType,
             chain(toTransformer(newTransformer), requestTransformer),
@@ -76,9 +77,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<U, R> transformResponse(Transformer<V, R> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
-            messaging,
+            session,
             rawRequestType,
             rawResponseType,
             requestTransformer,
@@ -86,9 +87,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
-            messaging,
+            session,
             rawRequestType,
             rawResponseType,
             requestTransformer,
@@ -98,7 +99,17 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public RequestToHandlerSender<U, V> buildToHandlerSender() {
         return new RequestToHandlerSenderImpl<>(
-            messaging,
+            session.feature(Messaging.class),
+            rawRequestType,
+            rawResponseType,
+            requestTransformer,
+            responseTransformer);
+    }
+
+    @Override
+    public RequestToSessionSender<T, U, V> buildToSessionSender() {
+        return new RequestToSessionSenderImpl<>(
+            session,
             rawRequestType,
             rawResponseType,
             requestTransformer,

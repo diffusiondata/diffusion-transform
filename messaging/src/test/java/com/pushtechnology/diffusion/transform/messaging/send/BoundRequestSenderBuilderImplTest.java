@@ -16,13 +16,11 @@
 package com.pushtechnology.diffusion.transform.messaging.send;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.pushtechnology.diffusion.client.features.Messaging;
-import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
@@ -49,6 +47,8 @@ public final class BoundRequestSenderBuilderImplTest {
     @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
+    private Session session;
+    @Mock
     private Messaging messaging;
     @Mock
     private JSON json;
@@ -56,6 +56,8 @@ public final class BoundRequestSenderBuilderImplTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+
+        when(session.feature(Messaging.class)).thenReturn(messaging);
 
         when(transformer.transform("value")).thenReturn(json);
         when(stringTransformer.transform("value")).thenReturn("value");
@@ -72,8 +74,8 @@ public final class BoundRequestSenderBuilderImplTest {
 
     @Test
     public void transformRequestAndSend() throws Exception {
-        final BoundRequestSenderBuilder<String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            messaging,
+        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             transformer,
@@ -87,8 +89,8 @@ public final class BoundRequestSenderBuilderImplTest {
 
     @Test
     public void transformRequestWithAndSend() throws Exception {
-        final BoundRequestSenderBuilder<String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            messaging,
+        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             transformer,
@@ -102,8 +104,8 @@ public final class BoundRequestSenderBuilderImplTest {
 
     @Test
     public void transformResponse() throws Exception {
-        final BoundRequestSenderBuilder<String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            messaging,
+        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             transformer,
@@ -117,8 +119,8 @@ public final class BoundRequestSenderBuilderImplTest {
 
     @Test
     public void transformResponseWith() throws Exception {
-        final BoundRequestSenderBuilder<String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            messaging,
+        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             transformer,

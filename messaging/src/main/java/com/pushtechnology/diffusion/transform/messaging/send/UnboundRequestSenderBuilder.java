@@ -22,33 +22,40 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 /**
  * A builder for {@link RequestToHandlerSender}s that has not been bound to a session.
  *
+ * @param <T> the type of response understood by Diffusion
  * @param <U> the type of request
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-public interface UnboundRequestSenderBuilder<U, V> extends RequestSenderBuilder<U, V> {
+public interface UnboundRequestSenderBuilder<T, U, V> extends RequestSenderBuilder<U, V> {
     @Override
-    <R> UnboundRequestSenderBuilder<R, V> transformRequest(Transformer<R, U> newTransformer);
+    <R> UnboundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer);
 
     @Override
-    <R> UnboundRequestSenderBuilder<R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
+    <R> UnboundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
 
     @Override
-    <R> UnboundRequestSenderBuilder<U, R> transformResponse(Transformer<V, R> newTransformer);
+    <R> UnboundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer);
 
     @Override
-    <R> UnboundRequestSenderBuilder<U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
+    <R> UnboundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
      * Bind the sender that will be built.
      * @param session the session to bind to
      * @return a new builder that creates senders for a session
      */
-    BoundRequestSenderBuilder<U, V> bind(Session session);
+    BoundRequestSenderBuilder<T, U, V> bind(Session session);
 
     /**
      * Create a request to handler sender.
      * @param session the session to send from
      */
     RequestToHandlerSender<U, V> buildToHandlerSender(Session session);
+
+    /**
+     * Create a request to session sender.
+     * @param session the session to send from
+     */
+    RequestToSessionSender<T, U, V> buildToSessionSender(Session session);
 }

@@ -21,25 +21,31 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 /**
  * A builder for {@link RequestToHandlerSender}s that has been bound to a session.
  *
+ * @param <T> the type of response understood by Diffusion
  * @param <U> the type of request
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-public interface BoundRequestSenderBuilder<U, V> extends RequestSenderBuilder<U, V> {
+public interface BoundRequestSenderBuilder<T, U, V> extends RequestSenderBuilder<U, V> {
     @Override
-    <R> BoundRequestSenderBuilder<R, V> transformRequest(Transformer<R, U> newTransformer);
+    <R> BoundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer);
 
     @Override
-    <R> BoundRequestSenderBuilder<R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
+    <R> BoundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
 
     @Override
-    <R> BoundRequestSenderBuilder<U, R> transformResponse(Transformer<V, R> newTransformer);
+    <R> BoundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer);
 
     @Override
-    <R> BoundRequestSenderBuilder<U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
+    <R> BoundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
 
     /**
      * Create a request to handler sender.
      */
     RequestToHandlerSender<U, V> buildToHandlerSender();
+
+    /**
+     * Create a request to session sender.
+     */
+    RequestToSessionSender<T, U, V> buildToSessionSender();
 }

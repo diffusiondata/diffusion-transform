@@ -32,7 +32,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-/*package*/ final class UnboundRequestSenderBuilderImpl<S, T, U, V> implements UnboundRequestSenderBuilder<U, V> {
+/*package*/ final class UnboundRequestSenderBuilderImpl<S, T, U, V> implements UnboundRequestSenderBuilder<T, U, V> {
     private final Class<S> rawRequestType;
     private final Class<T> rawResponseType;
     private final Transformer<U, S> requestTransformer;
@@ -54,7 +54,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<R, V> transformRequest(Transformer<R, U> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,
@@ -63,7 +63,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,
@@ -72,7 +72,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<U, R> transformResponse(Transformer<V, R> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,
@@ -81,7 +81,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,
@@ -90,9 +90,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public BoundRequestSenderBuilder<U, V> bind(Session session) {
+    public BoundRequestSenderBuilder<T, U, V> bind(Session session) {
         return new BoundRequestSenderBuilderImpl<>(
-            session.feature(Messaging.class),
+            session,
             rawRequestType,
             rawResponseType,
             requestTransformer,
@@ -103,6 +103,16 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     public RequestToHandlerSender<U, V> buildToHandlerSender(Session session) {
         return new RequestToHandlerSenderImpl<>(
             session.feature(Messaging.class),
+            rawRequestType,
+            rawResponseType,
+            requestTransformer,
+            responseTransformer);
+    }
+
+    @Override
+    public RequestToSessionSender<T, U, V> buildToSessionSender(Session session) {
+        return new RequestToSessionSenderImpl<>(
+            session,
             rawRequestType,
             rawResponseType,
             requestTransformer,
