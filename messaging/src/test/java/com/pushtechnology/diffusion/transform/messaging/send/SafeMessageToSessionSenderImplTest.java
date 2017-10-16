@@ -37,6 +37,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class SafeMessageToSessionSenderImplTest {
     @Mock
     private SafeTransformer<String, JSON> transformer;

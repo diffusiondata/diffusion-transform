@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class SafeMessageStreamAdapter<V> implements Messaging.MessageStream {
     private final SafeTransformer<Content, V> transformer;
     private final MessageStream<V> delegate;

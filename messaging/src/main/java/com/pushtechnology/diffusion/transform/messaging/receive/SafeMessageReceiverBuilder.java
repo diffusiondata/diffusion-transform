@@ -23,6 +23,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface SafeMessageReceiverBuilder<V> extends MessageReceiverBuilder<V> {
     /**
      * Transform the stream or handler that will be built.

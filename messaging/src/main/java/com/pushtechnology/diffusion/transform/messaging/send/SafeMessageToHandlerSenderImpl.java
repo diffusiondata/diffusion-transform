@@ -25,6 +25,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class SafeMessageToHandlerSenderImpl<V> implements SafeMessageToHandlerSender<V> {
     private final Messaging messaging;
     private final SafeTransformer<V, ? extends Bytes> transformer;

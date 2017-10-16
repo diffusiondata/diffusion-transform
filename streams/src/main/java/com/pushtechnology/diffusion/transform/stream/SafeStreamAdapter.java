@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class SafeStreamAdapter<S, T> extends AbstractStreamAdapter<S, T, Topics.ValueStream<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(SafeStreamAdapter.class);
     private final SafeTransformer<S, T> transformer;

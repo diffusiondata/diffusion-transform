@@ -26,6 +26,7 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class BigIntegerToBinaryTransformer implements SafeTransformer<BigInteger, Binary> {
     /**
      * Instance of {@link BinaryToBigIntegerTransformer}.

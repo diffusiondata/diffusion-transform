@@ -36,6 +36,7 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class SafeTransformedUpdaterImplTest {
     @Mock
     private TopicUpdateControl.ValueUpdater<JSON> delegateUpdater;

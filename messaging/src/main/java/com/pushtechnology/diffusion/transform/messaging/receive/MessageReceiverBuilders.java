@@ -31,6 +31,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class MessageReceiverBuilders {
 
     private static final BinaryDataType BINARY_DATA_TYPE = dataTypes().binary();

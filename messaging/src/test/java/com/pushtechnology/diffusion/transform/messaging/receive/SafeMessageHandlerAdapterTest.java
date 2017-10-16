@@ -40,6 +40,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class SafeMessageHandlerAdapterTest {
     private final Content content = Diffusion.content().newContent("value");
     @Mock

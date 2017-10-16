@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class SafeTransformedUpdaterImpl<S, T> implements SafeTransformedUpdater<S, T> {
     private final ValueUpdater<S> updater;
     private final SafeTransformer<T, S> transformer;
