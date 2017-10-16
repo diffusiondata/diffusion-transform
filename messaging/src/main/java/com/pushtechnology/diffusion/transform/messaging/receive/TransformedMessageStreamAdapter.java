@@ -28,6 +28,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class TransformedMessageStreamAdapter<V> implements Messaging.MessageStream {
     private final Transformer<Content, V> transformer;
     private final TransformedMessageStream<V> delegate;

@@ -22,7 +22,10 @@ package com.pushtechnology.diffusion.transform.transformer;
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of {@link java.util.function.Function}
  */
+@SuppressWarnings("deprecation")
+@Deprecated
 public interface SafeTransformer<S, T> extends Transformer<S, T> {
     @Override
     T transform(S value);

@@ -25,6 +25,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface RequestStreamBuilder<U, V> {
     /**
      * Transform the stream that will be built.

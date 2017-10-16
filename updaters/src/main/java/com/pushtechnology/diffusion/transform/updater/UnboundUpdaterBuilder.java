@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> The type of update source
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface UnboundUpdaterBuilder
     <S, T, U extends TransformedUpdater<S, T>, V extends TransformedUpdateSource<S, T, U>>
     extends UpdaterBuilder<S, T> {

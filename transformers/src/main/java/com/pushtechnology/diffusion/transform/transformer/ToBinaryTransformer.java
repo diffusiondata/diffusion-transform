@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
  * @param <S> the type to transform from
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public abstract class ToBinaryTransformer<S> implements Transformer<S, Binary> {
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
     private final int initialSize;

@@ -31,6 +31,7 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class TransformerBuilderImplTest {
     @Mock
     private Transformer<String, String> transformer;

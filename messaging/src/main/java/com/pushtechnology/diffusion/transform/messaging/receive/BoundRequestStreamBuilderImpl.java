@@ -32,6 +32,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class BoundRequestStreamBuilderImpl<S, T, U, V> implements BoundRequestStreamBuilder<S, U, V> {
     private final Session session;
     private final Class<S> requestType;

@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class StreamAdapter<S, T> extends AbstractStreamAdapter<S, T, TransformedStream<S, T>> {
     private static final Logger LOG = LoggerFactory.getLogger(StreamAdapter.class);
     private final Transformer<S, T> transformingFunction;

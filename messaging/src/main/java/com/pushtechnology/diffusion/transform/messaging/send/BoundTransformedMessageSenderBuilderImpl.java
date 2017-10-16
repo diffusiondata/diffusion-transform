@@ -31,6 +31,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class BoundTransformedMessageSenderBuilderImpl<V> implements BoundTransformedMessageSenderBuilder<V> {
     private final Session session;
     private final Transformer<V, ? extends Bytes> transformer;

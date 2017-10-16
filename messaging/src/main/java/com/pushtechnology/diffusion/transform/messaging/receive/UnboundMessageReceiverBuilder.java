@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <H> the type of handler
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface UnboundMessageReceiverBuilder<V, S extends MessageStream<V>, H extends MessageHandler<V>>
         extends MessageReceiverBuilder<V> {
     @Override

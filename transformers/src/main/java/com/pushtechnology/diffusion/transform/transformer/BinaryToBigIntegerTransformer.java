@@ -24,6 +24,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class BinaryToBigIntegerTransformer extends AbstractTransformer<Binary, BigInteger> {
     /**
      * Instance of {@link BinaryToBigIntegerTransformer}.

@@ -27,6 +27,7 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
  * @param <T> the type to transform to
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T> {
     @Override
     public final T transform(Binary value) throws TransformationException {

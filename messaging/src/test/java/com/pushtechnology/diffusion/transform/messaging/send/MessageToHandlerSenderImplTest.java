@@ -35,6 +35,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class MessageToHandlerSenderImplTest {
     @Mock
     private Transformer<String, JSON> transformer;

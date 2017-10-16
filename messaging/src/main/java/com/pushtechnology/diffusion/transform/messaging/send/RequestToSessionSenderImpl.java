@@ -33,6 +33,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class RequestToSessionSenderImpl<S, T, U, V> implements RequestToSessionSender<T, U, V> {
     private final Session session;
     private final Class<S> rawRequestType;

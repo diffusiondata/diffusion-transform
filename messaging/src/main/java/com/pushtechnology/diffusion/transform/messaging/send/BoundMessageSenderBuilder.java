@@ -26,6 +26,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <U> the type of to handler sender
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface BoundMessageSenderBuilder<V, T, U> extends MessageSenderBuilder<V> {
     @Override
     <R> BoundTransformedMessageSenderBuilder<R> transform(Transformer<R, V> newTransformer);

@@ -41,6 +41,7 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class UnboundRequestStreamBuilderImplTest {
 
     @Mock

@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class MessageToSessionSenderImpl<V> implements MessageToSessionSender<V> {
     private final MessagingControl messagingControl;
     private final Transformer<V, ? extends Bytes> transformer;

@@ -32,6 +32,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class UnboundRequestSenderBuilderImpl<S, T, U, V> implements UnboundRequestSenderBuilder<T, U, V> {
     private final Class<S> rawRequestType;
     private final Class<T> rawResponseType;

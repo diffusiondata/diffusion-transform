@@ -31,6 +31,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class UnboundSafeUpdaterBuilderImpl<S, T> implements UnboundSafeUpdaterBuilder<S, T> {
     private final Class<S> valueType;
     private final SafeTransformer<T, S> transformer;

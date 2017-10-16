@@ -40,6 +40,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class TransformedMessageStreamAdapterTest {
     private final Content content = Diffusion.content().newContent("value");
     @Mock

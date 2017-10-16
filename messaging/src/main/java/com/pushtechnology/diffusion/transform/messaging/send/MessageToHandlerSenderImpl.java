@@ -26,6 +26,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class MessageToHandlerSenderImpl<V> implements MessageToHandlerSender<V> {
     private final Messaging messaging;
     private final Transformer<V, ? extends Bytes> transformer;

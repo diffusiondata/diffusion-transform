@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class StreamBuilderImpl<S, T> extends AbstractStreamBuilder<S, T, TransformedStream<S, T>> {
     private final Transformer<S, T> transformer;
 

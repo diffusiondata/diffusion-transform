@@ -40,6 +40,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class RequestToHandlerSenderImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

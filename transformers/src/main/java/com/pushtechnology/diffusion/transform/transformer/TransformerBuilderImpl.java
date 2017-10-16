@@ -25,6 +25,7 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class TransformerBuilderImpl<S, T> implements TransformerBuilder<S, T> {
     private final Transformer<S, T> transformer;
 

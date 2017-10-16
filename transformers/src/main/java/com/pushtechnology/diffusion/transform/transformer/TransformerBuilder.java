@@ -22,6 +22,7 @@ package com.pushtechnology.diffusion.transform.transformer;
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface TransformerBuilder<S, T> {
     /**
      * Transform the transformer that will be built.

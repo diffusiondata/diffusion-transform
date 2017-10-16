@@ -32,6 +32,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class UnboundSafeMessageReceiverBuilderImpl<V> implements UnboundSafeMessageReceiverBuilder<V> {
     private final SafeTransformer<Content, V> transformer;
 

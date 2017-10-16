@@ -40,6 +40,7 @@ import org.mockito.junit.MockitoRule;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class TransformedRequestStreamAdapterTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();

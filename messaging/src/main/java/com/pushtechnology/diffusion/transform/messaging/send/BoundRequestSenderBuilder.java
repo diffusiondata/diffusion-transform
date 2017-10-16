@@ -26,6 +26,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface BoundRequestSenderBuilder<T, U, V> extends RequestSenderBuilder<U, V> {
     @Override
     <R> BoundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer);

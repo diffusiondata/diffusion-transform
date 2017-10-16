@@ -38,6 +38,7 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class UnboundRequestSenderBuilderImplTest {
     @Mock
     private SafeTransformer<String, JSON> transformer;

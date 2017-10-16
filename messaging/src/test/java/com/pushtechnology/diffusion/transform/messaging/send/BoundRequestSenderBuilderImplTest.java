@@ -37,6 +37,7 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class BoundRequestSenderBuilderImplTest {
     @Mock
     private SafeTransformer<String, JSON> transformer;

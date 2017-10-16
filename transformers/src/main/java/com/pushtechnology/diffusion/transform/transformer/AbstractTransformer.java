@@ -23,6 +23,7 @@ package com.pushtechnology.diffusion.transform.transformer;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public abstract class AbstractTransformer<S, T> implements Transformer<S, T> {
     @Override
     public final T transform(S value) throws TransformationException {

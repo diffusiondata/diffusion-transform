@@ -46,6 +46,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class JSONTransformers {
     /**
      * Default {@link JSONTransformers}, without any Jackson modules.

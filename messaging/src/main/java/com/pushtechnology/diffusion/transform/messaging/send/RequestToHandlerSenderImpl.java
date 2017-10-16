@@ -30,6 +30,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class RequestToHandlerSenderImpl<S, T, U, V> implements RequestToHandlerSender<U, V> {
     private final Messaging messaging;
     private final Class<S> rawRequestType;

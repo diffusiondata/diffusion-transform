@@ -25,6 +25,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of values
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface UnboundTransformedMessageSenderBuilder<V> extends
         UnboundMessageSenderBuilder<V, MessageToSessionSender<V>, MessageToHandlerSender<V>>,
         TransformedMessageSenderBuilder<V> {

@@ -25,6 +25,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public interface UpdaterBuilder<S, T> {
 
     /**

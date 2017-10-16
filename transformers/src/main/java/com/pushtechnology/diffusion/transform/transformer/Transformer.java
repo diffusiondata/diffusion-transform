@@ -22,7 +22,9 @@ package com.pushtechnology.diffusion.transform.transformer;
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of {@link UnsafeTransformer}
  */
+@Deprecated
 public interface Transformer<S, T> {
     /**
      * Transform the value.

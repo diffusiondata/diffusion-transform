@@ -48,6 +48,7 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class TransformersTest {
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();

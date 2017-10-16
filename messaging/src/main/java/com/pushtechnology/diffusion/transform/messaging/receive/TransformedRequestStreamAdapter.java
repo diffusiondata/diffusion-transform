@@ -29,6 +29,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 /*package*/ final class TransformedRequestStreamAdapter<S, T, U, V> implements Messaging.RequestStream<S, T> {
     private final Transformer<S, U> requestTransformer;
     private final Transformer<V, T> responseTransformer;
