@@ -58,17 +58,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer) {
-        return new BoundRequestSenderBuilderImpl<>(
-            session,
-            rawRequestType,
-            rawResponseType,
-            chain(newTransformer, requestTransformer),
-            responseTransformer);
-    }
-
-    @Override
-    public <R> BoundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, R, V> transformRequest(UnsafeTransformer<R, U> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
             session,
             rawRequestType,
@@ -78,17 +68,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer) {
-        return new BoundRequestSenderBuilderImpl<>(
-            session,
-            rawRequestType,
-            rawResponseType,
-            requestTransformer,
-            chain(responseTransformer, newTransformer));
-    }
-
-    @Override
-    public <R> BoundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer) {
+    public <R> BoundRequestSenderBuilder<T, U, R> transformResponse(UnsafeTransformer<V, R> newTransformer) {
         return new BoundRequestSenderBuilderImpl<>(
             session,
             rawRequestType,

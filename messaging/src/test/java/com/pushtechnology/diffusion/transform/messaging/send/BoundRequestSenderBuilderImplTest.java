@@ -24,7 +24,6 @@ import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -44,8 +43,6 @@ public final class BoundRequestSenderBuilderImplTest {
     @Mock
     private SafeTransformer<JSON, String> responseTransformer;
     @Mock
-    private Transformer<String, String> stringTransformer;
-    @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
     private Session session;
@@ -61,7 +58,6 @@ public final class BoundRequestSenderBuilderImplTest {
         when(session.feature(Messaging.class)).thenReturn(messaging);
 
         when(transformer.transform("value")).thenReturn(json);
-        when(stringTransformer.transform("value")).thenReturn("value");
         when(unsafeTransformer.transform("value")).thenReturn("value");
     }
 
@@ -81,22 +77,7 @@ public final class BoundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(stringTransformer);
-
-        final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
-
-        assertNotNull(sender);
-    }
-
-    @Test
-    public void transformRequestWithAndSend() throws Exception {
-        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            session,
-            JSON.class,
-            JSON.class,
-            transformer,
-            responseTransformer)
-            .transformRequest(stringTransformer);
+            .transformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
 
@@ -111,22 +92,7 @@ public final class BoundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(stringTransformer);
-
-        final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
-
-        assertNotNull(sender);
-    }
-
-    @Test
-    public void transformResponseWith() throws Exception {
-        final BoundRequestSenderBuilder<JSON, String, String> builder = new BoundRequestSenderBuilderImpl<>(
-            session,
-            JSON.class,
-            JSON.class,
-            transformer,
-            responseTransformer)
-            .transformRequest(stringTransformer);
+            .transformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
 

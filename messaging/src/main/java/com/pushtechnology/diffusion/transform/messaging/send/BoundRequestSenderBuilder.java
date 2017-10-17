@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.messaging.send;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -28,17 +27,12 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface BoundRequestSenderBuilder<T, U, V> extends RequestSenderBuilder<U, V> {
-    @Override
-    <R> BoundRequestSenderBuilder<T, R, V> transformRequest(Transformer<R, U> newTransformer);
 
     @Override
-    <R> BoundRequestSenderBuilder<T, R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
+    <R> BoundRequestSenderBuilder<T, R, V> transformRequest(UnsafeTransformer<R, U> newTransformer);
 
     @Override
-    <R> BoundRequestSenderBuilder<T, U, R> transformResponse(Transformer<V, R> newTransformer);
-
-    @Override
-    <R> BoundRequestSenderBuilder<T, U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
+    <R> BoundRequestSenderBuilder<T, U, R> transformResponse(UnsafeTransformer<V, R> newTransformer);
 
     /**
      * Create a request to handler sender.

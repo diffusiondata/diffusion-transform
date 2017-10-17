@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.messaging.send;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -27,14 +26,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface RequestSenderBuilder<U, V> {
-    /**
-     * Transform the sender that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new sender builder
-     */
-    <R> RequestSenderBuilder<R, V> transformRequest(Transformer<R, U> newTransformer);
 
     /**
      * Transform the sender that will be built.
@@ -43,7 +34,7 @@ public interface RequestSenderBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new sender builder
      */
-    <R> RequestSenderBuilder<R, V> transformRequestWith(UnsafeTransformer<R, U> newTransformer);
+    <R> RequestSenderBuilder<R, V> transformRequest(UnsafeTransformer<R, U> newTransformer);
 
     /**
      * Transform the sender that will be built.
@@ -52,14 +43,5 @@ public interface RequestSenderBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new sender builder
      */
-    <R> RequestSenderBuilder<U, R> transformResponse(Transformer<V, R> newTransformer);
-
-    /**
-     * Transform the sender that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new sender builder
-     */
-    <R> RequestSenderBuilder<U, R> transformResponseWith(UnsafeTransformer<V, R> newTransformer);
+    <R> RequestSenderBuilder<U, R> transformResponse(UnsafeTransformer<V, R> newTransformer);
 }

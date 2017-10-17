@@ -25,7 +25,6 @@ import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -45,8 +44,6 @@ public final class UnboundRequestSenderBuilderImplTest {
     @Mock
     private SafeTransformer<JSON, String> responseTransformer;
     @Mock
-    private Transformer<String, String> stringTransformer;
-    @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
     private Messaging messaging;
@@ -60,7 +57,6 @@ public final class UnboundRequestSenderBuilderImplTest {
         initMocks(this);
 
         when(transformer.transform("value")).thenReturn(json);
-        when(stringTransformer.transform("value")).thenReturn("value");
         when(unsafeTransformer.transform("value")).thenReturn("value");
         when(session.feature(Messaging.class)).thenReturn(messaging);
     }
@@ -81,22 +77,7 @@ public final class UnboundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(stringTransformer);
-
-        final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
-        verify(session).feature(Messaging.class);
-
-        assertNotNull(sender);
-    }
-
-    @Test
-    public void transformRequestWithAndSend() throws Exception {
-        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
-            JSON.class,
-            JSON.class,
-            transformer,
-            responseTransformer)
-            .transformRequestWith(unsafeTransformer);
+            .transformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
         verify(session).feature(Messaging.class);
@@ -111,22 +92,7 @@ public final class UnboundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformResponse(stringTransformer);
-
-        final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
-        verify(session).feature(Messaging.class);
-
-        assertNotNull(sender);
-    }
-
-    @Test
-    public void transformResponseWith() throws Exception {
-        final UnboundRequestSenderBuilder<JSON, String, String> builder = new UnboundRequestSenderBuilderImpl<>(
-            JSON.class,
-            JSON.class,
-            transformer,
-            responseTransformer)
-            .transformResponseWith(unsafeTransformer);
+            .transformResponse(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
         verify(session).feature(Messaging.class);
