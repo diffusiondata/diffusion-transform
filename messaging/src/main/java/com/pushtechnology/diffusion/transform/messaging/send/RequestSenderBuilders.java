@@ -22,8 +22,8 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.id
  *
  * @author Push Technology Limited
  */
-public final class RequestBuilders {
-    private RequestBuilders() {
+public final class RequestSenderBuilders {
+    private RequestSenderBuilders() {
     }
 
     /**
