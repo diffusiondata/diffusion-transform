@@ -18,7 +18,6 @@ package com.pushtechnology.diffusion.transform.messaging.receive;
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
  * Adapter from {@link Messaging.RequestStream} to {@link TransformedRequestStream}.
@@ -29,15 +28,14 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class TransformedRequestStreamAdapter<S, T, U, V> implements Messaging.RequestStream<S, T> {
-    private final Transformer<S, U> requestTransformer;
-    private final Transformer<V, T> responseTransformer;
+    private final InternalTransformer<S, U> requestTransformer;
+    private final InternalTransformer<V, T> responseTransformer;
     private final TransformedRequestStream<S, U, V> delegate;
 
     /*package*/ TransformedRequestStreamAdapter(
-        Transformer<S, U> requestTransformer,
-        Transformer<V, T> responseTransformer,
+        InternalTransformer<S, U> requestTransformer,
+        InternalTransformer<V, T> responseTransformer,
         TransformedRequestStream<S, U, V> delegate) {
 
         this.requestTransformer = requestTransformer;

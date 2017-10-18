@@ -15,12 +15,10 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
+import static com.pushtechnology.diffusion.transform.messaging.receive.InternalTransformer.toTransformer;
 
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -32,13 +30,12 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class BoundRequestStreamBuilderImpl<S, T, U, V> implements BoundRequestStreamBuilder<S, U, V> {
     private final Session session;
     private final Class<S> requestType;
     private final Class<T> responseType;
-    private final Transformer<S, U> requestTransformer;
-    private final Transformer<V, T> responseTransformer;
+    private final InternalTransformer<S, U> requestTransformer;
+    private final InternalTransformer<V, T> responseTransformer;
 
     /**
      * Constructor.
@@ -47,8 +44,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         Session session,
         Class<S> requestType,
         Class<T> responseType,
-        Transformer<S, U> requestTransformer,
-        Transformer<V, T> responseTransformer) {
+        InternalTransformer<S, U> requestTransformer,
+        InternalTransformer<V, T> responseTransformer) {
         this.session = session;
         this.requestType = requestType;
         this.responseType = responseType;
@@ -62,7 +59,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
             session,
             requestType,
             responseType,
-            chain(requestTransformer, toTransformer(newTransformer)),
+            requestTransformer.chainUnsafe(newTransformer),
             responseTransformer);
     }
 
@@ -73,7 +70,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
             requestType,
             responseType,
             requestTransformer,
-            chain(toTransformer(newTransformer), responseTransformer));
+            toTransformer(newTransformer).chain(responseTransformer));
     }
 
     @Override

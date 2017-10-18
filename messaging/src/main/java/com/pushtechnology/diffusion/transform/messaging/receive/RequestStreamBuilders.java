@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
+import static com.pushtechnology.diffusion.transform.messaging.receive.InternalTransformer.identity;
 
 /**
  * Factory for creating instances of {@link UnboundRequestStreamBuilder}s.

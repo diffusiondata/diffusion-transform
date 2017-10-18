@@ -23,7 +23,6 @@ import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -40,7 +39,6 @@ import org.mockito.junit.MockitoRule;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class TransformedRequestStreamAdapterTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -49,9 +47,9 @@ public final class TransformedRequestStreamAdapterTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    private Transformer<JSON, JSON> requestTransformer;
+    private InternalTransformer<JSON, JSON> requestTransformer;
     @Mock
-    private Transformer<JSON, JSON> responseTransformer;
+    private InternalTransformer<JSON, JSON> responseTransformer;
     @Mock
     private TransformedRequestStream<JSON, JSON, JSON> delegate;
     @Mock
