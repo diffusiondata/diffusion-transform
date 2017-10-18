@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -25,16 +24,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface RequestStreamBuilder<U, V> {
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new sender builder
-     */
-    <R> RequestStreamBuilder<R, V> transformRequest(Transformer<U, R> newTransformer);
 
     /**
      * Transform the stream that will be built.
@@ -43,7 +33,7 @@ public interface RequestStreamBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestStreamBuilder<R, V> transformRequestWith(UnsafeTransformer<U, R> newTransformer);
+    <R> RequestStreamBuilder<R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
 
     /**
      * Transform the stream that will be built.
@@ -52,14 +42,5 @@ public interface RequestStreamBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestStreamBuilder<U, R> transformResponse(Transformer<R, V> newTransformer);
-
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     */
-    <R> RequestStreamBuilder<U, R> transformResponseWith(UnsafeTransformer<R, V> newTransformer);
+    <R> RequestStreamBuilder<U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
 }

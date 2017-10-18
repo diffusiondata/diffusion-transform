@@ -16,7 +16,6 @@
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -29,17 +28,12 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface UnboundRequestStreamBuilder<T, U, V> extends RequestStreamBuilder<U, V> {
-    @Override
-    <R> UnboundRequestStreamBuilder<T, R, V> transformRequest(Transformer<U, R> newTransformer);
 
     @Override
-    <R> UnboundRequestStreamBuilder<T, R, V> transformRequestWith(UnsafeTransformer<U, R> newTransformer);
+    <R> UnboundRequestStreamBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
 
     @Override
-    <R> UnboundRequestStreamBuilder<T, U, R> transformResponse(Transformer<R, V> newTransformer);
-
-    @Override
-    <R> UnboundRequestStreamBuilder<T, U, R> transformResponseWith(UnsafeTransformer<R, V> newTransformer);
+    <R> UnboundRequestStreamBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
 
     /**
      * Bind the stream that will be built.

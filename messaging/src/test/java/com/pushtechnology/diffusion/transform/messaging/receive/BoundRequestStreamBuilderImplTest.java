@@ -25,7 +25,6 @@ import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -48,9 +47,7 @@ public final class BoundRequestStreamBuilderImplTest {
     @Mock
     private SafeTransformer<String, JSON> responseTransformer;
     @Mock
-    private Transformer<String, String> stringTransformer;
-    @Mock
-    private UnsafeTransformer<String, String> unsafeTransformer;
+    private UnsafeTransformer<String, String> stringTransformer;
     @Mock
     private Session session;
     @Mock
@@ -69,7 +66,6 @@ public final class BoundRequestStreamBuilderImplTest {
 
         when(responseTransformer.transform("value")).thenReturn(json);
         when(stringTransformer.transform("value")).thenReturn("value");
-        when(unsafeTransformer.transform("value")).thenReturn("value");
         when(session.feature(Messaging.class)).thenReturn(messaging);
     }
 
@@ -77,7 +73,6 @@ public final class BoundRequestStreamBuilderImplTest {
     public void postConditions() {
         verifyNoMoreInteractions(
             responseTransformer,
-            unsafeTransformer,
             json,
             messaging,
             session);
@@ -92,22 +87,6 @@ public final class BoundRequestStreamBuilderImplTest {
             requestTransformer,
             responseTransformer)
             .transformRequest(stringTransformer);
-
-        builder.setStream("path", requestStream);
-
-        verify(session).feature(Messaging.class);
-        verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
-    }
-
-    @Test
-    public void transformRequestWith() throws Exception {
-        final BoundRequestStreamBuilder<JSON, String, String> builder = new BoundRequestStreamBuilderImpl<>(
-            session,
-            JSON.class,
-            JSON.class,
-            requestTransformer,
-            responseTransformer)
-            .transformRequestWith(unsafeTransformer);
 
         builder.setStream("path", requestStream);
 
@@ -131,19 +110,4 @@ public final class BoundRequestStreamBuilderImplTest {
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
     }
 
-    @Test
-    public void transformResponseWith() throws Exception {
-        final BoundRequestStreamBuilder<JSON, String, String> builder = new BoundRequestStreamBuilderImpl<>(
-            session,
-            JSON.class,
-            JSON.class,
-            requestTransformer,
-            responseTransformer)
-            .transformResponseWith(unsafeTransformer);
-
-        builder.setStream("path", requestStream);
-
-        verify(session).feature(Messaging.class);
-        verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
-    }
 }

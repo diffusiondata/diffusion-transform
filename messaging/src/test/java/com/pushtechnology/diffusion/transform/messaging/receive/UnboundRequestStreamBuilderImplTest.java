@@ -26,7 +26,6 @@ import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -49,8 +48,6 @@ public final class UnboundRequestStreamBuilderImplTest {
     @Mock
     private SafeTransformer<String, JSON> responseTransformer;
     @Mock
-    private Transformer<String, String> stringTransformer;
-    @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock
     private Session session;
@@ -69,7 +66,6 @@ public final class UnboundRequestStreamBuilderImplTest {
         initMocks(this);
 
         when(responseTransformer.transform("value")).thenReturn(json);
-        when(stringTransformer.transform("value")).thenReturn("value");
         when(unsafeTransformer.transform("value")).thenReturn("value");
         when(session.feature(Messaging.class)).thenReturn(messaging);
     }
@@ -91,24 +87,9 @@ public final class UnboundRequestStreamBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformRequest(stringTransformer);
+            .transformRequest(unsafeTransformer);
 
         builder.setStream(session, "path", requestStream);
-
-        verify(session).feature(Messaging.class);
-        verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
-    }
-
-    @Test
-    public void transformRequestWith() throws Exception {
-        final UnboundRequestStreamBuilder<JSON, String, String> builder = new UnboundRequestStreamBuilderImpl<>(
-            JSON.class,
-            JSON.class,
-            requestTransformer,
-            responseTransformer)
-            .transformRequestWith(unsafeTransformer);
-
-        builder.setStream(session,"path", requestStream);
 
         verify(session).feature(Messaging.class);
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
@@ -121,22 +102,7 @@ public final class UnboundRequestStreamBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformResponse(stringTransformer);
-
-        builder.setStream(session,"path", requestStream);
-
-        verify(session).feature(Messaging.class);
-        verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
-    }
-
-    @Test
-    public void transformResponseWith() throws Exception {
-        final UnboundRequestStreamBuilder<JSON, String, String> builder = new UnboundRequestStreamBuilderImpl<>(
-            JSON.class,
-            JSON.class,
-            requestTransformer,
-            responseTransformer)
-            .transformResponseWith(unsafeTransformer);
+            .transformResponse(unsafeTransformer);
 
         builder.setStream(session,"path", requestStream);
 

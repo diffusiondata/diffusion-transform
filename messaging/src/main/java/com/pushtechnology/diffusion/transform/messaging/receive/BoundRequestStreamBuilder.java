@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -26,19 +25,13 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface BoundRequestStreamBuilder<T, U, V> extends RequestStreamBuilder<U, V> {
-    @Override
-    <R> BoundRequestStreamBuilder<T, R, V> transformRequest(Transformer<U, R> newTransformer);
 
     @Override
-    <R> BoundRequestStreamBuilder<T, R, V> transformRequestWith(UnsafeTransformer<U, R> newTransformer);
+    <R> BoundRequestStreamBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
 
     @Override
-    <R> BoundRequestStreamBuilder<T, U, R> transformResponse(Transformer<R, V> newTransformer);
-
-    @Override
-    <R> BoundRequestStreamBuilder<T, U, R> transformResponseWith(UnsafeTransformer<R, V> newTransformer);
+    <R> BoundRequestStreamBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
 
     /**
      * Register a request stream.
