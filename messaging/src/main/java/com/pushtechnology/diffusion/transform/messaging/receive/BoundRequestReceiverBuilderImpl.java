@@ -22,7 +22,7 @@ import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * Implementation of {@link BoundRequestStreamBuilder}.
+ * Implementation of {@link BoundRequestReceiverBuilder}.
  *
  * @param <S> the type of request understood by Diffusion
  * @param <T> the type of response understood by Diffusion
@@ -30,7 +30,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-/*package*/ final class BoundRequestStreamBuilderImpl<S, T, U, V> implements BoundRequestStreamBuilder<S, U, V> {
+/*package*/ final class BoundRequestReceiverBuilderImpl<S, T, U, V> implements BoundRequestReceiverBuilder<S, U, V> {
     private final Session session;
     private final Class<S> requestType;
     private final Class<T> responseType;
@@ -40,7 +40,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     /**
      * Constructor.
      */
-    /*package*/ BoundRequestStreamBuilderImpl(
+    /*package*/ BoundRequestReceiverBuilderImpl(
         Session session,
         Class<S> requestType,
         Class<T> responseType,
@@ -54,8 +54,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestStreamBuilder<S, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer) {
-        return new BoundRequestStreamBuilderImpl<>(
+    public <R> BoundRequestReceiverBuilder<S, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer) {
+        return new BoundRequestReceiverBuilderImpl<>(
             session,
             requestType,
             responseType,
@@ -64,8 +64,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> BoundRequestStreamBuilder<S, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer) {
-        return new BoundRequestStreamBuilderImpl<>(
+    public <R> BoundRequestReceiverBuilder<S, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer) {
+        return new BoundRequestReceiverBuilderImpl<>(
             session,
             requestType,
             responseType,
@@ -75,7 +75,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
     @Override
     public void setStream(String selector, TransformedRequestStream<S, U, V> stream) {
-        final Messaging.RequestStream<S, T> adapter = new TransformedRequestStreamAdapter<>(
+        final Messaging.RequestStream<S, T> adapter = new RequestStreamAdapter<>(
             requestTransformer,
             responseTransformer,
             stream);

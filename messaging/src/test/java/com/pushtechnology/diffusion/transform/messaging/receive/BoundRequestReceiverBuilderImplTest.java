@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -35,19 +34,18 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 
 /**
- * Unit tests for {@link UnboundRequestStreamBuilderImplTest}.
+ * Unit tests for {@link BoundRequestReceiverBuilderImpl}.
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
-public final class UnboundRequestStreamBuilderImplTest {
+public final class BoundRequestReceiverBuilderImplTest {
 
     @Mock
     private InternalTransformer<JSON, String> requestTransformer;
     @Mock
     private InternalTransformer<String, JSON> responseTransformer;
     @Mock
-    private UnsafeTransformer<String, String> unsafeTransformer;
+    private UnsafeTransformer<String, String> stringTransformer;
     @Mock
     private Session session;
     @Mock
@@ -65,7 +63,7 @@ public final class UnboundRequestStreamBuilderImplTest {
         initMocks(this);
 
         when(responseTransformer.transform("value")).thenReturn(json);
-        when(unsafeTransformer.transform("value")).thenReturn("value");
+        when(stringTransformer.transform("value")).thenReturn("value");
         when(session.feature(Messaging.class)).thenReturn(messaging);
     }
 
@@ -73,7 +71,6 @@ public final class UnboundRequestStreamBuilderImplTest {
     public void postConditions() {
         verifyNoMoreInteractions(
             responseTransformer,
-            unsafeTransformer,
             json,
             messaging,
             session);
@@ -81,14 +78,15 @@ public final class UnboundRequestStreamBuilderImplTest {
 
     @Test
     public void transformRequest() throws Exception {
-        final UnboundRequestStreamBuilder<JSON, String, String> builder = new UnboundRequestStreamBuilderImpl<>(
+        final BoundRequestReceiverBuilder<JSON, String, String> builder = new BoundRequestReceiverBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformRequest(unsafeTransformer);
+            .transformRequest(stringTransformer);
 
-        builder.setStream(session, "path", requestStream);
+        builder.setStream("path", requestStream);
 
         verify(session).feature(Messaging.class);
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
@@ -96,28 +94,18 @@ public final class UnboundRequestStreamBuilderImplTest {
 
     @Test
     public void transformResponse() throws Exception {
-        final UnboundRequestStreamBuilder<JSON, String, String> builder = new UnboundRequestStreamBuilderImpl<>(
+        final BoundRequestReceiverBuilder<JSON, String, String> builder = new BoundRequestReceiverBuilderImpl<>(
+            session,
             JSON.class,
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformResponse(unsafeTransformer);
+            .transformResponse(stringTransformer);
 
-        builder.setStream(session,"path", requestStream);
+        builder.setStream("path", requestStream);
 
         verify(session).feature(Messaging.class);
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
     }
 
-    @Test
-    public void bind() throws Exception {
-        final BoundRequestStreamBuilder<JSON, String, String> builder = new UnboundRequestStreamBuilderImpl<>(
-            JSON.class,
-            JSON.class,
-            requestTransformer,
-            responseTransformer)
-            .bind(session);
-
-        assertNotNull(builder);
-    }
 }

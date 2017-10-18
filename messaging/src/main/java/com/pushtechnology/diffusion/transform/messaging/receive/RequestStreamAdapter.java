@@ -28,12 +28,12 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-/*package*/ final class TransformedRequestStreamAdapter<S, T, U, V> implements Messaging.RequestStream<S, T> {
+/*package*/ final class RequestStreamAdapter<S, T, U, V> implements Messaging.RequestStream<S, T> {
     private final InternalTransformer<S, U> requestTransformer;
     private final InternalTransformer<V, T> responseTransformer;
     private final TransformedRequestStream<S, U, V> delegate;
 
-    /*package*/ TransformedRequestStreamAdapter(
+    /*package*/ RequestStreamAdapter(
         InternalTransformer<S, U> requestTransformer,
         InternalTransformer<V, T> responseTransformer,
         TransformedRequestStream<S, U, V> delegate) {

@@ -27,20 +27,20 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @author Push Technology Limited
  */
 @SuppressWarnings("deprecation")
-public interface UnboundRequestStreamBuilder<T, U, V> extends RequestStreamBuilder<U, V> {
+public interface UnboundRequestReceiverBuilder<T, U, V> extends RequestReceiverBuilder<U, V> {
 
     @Override
-    <R> UnboundRequestStreamBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
+    <R> UnboundRequestReceiverBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
 
     @Override
-    <R> UnboundRequestStreamBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
+    <R> UnboundRequestReceiverBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
 
     /**
      * Bind the stream that will be built.
      * @param session the session to bind to
      * @return a new builder that creates streams for a session
      */
-    BoundRequestStreamBuilder<T, U, V> bind(Session session);
+    BoundRequestReceiverBuilder<T, U, V> bind(Session session);
 
     /**
      * Register a request stream.

@@ -15,29 +15,26 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
-import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+import static com.pushtechnology.diffusion.transform.messaging.receive.InternalTransformer.identity;
 
 /**
- * Builder for {@link TransformedRequestStream} that has been bound to a session.
+ * Factory for creating instances of {@link UnboundRequestReceiverBuilder}s.
  *
- * @param <T> the type of request understood by Diffusion
- * @param <U> the type of request
- * @param <V> the type of response
  * @author Push Technology Limited
  */
-public interface BoundRequestStreamBuilder<T, U, V> extends RequestStreamBuilder<U, V> {
-
-    @Override
-    <R> BoundRequestStreamBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
-
-    @Override
-    <R> BoundRequestStreamBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
+public final class RequestReceiverBuilders {
+    private RequestReceiverBuilders() {
+    }
 
     /**
-     * Register a request stream.
+     * Create a {@link UnboundRequestReceiverBuilder}.
      *
-     * @param selector the topic selector to match the stream
-     * @param stream the stream handler
+     * @return the request stream builder
      */
-    void setStream(String selector, TransformedRequestStream<T, U, V> stream);
+    public static <U, V> UnboundRequestReceiverBuilder<U, U, V> requestStreamBuilder(
+        Class<U> requestType,
+        Class<V> responseType) {
+
+        return new UnboundRequestReceiverBuilderImpl<>(requestType, responseType, identity(), identity());
+    }
 }

@@ -7,15 +7,15 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link RequestStreamBuilders}.
+ * Unit tests for {@link RequestReceiverBuilders}.
  *
  * @author Push Technology Limited
  */
-public final class RequestStreamBuildersTest {
+public final class RequestReceiverBuildersTest {
 
     @Test
     public void requestStreamBuilder() {
-        final UnboundRequestStreamBuilder<JSON, JSON, JSON> builder = RequestStreamBuilders
+        final UnboundRequestReceiverBuilder<JSON, JSON, JSON> builder = RequestReceiverBuilders
             .requestStreamBuilder(JSON.class, JSON.class);
 
         assertNotNull(builder);

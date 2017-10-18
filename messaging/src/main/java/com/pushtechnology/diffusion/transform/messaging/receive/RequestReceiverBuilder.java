@@ -24,7 +24,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-public interface RequestStreamBuilder<U, V> {
+public interface RequestReceiverBuilder<U, V> {
 
     /**
      * Transform the stream that will be built.
@@ -33,7 +33,7 @@ public interface RequestStreamBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestStreamBuilder<R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
+    <R> RequestReceiverBuilder<R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
 
     /**
      * Transform the stream that will be built.
@@ -42,5 +42,5 @@ public interface RequestStreamBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestStreamBuilder<U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
+    <R> RequestReceiverBuilder<U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
 }

@@ -35,11 +35,11 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 /**
- * Unit tests for {@link TransformedRequestStreamAdapter}.
+ * Unit tests for {@link RequestStreamAdapter}.
  *
  * @author Push Technology Limited
  */
-public final class TransformedRequestStreamAdapterTest {
+public final class RequestStreamAdapterTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -74,7 +74,7 @@ public final class TransformedRequestStreamAdapterTest {
 
     @Test
     public void receiveRequest() throws TransformationException {
-        final TransformedRequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new TransformedRequestStreamAdapter<>(
+        final RequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new RequestStreamAdapter<>(
             requestTransformer,
             responseTransformer,
             delegate);
@@ -100,7 +100,7 @@ public final class TransformedRequestStreamAdapterTest {
         final TransformationException e = new TransformationException("for test");
         when(requestTransformer.transform(request)).thenThrow(e);
 
-        final TransformedRequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new TransformedRequestStreamAdapter<>(
+        final RequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new RequestStreamAdapter<>(
             requestTransformer,
             responseTransformer,
             delegate);
@@ -123,7 +123,7 @@ public final class TransformedRequestStreamAdapterTest {
 
     @Test
     public void onError() {
-        final TransformedRequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new TransformedRequestStreamAdapter<>(
+        final RequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new RequestStreamAdapter<>(
             requestTransformer,
             responseTransformer,
             delegate);
@@ -134,7 +134,7 @@ public final class TransformedRequestStreamAdapterTest {
 
     @Test
     public void onClose() {
-        final TransformedRequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new TransformedRequestStreamAdapter<>(
+        final RequestStreamAdapter<JSON, JSON, JSON, JSON> adapter = new RequestStreamAdapter<>(
             requestTransformer,
             responseTransformer,
             delegate);
