@@ -24,7 +24,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -37,12 +36,11 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class UnboundRequestSenderBuilderImplTest {
     @Mock
-    private SafeTransformer<String, JSON> transformer;
+    private InternalTransformer<String, JSON> transformer;
     @Mock
-    private SafeTransformer<JSON, String> responseTransformer;
+    private InternalTransformer<JSON, String> responseTransformer;
     @Mock
     private UnsafeTransformer<String, String> unsafeTransformer;
     @Mock

@@ -22,6 +22,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,17 +34,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.pushtechnology.diffusion.client.features.Messaging;
-import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
-
 /**
  * Unit tests for {@link RequestToHandlerSenderImpl}.
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class RequestToHandlerSenderImplTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -52,10 +50,10 @@ public final class RequestToHandlerSenderImplTest {
     private Messaging messaging;
 
     @Mock
-    private Transformer<String, JSON> requestTransformer;
+    private InternalTransformer<String, JSON> requestTransformer;
 
     @Mock
-    private Transformer<JSON, String> responseTransformer;
+    private InternalTransformer<JSON, String> responseTransformer;
 
     @Mock
     private JSON request;

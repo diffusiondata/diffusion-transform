@@ -22,7 +22,6 @@ import com.pushtechnology.diffusion.client.features.control.topics.MessagingCont
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.session.SessionId;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
  * Implementation of {@link RequestToSessionSender}.
@@ -33,13 +32,12 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class RequestToSessionSenderImpl<S, T, U, V> implements RequestToSessionSender<T, U, V> {
     private final Session session;
     private final Class<S> rawRequestType;
     private final Class<T> rawResponseType;
-    private final Transformer<U, S> requestTransformer;
-    private final Transformer<T, V> responseTransformer;
+    private final InternalTransformer<U, S> requestTransformer;
+    private final InternalTransformer<T, V> responseTransformer;
 
     /**
      * Constructor.
@@ -48,8 +46,8 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
         Session session,
         Class<S> rawRequestType,
         Class<T> rawResponseType,
-        Transformer<U, S> requestTransformer,
-        Transformer<T, V> responseTransformer) {
+        InternalTransformer<U, S> requestTransformer,
+        InternalTransformer<T, V> responseTransformer) {
 
         this.session = session;
         this.rawRequestType = rawRequestType;

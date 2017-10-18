@@ -31,7 +31,6 @@ import com.pushtechnology.diffusion.client.session.SessionId;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.messaging.send.RequestToSessionSender.TransformedFilterCallback;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -63,10 +62,10 @@ public final class RequestToSessionSenderImplTest {
     private MessagingControl messaging;
 
     @Mock
-    private Transformer<String, JSON> requestTransformer;
+    private InternalTransformer<String, JSON> requestTransformer;
 
     @Mock
-    private Transformer<JSON, String> responseTransformer;
+    private InternalTransformer<JSON, String> responseTransformer;
 
     @Mock
     private JSON request;
