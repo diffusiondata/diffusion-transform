@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
@@ -51,12 +52,18 @@ public final class BoundRequestReceiverBuilderImplTest {
     @Mock
     private Messaging messaging;
     @Mock
+    private MessagingControl messagingControl;
+    @Mock
     private JSON json;
     @Mock
     private TransformedRequestStream<JSON, String, String> requestStream;
+    @Mock
+    private TransformedRequestHandler<JSON, String, String> requestHandler;
 
     @Captor
     private ArgumentCaptor<Messaging.RequestStream<JSON, JSON>> streamCaptor;
+    @Captor
+    private ArgumentCaptor<MessagingControl.RequestHandler<JSON, JSON>> handlerCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -65,6 +72,7 @@ public final class BoundRequestReceiverBuilderImplTest {
         when(responseTransformer.transform("value")).thenReturn(json);
         when(stringTransformer.transform("value")).thenReturn("value");
         when(session.feature(Messaging.class)).thenReturn(messaging);
+        when(session.feature(MessagingControl.class)).thenReturn(messagingControl);
     }
 
     @After
@@ -90,6 +98,11 @@ public final class BoundRequestReceiverBuilderImplTest {
 
         verify(session).feature(Messaging.class);
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
+
+        builder.addRequestHandler("path", requestHandler);
+
+        verify(session).feature(MessagingControl.class);
+        verify(messagingControl).addRequestHandler(eq("path"), eq(JSON.class), eq(JSON.class), handlerCaptor.capture());
     }
 
     @Test
@@ -106,6 +119,11 @@ public final class BoundRequestReceiverBuilderImplTest {
 
         verify(session).feature(Messaging.class);
         verify(messaging).setRequestStream(eq("path"), eq(JSON.class), eq(JSON.class), streamCaptor.capture());
+
+        builder.addRequestHandler("path", requestHandler);
+
+        verify(session).feature(MessagingControl.class);
+        verify(messagingControl).addRequestHandler(eq("path"), eq(JSON.class), eq(JSON.class), handlerCaptor.capture());
     }
 
 }

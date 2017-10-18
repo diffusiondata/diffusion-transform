@@ -15,6 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.messaging.receive;
 
+import java.util.concurrent.CompletableFuture;
+
+import com.pushtechnology.diffusion.client.callbacks.Registration;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -50,4 +53,19 @@ public interface UnboundRequestReceiverBuilder<T, U, V> extends RequestReceiverB
      * @param stream the stream handler
      */
     void setStream(Session session, String selector, TransformedRequestStream<T, U, V> stream);
+
+    /**
+     * Register a request handler.
+     *
+     * @param session the session to register the handler with
+     * @param selector the topic selector to match the stream
+     * @param handler the request handler
+     * @param properties the session properties to receive with the request
+     * @return the registration of the handler
+     */
+    CompletableFuture<Registration> addRequestHandler(
+        Session session,
+        String selector,
+        TransformedRequestHandler<T, U, V> handler,
+        String... properties);
 }

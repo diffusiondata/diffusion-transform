@@ -17,7 +17,11 @@ package com.pushtechnology.diffusion.transform.messaging.receive;
 
 import static com.pushtechnology.diffusion.transform.messaging.receive.InternalTransformer.toTransformer;
 
+import java.util.concurrent.CompletableFuture;
+
+import com.pushtechnology.diffusion.client.callbacks.Registration;
 import com.pushtechnology.diffusion.client.features.Messaging;
+import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -88,5 +92,21 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
             stream);
 
         session.feature(Messaging.class).setRequestStream(selector, requestType, responseType, adapter);
+    }
+
+    @Override
+    public CompletableFuture<Registration> addRequestHandler(
+        Session session,
+        String selector,
+        TransformedRequestHandler<S, U, V> handler,
+        String... properties) {
+        return session
+            .feature(MessagingControl.class)
+            .addRequestHandler(
+                selector,
+                requestType,
+                responseType,
+                new RequestHandlerAdapter<>(requestTransformer, responseTransformer, handler),
+                properties);
     }
 }
