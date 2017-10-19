@@ -371,4 +371,13 @@ public final class TransformersTest {
         final String value = transformer.transform(null);
         assertNull(value);
     }
+
+    @Test
+    public void asUnsafeTransformer() throws Exception {
+        final UnsafeTransformer<String, String> transformer = Transformers
+            .identity(String.class)
+            .asUnsafeTransformer();
+
+        assertEquals("apply", transformer.transform("apply"));
+    }
 }

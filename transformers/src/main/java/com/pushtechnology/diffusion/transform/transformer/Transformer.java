@@ -34,4 +34,13 @@ public interface Transformer<S, T> {
      * @throws TransformationException if the transformation cannot be applied
      */
     T transform(S value) throws TransformationException;
+
+    /**
+     * Convert the {@link Transformer} to an {@link UnsafeTransformer}.
+     *
+     * @return the unsafe transformer
+     */
+    default UnsafeTransformer<S, T> asUnsafeTransformer() {
+        return this::transform;
+    }
 }
