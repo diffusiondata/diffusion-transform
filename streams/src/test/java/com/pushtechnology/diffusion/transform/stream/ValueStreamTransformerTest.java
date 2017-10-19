@@ -15,17 +15,17 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
+import static java.util.function.Function.identity;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
 
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Unit tests for {@link SafeStreamAdapter}.
@@ -46,7 +46,7 @@ public final class ValueStreamTransformerTest {
 
     @Test
     public void onValue() {
-        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(), delegate);
 
         stream.onValue("path", specification, null, "first");
 
@@ -59,7 +59,7 @@ public final class ValueStreamTransformerTest {
 
     @Test
     public void onSubscription() {
-        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(), delegate);
 
         stream.onSubscription("path", specification);
 
@@ -68,7 +68,7 @@ public final class ValueStreamTransformerTest {
 
     @Test
     public void onUnsubscription() {
-        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(), delegate);
 
         stream.onUnsubscription("path", specification, Topics.UnsubscribeReason.REQUESTED);
 
@@ -77,7 +77,7 @@ public final class ValueStreamTransformerTest {
 
     @Test
     public void onClose() {
-        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(), delegate);
 
         stream.onClose();
 
@@ -86,7 +86,7 @@ public final class ValueStreamTransformerTest {
 
     @Test
     public void onError() {
-        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new SafeStreamAdapter<>(identity(), delegate);
 
         stream.onError(ErrorReason.TOPIC_TREE_REGISTRATION_CONFLICT);
 

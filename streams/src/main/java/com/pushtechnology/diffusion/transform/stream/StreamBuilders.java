@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
+import static java.util.function.Function.identity;
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -38,7 +38,7 @@ public final class StreamBuilders {
      * @return The stream builder
      */
     public static <V> SafeStreamBuilder<V, V> newStreamBuilder(Class<V> valueType) {
-        return new SafeStreamBuilderImpl<>(valueType, identity(valueType));
+        return new SafeStreamBuilderImpl<>(valueType, identity());
     }
 
     /**

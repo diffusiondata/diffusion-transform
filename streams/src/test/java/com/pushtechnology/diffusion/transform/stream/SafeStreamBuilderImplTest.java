@@ -15,27 +15,29 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
+import static java.util.function.Function.identity;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Unit tests for {@link SafeStreamBuilderImpl}.
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class SafeStreamBuilderImplTest {
     @Mock
     private Topics topics;
@@ -54,10 +56,10 @@ public final class SafeStreamBuilderImplTest {
     @Test
     public void safeTransform() {
         final SafeStreamBuilder<String, String> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+            new SafeStreamBuilderImpl<>(String.class, identity());
 
         final SafeStreamBuilder<String, String> transformedStreamBuilder =
-            streamBuilder.transform(identity(String.class));
+            streamBuilder.transform(Transformers.identity());
 
         assertTrue(transformedStreamBuilder instanceof SafeStreamBuilderImpl);
     }
@@ -65,10 +67,10 @@ public final class SafeStreamBuilderImplTest {
     @Test
     public void transform() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+            new SafeStreamBuilderImpl<>(String.class, identity());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transform(identity(String.class));
+            streamBuilder.transform(Transformers.identity());
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }
@@ -76,7 +78,7 @@ public final class SafeStreamBuilderImplTest {
     @Test
     public void transformWith() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+            new SafeStreamBuilderImpl<>(String.class, identity());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
             streamBuilder.transformWith(new UnsafeTransformer<String, String>() {
@@ -89,11 +91,22 @@ public final class SafeStreamBuilderImplTest {
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }
 
+    @Test
+    public void transformWithFunction() {
+        final SafeStreamBuilder<String, String> streamBuilder =
+            new SafeStreamBuilderImpl<>(String.class, identity());
+
+        final SafeStreamBuilder<String, String> transformedStreamBuilder =
+            streamBuilder.apply(identity());
+
+        assertTrue(transformedStreamBuilder instanceof SafeStreamBuilderImpl);
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void createPath() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+            new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, "path", stream);
 
         verify(topics).addStream(eq("path"), eq(String.class), isA(SafeStreamAdapter.class));
@@ -103,7 +116,7 @@ public final class SafeStreamBuilderImplTest {
     @Test
     public void createSelector() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity(String.class));
+            new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, selector, stream);
 
         verify(topics).addStream(eq(selector), eq(String.class), isA(SafeStreamAdapter.class));
@@ -113,7 +126,7 @@ public final class SafeStreamBuilderImplTest {
     @Test
     public void createFallback() {
         final StreamBuilder<JSON, JSON, Topics.ValueStream<JSON>> streamBuilder =
-            new SafeStreamBuilderImpl<>(JSON.class, identity(JSON.class));
+            new SafeStreamBuilderImpl<>(JSON.class, identity());
         streamBuilder.createFallback(topics, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));

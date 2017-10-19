@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.transform.transformer.Transformer;
@@ -52,6 +54,15 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @return a new stream builder
      */
     <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer);
+
+    /**
+     * Transform the stream that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new stream builder
+     */
+    <R> StreamBuilder<S, R, ? extends Topics.ValueStream<R>> apply(Function<T, R> newTransformer);
 
     /**
      * Create the stream.

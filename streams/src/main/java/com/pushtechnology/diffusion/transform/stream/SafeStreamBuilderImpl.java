@@ -15,8 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
+
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
@@ -34,29 +35,36 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 /*package*/ final class SafeStreamBuilderImpl<S, T>
         extends AbstractStreamBuilder<S, T, Topics.ValueStream<T>>
         implements SafeStreamBuilder<S, T> {
-    private final SafeTransformer<S, T> transformer;
+    private final Function<S, T> transformer;
 
     /**
      * Constructor.
      */
-    /*package*/ SafeStreamBuilderImpl(Class<S> valueType, SafeTransformer<S, T> transformer) {
+    /*package*/ SafeStreamBuilderImpl(Class<S> valueType, Function<S, T> transformer) {
         super(valueType);
         this.transformer = transformer;
     }
 
     @Override
     public <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer) {
-        return new StreamBuilderImpl<>(valueType, chain(transformer, newTransformer));
+        return new StreamBuilderImpl<>(
+            valueType,
+            toTransformer(transformer).chainUnsafe(newTransformer.asUnsafeTransformer()));
     }
 
     @Override
     public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer) {
-        return new StreamBuilderImpl<>(valueType, chain(transformer, toTransformer(newTransformer)));
+        return new StreamBuilderImpl<>(valueType, toTransformer(transformer).chainUnsafe(newTransformer));
     }
 
     @Override
     public <R> SafeStreamBuilder<S, R> transform(SafeTransformer<T, R> newTransformer) {
-        return new SafeStreamBuilderImpl<>(valueType, chain(transformer, newTransformer));
+        return new SafeStreamBuilderImpl<>(valueType, transformer.andThen(newTransformer.asFunction()));
+    }
+
+    @Override
+    public <R> SafeStreamBuilder<S, R> apply(Function<T, R> newTransformer) {
+        return new SafeStreamBuilderImpl<>(valueType, transformer.andThen(newTransformer));
     }
 
     @Override

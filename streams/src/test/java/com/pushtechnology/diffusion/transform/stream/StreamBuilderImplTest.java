@@ -15,22 +15,21 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Unit tests for {@link StreamBuilderImpl}.
@@ -55,7 +54,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void transform() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
+            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
             streamBuilder.transform(Transformers.<String>identity());
@@ -66,7 +65,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void transformWith() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
+            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
             streamBuilder.transformWith(new UnsafeTransformer<String, String>() {
@@ -83,7 +82,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createPath() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
+            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
         streamBuilder.register(topics, "path", stream);
 
         verify(topics).addStream(eq("path"), eq(String.class), isA(StreamAdapter.class));
@@ -93,7 +92,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createSelector() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity());
+            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
         streamBuilder.register(topics, selector, stream);
 
         verify(topics).addStream(eq(selector), eq(String.class), isA(StreamAdapter.class));
@@ -103,7 +102,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createFallback() {
         final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
-            new StreamBuilderImpl<>(JSON.class, Transformers.<JSON>identity());
+            new StreamBuilderImpl<>(JSON.class, Transformers.<JSON>identity().asUnsafeTransformer());
         streamBuilder.createFallback(topics, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));

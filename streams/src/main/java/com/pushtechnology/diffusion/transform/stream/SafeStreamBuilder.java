@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
@@ -45,4 +47,13 @@ public interface SafeStreamBuilder<S, T> extends StreamBuilder<S, T, Topics.Valu
      * @return a new stream builder
      */
     <R> SafeStreamBuilder<S, R> transform(SafeTransformer<T, R> newTransformer);
+
+    /**
+     * Transform the stream that will be built.
+     *
+     * @param newTransformer the new safe transformer
+     * @param <R> the new type of the transformed values
+     * @return a new stream builder
+     */
+    <R> SafeStreamBuilder<S, R> apply(Function<T, R> newTransformer);
 }

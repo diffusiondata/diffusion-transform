@@ -15,29 +15,29 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A stream adapter that uses a {@link SafeTransformer} to convert the values.
+ * A stream adapter that uses a {@link Function} to convert the values.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class SafeStreamAdapter<S, T> extends AbstractStreamAdapter<S, T, Topics.ValueStream<T>> {
     private static final Logger LOG = LoggerFactory.getLogger(SafeStreamAdapter.class);
-    private final SafeTransformer<S, T> transformer;
+    private final Function<S, T> transformer;
 
     /**
      * Constructor.
      */
-    /*package*/ SafeStreamAdapter(SafeTransformer<S, T> transformer, Topics.ValueStream<T> delegate) {
+    /*package*/ SafeStreamAdapter(Function<S, T> transformer, Topics.ValueStream<T> delegate) {
         super(delegate);
         this.transformer = transformer;
     }
@@ -46,7 +46,7 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
     public void onValue(String topicPath, TopicSpecification topicSpecification, S oldValue, S newValue) {
         final T transformedNewValue;
         try {
-            transformedNewValue = transformer.transform(newValue);
+            transformedNewValue = transformer.apply(newValue);
         }
         // CHECKSTYLE.OFF: IllegalCatch
         catch (RuntimeException e) {
