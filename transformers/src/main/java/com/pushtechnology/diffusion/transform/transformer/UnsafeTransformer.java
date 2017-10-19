@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import java.util.function.Function;
+
 /**
  * A transformer. Converts values of one type into values of a different
  * type. It can fail by throwing any exception.
@@ -32,4 +34,26 @@ public interface UnsafeTransformer<S, T> {
      * @throws Exception if the transformation cannot be applied
      */
     T transform(S value) throws Exception;
+
+    /**
+     * Chain a function after this transformer.
+     *
+     * @param function the function to apply
+     * @param <U> the return type of the chained transformer
+     * @return a new transformer
+     */
+    default <U> UnsafeTransformer<S, U> chain(Function<T, U> function) {
+        return value -> function.apply(this.transform(value));
+    }
+
+    /**
+     * Chain a unsafe transformer after this transformer.
+     *
+     * @param transformer the unsafe transformer to apply
+     * @param <U> the return type of the chained transformer
+     * @return a new transformer
+     */
+    default <U> UnsafeTransformer<S, U> chainUnsafe(UnsafeTransformer<T, U> transformer) {
+        return value -> transformer.transform(this.transform(value));
+    }
 }
