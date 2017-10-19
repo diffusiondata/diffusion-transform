@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.asTransformer;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.cast;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringify;
@@ -30,10 +31,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
@@ -42,6 +40,10 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
+
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.collection.IsMapContaining;
+import org.junit.Test;
 
 /**
  * Unit tests for {@link Transformers}.
@@ -360,5 +362,13 @@ public final class TransformersTest {
             assertSame(e, exception);
             throw exception;
         }
+    }
+
+    @Test
+    public void testAsTransformer() throws Exception {
+        final UnsafeTransformer<String, String> transformer = asTransformer(Function.<String>identity());
+
+        final String value = transformer.transform(null);
+        assertNull(value);
     }
 }

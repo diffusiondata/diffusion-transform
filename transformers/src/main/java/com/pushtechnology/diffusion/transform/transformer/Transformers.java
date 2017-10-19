@@ -20,6 +20,7 @@ import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.
 
 import java.math.BigInteger;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.pushtechnology.diffusion.client.Diffusion;
@@ -154,6 +155,18 @@ public final class Transformers {
                 return transformer1.transform(transientValue);
             }
         };
+    }
+
+    /**
+     * Convert a function to an {@link UnsafeTransformer}.
+     *
+     * @param function the function
+     * @param <S> the source value type
+     * @param <T> the target value type
+     * @return the unsafe transformer
+     */
+    public static <S, T> UnsafeTransformer<S, T> asTransformer(Function<S, T> function) {
+        return function::apply;
     }
 
     /**
