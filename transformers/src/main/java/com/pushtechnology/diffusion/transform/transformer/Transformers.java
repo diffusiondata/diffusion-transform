@@ -165,7 +165,7 @@ public final class Transformers {
      * @param <T> the target value type
      * @return the unsafe transformer
      */
-    public static <S, T> UnsafeTransformer<S, T> asTransformer(Function<S, T> function) {
+    public static <S, T> UnsafeTransformer<S, T> toTransformer(Function<S, T> function) {
         return function::apply;
     }
 

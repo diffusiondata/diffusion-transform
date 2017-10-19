@@ -16,7 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.asTransformer;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.cast;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.stringify;
@@ -366,7 +366,7 @@ public final class TransformersTest {
 
     @Test
     public void testAsTransformer() throws Exception {
-        final UnsafeTransformer<String, String> transformer = asTransformer(Function.<String>identity());
+        final UnsafeTransformer<String, String> transformer = Transformers.toTransformer(Function.<String>identity());
 
         final String value = transformer.transform(null);
         assertNull(value);
