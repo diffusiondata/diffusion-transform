@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import java.util.function.Function;
+
 /**
  * A transformer. Converts values of one type into values of a different
  * type. It will not throw an exception.
@@ -29,4 +31,13 @@ package com.pushtechnology.diffusion.transform.transformer;
 public interface SafeTransformer<S, T> extends Transformer<S, T> {
     @Override
     T transform(S value);
+
+    /**
+     * Convert the transformer to a function.
+     *
+     * @return the transformer as a function
+     */
+    default Function<S, T> asFunction() {
+        return this::transform;
+    }
 }
