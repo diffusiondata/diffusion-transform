@@ -18,6 +18,8 @@ package com.pushtechnology.diffusion.transform.updater;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
@@ -71,6 +73,11 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type) {
         return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
+    }
+
+    @Override
+    public <R> SafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer) {
+        return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer::apply, transformer));
     }
 
     @Override

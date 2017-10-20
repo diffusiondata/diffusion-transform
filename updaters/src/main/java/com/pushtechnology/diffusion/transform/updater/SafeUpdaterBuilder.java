@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
@@ -44,4 +46,13 @@ public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T> {
      * @return a new updater builder
      */
     <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+
+    /**
+     * Transform the updater that will be built.
+     *
+     * @param newTransformer the new safe transformer
+     * @param <R> the new type of the transformed values
+     * @return a new updater builder
+     */
+    <R> SafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer);
 }

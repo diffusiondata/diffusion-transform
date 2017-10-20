@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
@@ -34,6 +36,9 @@ public interface BoundSafeUpdaterBuilder<S, T> extends
 
     @Override
     <R> BoundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
+
+    @Override
+    <R> BoundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer);
 
     @Override
     SafeTransformedUpdater<S, T> create();
