@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public final class ProducingBinary extends AbstractClient {
                 return buffer;
             }
         })
-        .transform(ByteBuffer::array)
+        .transform((Function<ByteBuffer, byte[]>) ByteBuffer::array)
         .transform(byteArrayToBinary())
         .build();
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();

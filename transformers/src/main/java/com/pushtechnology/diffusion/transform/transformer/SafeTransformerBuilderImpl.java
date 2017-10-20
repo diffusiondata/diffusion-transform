@@ -18,6 +18,8 @@ package com.pushtechnology.diffusion.transform.transformer;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
+import java.util.function.Function;
+
 /**
  * Implementation of {@link SafeTransformerBuilder}.
  *
@@ -46,6 +48,11 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
     @Override
     public <R> SafeTransformerBuilder<S, R> transform(SafeTransformer<T, R> newTransformer) {
         return new SafeTransformerBuilderImpl<>(chain(transformer, newTransformer));
+    }
+
+    @Override
+    public <R> SafeTransformerBuilder<S, R> transform(Function<T, R> newTransformer) {
+        return new SafeTransformerBuilderImpl<>(value -> newTransformer.apply(transformer.transform(value)));
     }
 
     @Override

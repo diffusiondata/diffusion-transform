@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.function.Function;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +60,8 @@ public final class TransformerBuilderImplTest {
     public void chainTransformers() throws Exception {
         final TransformerBuilder<String, String> transformerBuilder = new TransformerBuilderImpl<>(transformer)
             .transform(safeTransformer)
-            .transformWith(unsafeTransformer);
+            .transformWith(unsafeTransformer)
+            .transform(Function.identity());
 
         final Transformer<String, String> builtTransformer = transformerBuilder.build();
         final String result = builtTransformer.transform("hello");

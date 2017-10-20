@@ -15,6 +15,8 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
+import java.util.function.Function;
+
 /**
  * Builder for {@link SafeTransformer}s.
  *
@@ -32,6 +34,9 @@ public interface SafeTransformerBuilder<S, T> extends TransformerBuilder<S, T> {
      * @return a new transformer builder
      */
     <R> SafeTransformerBuilder<S, R> transform(SafeTransformer<T, R> newTransformer);
+
+    @Override
+    <R> SafeTransformerBuilder<S, R> transform(Function<T, R> newTransformer);
 
     /**
      * @return a new transformer
