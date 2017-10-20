@@ -63,7 +63,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> SafeStreamBuilder<S, R> apply(Function<T, R> newTransformer) {
+    public <R> SafeStreamBuilder<S, R> transform(Function<T, R> newTransformer) {
         return new SafeStreamBuilderImpl<>(valueType, transformer.andThen(newTransformer));
     }
 

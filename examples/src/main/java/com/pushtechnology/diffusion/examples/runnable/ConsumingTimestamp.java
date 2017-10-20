@@ -22,19 +22,21 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.transform.stream.TransformedStream;
+import com.pushtechnology.diffusion.transform.transformer.Transformer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that consumes Binary topics containing a string based timestamp.
  *
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class ConsumingTimestamp extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ConsumingBinary.class);
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
@@ -56,7 +58,7 @@ public final class ConsumingTimestamp extends AbstractClient {
             // This method reference may throw a ParseException that will be
             // converted to a TransformationException automatically
             .transformWith(DATE_FORMAT::parse)
-            .transform(Date::toInstant)
+            .transform((Transformer<Date, Instant>) Date::toInstant)
             .register(topics, "binary/timestamp", new TransformedStream.Default<String, Instant>() {
                 @Override
                 public void onValue(

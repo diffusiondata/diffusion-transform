@@ -97,7 +97,7 @@ public final class SafeStreamBuilderImplTest {
             new SafeStreamBuilderImpl<>(String.class, identity());
 
         final SafeStreamBuilder<String, String> transformedStreamBuilder =
-            streamBuilder.apply(identity());
+            streamBuilder.transform(identity());
 
         assertTrue(transformedStreamBuilder instanceof SafeStreamBuilderImpl);
     }

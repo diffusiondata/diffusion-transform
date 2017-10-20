@@ -55,5 +55,5 @@ public interface SafeStreamBuilder<S, T> extends StreamBuilder<S, T, Topics.Valu
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> SafeStreamBuilder<S, R> apply(Function<T, R> newTransformer);
+    <R> SafeStreamBuilder<S, R> transform(Function<T, R> newTransformer);
 }

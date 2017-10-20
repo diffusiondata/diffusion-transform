@@ -62,7 +62,7 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> StreamBuilder<S, R, ? extends Topics.ValueStream<R>> apply(Function<T, R> newTransformer);
+    <R> StreamBuilder<S, R, ? extends Topics.ValueStream<R>> transform(Function<T, R> newTransformer);
 
     /**
      * Create the stream.
