@@ -30,8 +30,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  * Factory for creating instances of message receivers.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public final class MessageReceiverBuilders {
 
     private static final BinaryDataType BINARY_DATA_TYPE = dataTypes().binary();

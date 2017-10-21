@@ -20,6 +20,8 @@ package com.pushtechnology.diffusion.transform.messaging.receive;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 public interface SafeMessageStream<V> extends MessageStream<V> {
 }

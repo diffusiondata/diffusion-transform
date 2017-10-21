@@ -30,8 +30,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 /*package*/ final class UnboundTransformedMessageReceiverBuilderImpl<V> implements
     UnboundTransformedMessageReceiverBuilder<V> {
 

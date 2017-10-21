@@ -19,7 +19,9 @@ package com.pushtechnology.diffusion.transform.messaging.receive;
  * Handle to a message receiver to allow it to be closed.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 public interface MessageReceiverHandle extends AutoCloseable {
     @Override
     void close();

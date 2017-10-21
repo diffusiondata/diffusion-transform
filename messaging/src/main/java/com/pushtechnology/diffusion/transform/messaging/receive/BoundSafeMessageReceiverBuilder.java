@@ -22,8 +22,9 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public interface BoundSafeMessageReceiverBuilder<V> extends
     BoundMessageReceiverBuilder<V, SafeMessageStream<V>, SafeMessageHandler<V>>,
     SafeMessageReceiverBuilder<V> {

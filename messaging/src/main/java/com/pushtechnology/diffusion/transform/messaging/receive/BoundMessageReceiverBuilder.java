@@ -25,8 +25,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <S> the type of stream
  * @param <H> the type of handler
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public interface BoundMessageReceiverBuilder<V, S extends MessageStream<V>, H extends MessageHandler<V>>
         extends MessageReceiverBuilder<V> {
     @Override

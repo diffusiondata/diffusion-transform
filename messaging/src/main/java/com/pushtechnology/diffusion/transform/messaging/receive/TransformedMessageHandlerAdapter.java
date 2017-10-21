@@ -28,8 +28,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 /*package*/ final class TransformedMessageHandlerAdapter<V> implements MessagingControl.MessageHandler {
     private final Transformer<Content, V> transformer;
     private final TransformedMessageHandler<V> delegate;

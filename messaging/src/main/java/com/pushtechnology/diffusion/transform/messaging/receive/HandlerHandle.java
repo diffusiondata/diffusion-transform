@@ -24,7 +24,9 @@ import com.pushtechnology.diffusion.client.features.RegisteredHandler;
  * Implementation of {@link MessageReceiverHandle} for handlers.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 /*package*/ final class HandlerHandle implements MessageReceiverHandle {
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private final AtomicReference<RegisteredHandler> registeredHandler = new AtomicReference<>(null);

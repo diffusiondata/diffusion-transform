@@ -21,7 +21,9 @@ import com.pushtechnology.diffusion.client.features.Messaging;
  * Implementation of {@link MessageReceiverHandle} for {@link MessageStream}s.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 /*package*/ final class StreamHandle implements MessageReceiverHandle {
     private final Messaging messaging;
     private final Messaging.MessageStream stream;

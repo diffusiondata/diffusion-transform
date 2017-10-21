@@ -29,7 +29,9 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  *
  * @param <V> the type of the transformed values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 public interface TransformedMessageHandler<V> extends MessageHandler<V> {
 
     /**

@@ -32,6 +32,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  * Integration test for sending messages from a session to a handler.
  * @author Push Technology Limited
  */
+@SuppressWarnings("deprecation")
 public final class ControlToSessionIT {
     @Mock
     private Session.Listener listener;

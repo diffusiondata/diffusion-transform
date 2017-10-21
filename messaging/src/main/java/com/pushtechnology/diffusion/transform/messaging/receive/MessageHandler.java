@@ -27,7 +27,9 @@ import com.pushtechnology.diffusion.client.session.SessionId;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request receivers
  */
+@Deprecated
 public interface MessageHandler<V> {
 
     /**
