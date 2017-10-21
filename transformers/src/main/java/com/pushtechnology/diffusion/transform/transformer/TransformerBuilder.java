@@ -32,7 +32,9 @@ public interface TransformerBuilder<S, T> {
      * @param newTransformer the new transformer
      * @param <R> the new type of the transformed values
      * @return a new transformer builder
+     * @deprecated since 2.0.0 in favour of methods using unsafe transformer
      */
+    @Deprecated
     <R> TransformerBuilder<S, R> transform(Transformer<T, R> newTransformer);
 
     /**
