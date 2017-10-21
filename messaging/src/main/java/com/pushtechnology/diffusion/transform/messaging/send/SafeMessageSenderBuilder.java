@@ -22,8 +22,9 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public interface SafeMessageSenderBuilder<V> extends MessageSenderBuilder<V> {
     /**
      * Transform the sender that will be built.

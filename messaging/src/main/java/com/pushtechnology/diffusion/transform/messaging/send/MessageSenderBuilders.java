@@ -24,7 +24,9 @@ import com.pushtechnology.diffusion.transform.transformer.Transformers;
  * Factory for creating instances of {@link SafeMessageSenderBuilder}s.
  *
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
+@Deprecated
 public final class MessageSenderBuilders {
     private MessageSenderBuilders() {
     }

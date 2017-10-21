@@ -27,8 +27,9 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 /*package*/ final class SafeMessageToSessionSenderImpl<V> implements SafeMessageToSessionSender<V> {
     private final MessagingControl messagingControl;
     private final SafeTransformer<V, ? extends Bytes> transformer;

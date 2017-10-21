@@ -23,7 +23,9 @@ import com.pushtechnology.diffusion.client.features.Messaging.SendCallback;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
+@Deprecated
 public interface SafeMessageToHandlerSender<V> extends MessageToHandlerSender<V> {
 
     @Override

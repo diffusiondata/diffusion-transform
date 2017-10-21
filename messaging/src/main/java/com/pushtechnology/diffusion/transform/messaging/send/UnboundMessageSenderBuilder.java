@@ -26,8 +26,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> the type of to session sender
  * @param <U> the type of to handler sender
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public interface UnboundMessageSenderBuilder<V, T, U> extends MessageSenderBuilder<V> {
     @Override
     <R> UnboundTransformedMessageSenderBuilder<R> transform(Transformer<R, V> newTransformer);

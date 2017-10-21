@@ -25,7 +25,9 @@ import com.pushtechnology.diffusion.transform.transformer.TransformationExceptio
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
+@Deprecated
 public interface MessageToSessionSender<V> {
 
     /**

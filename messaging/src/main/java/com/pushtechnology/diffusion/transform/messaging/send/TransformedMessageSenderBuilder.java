@@ -20,6 +20,8 @@ package com.pushtechnology.diffusion.transform.messaging.send;
  *
  * @param <V> the type of values
  * @author Push Technology Limited
+ * @deprecated since 2.0.0 in favour of request senders
  */
+@Deprecated
 public interface TransformedMessageSenderBuilder<V> extends MessageSenderBuilder<V> {
 }
