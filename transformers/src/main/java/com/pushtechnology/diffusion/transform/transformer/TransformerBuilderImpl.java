@@ -54,4 +54,9 @@ import java.util.function.Function;
     public Transformer<S, T> build() {
         return transformer;
     }
+
+    @Override
+    public UnsafeTransformer<S, T> buildUnsafe() {
+        return transformer.asUnsafeTransformer();
+    }
 }

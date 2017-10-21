@@ -59,4 +59,9 @@ public interface TransformerBuilder<S, T> {
      * @return a new transformer
      */
     Transformer<S, T> build();
+
+    /**
+     * @return a new transformer
+     */
+    UnsafeTransformer<S, T> buildUnsafe();
 }

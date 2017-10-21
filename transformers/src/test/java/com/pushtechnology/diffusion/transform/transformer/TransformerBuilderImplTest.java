@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -71,6 +72,15 @@ public final class TransformerBuilderImplTest {
         verify(transformer).transform("hello");
         verify(safeTransformer).transform("morning");
         verify(unsafeTransformer).transform(42);
+
+        final UnsafeTransformer<String, String> unsafeBuiltTransformer = transformerBuilder.buildUnsafe();
+        final String unsafeResult = unsafeBuiltTransformer.transform("hello");
+
+        assertEquals("goodbye", unsafeResult);
+
+        verify(transformer, times(2)).transform("hello");
+        verify(safeTransformer, times(2)).transform("morning");
+        verify(unsafeTransformer, times(2)).transform(42);
     }
 
 }

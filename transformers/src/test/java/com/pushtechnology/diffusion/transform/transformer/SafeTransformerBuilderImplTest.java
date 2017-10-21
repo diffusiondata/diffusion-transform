@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -73,10 +74,19 @@ public final class SafeTransformerBuilderImplTest {
         verify(safeTransformer0).transform("hello");
         verify(safeTransformer1).transform("morning");
         verify(transformer).transform(42);
+
+        final UnsafeTransformer<String, String> unsafeBuiltTransformer = transformerBuilder.buildUnsafe();
+        final String unsafeResult = unsafeBuiltTransformer.transform("hello");
+
+        assertEquals("goodbye", unsafeResult);
+
+        verify(safeTransformer0, times(2)).transform("hello");
+        verify(safeTransformer1, times(2)).transform("morning");
+        verify(transformer, times(2)).transform(42);
     }
 
     @Test
-    public void chainSafeTransformers() {
+    public void chainSafeTransformers() throws Exception {
         final SafeTransformerBuilder<String, Integer> transformerBuilder =
             new SafeTransformerBuilderImpl<>(safeTransformer0)
                 .transform(safeTransformer1)
@@ -85,10 +95,18 @@ public final class SafeTransformerBuilderImplTest {
         final SafeTransformer<String, Integer> transformer = transformerBuilder.build();
         final Integer result = transformer.transform("hello");
 
-        assertEquals((int) 42,(int) result);
+        assertEquals(42, (int) result);
 
         verify(safeTransformer0).transform("hello");
         verify(safeTransformer1).transform("morning");
+
+        final UnsafeTransformer<String, Integer> unsafeBuiltTransformer = transformerBuilder.buildUnsafe();
+        final Integer unsafeResult = unsafeBuiltTransformer.transform("hello");
+
+        assertEquals(42, (int) unsafeResult);
+
+        verify(safeTransformer0, times(2)).transform("hello");
+        verify(safeTransformer1, times(2)).transform("morning");
     }
 
     @Test
@@ -105,5 +123,14 @@ public final class SafeTransformerBuilderImplTest {
         verify(safeTransformer0).transform("hello");
         verify(safeTransformer1).transform("morning");
         verify(unsafeTransformer).transform(42);
+
+        final UnsafeTransformer<String, String> unsafeBuiltTransformer = transformerBuilder.buildUnsafe();
+        final String unsafeResult = unsafeBuiltTransformer.transform("hello");
+
+        assertEquals("goodbye", unsafeResult);
+
+        verify(safeTransformer0, times(2)).transform("hello");
+        verify(safeTransformer1, times(2)).transform("morning");
+        verify(unsafeTransformer, times(2)).transform(42);
     }
 }
