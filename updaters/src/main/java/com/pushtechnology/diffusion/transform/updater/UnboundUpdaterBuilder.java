@@ -46,6 +46,12 @@ public interface UnboundUpdaterBuilder
     @Override
     <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
+    @Override
+    <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer);
+
+    @Override
+    <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer, Class<R> type);
+
     /**
      * Bind an {@link UpdaterBuilder} to a session.
      * @param updateControl The feature of the session to bind
