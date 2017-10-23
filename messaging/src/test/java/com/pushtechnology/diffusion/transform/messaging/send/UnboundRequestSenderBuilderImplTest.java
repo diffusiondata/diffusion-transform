@@ -75,7 +75,7 @@ public final class UnboundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(unsafeTransformer);
+            .unsafeTransformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
         verify(session).feature(Messaging.class);
@@ -90,7 +90,7 @@ public final class UnboundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformResponse(unsafeTransformer);
+            .unsafeTransformResponse(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender(session);
         verify(session).feature(Messaging.class);

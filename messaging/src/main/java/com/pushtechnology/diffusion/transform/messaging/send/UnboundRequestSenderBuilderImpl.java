@@ -52,7 +52,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<T, R, V> transformRequest(UnsafeTransformer<R, U> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, R, V> unsafeTransformRequest(UnsafeTransformer<R, U> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,
@@ -61,7 +61,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundRequestSenderBuilder<T, U, R> transformResponse(UnsafeTransformer<V, R> newTransformer) {
+    public <R> UnboundRequestSenderBuilder<T, U, R> unsafeTransformResponse(UnsafeTransformer<V, R> newTransformer) {
         return new UnboundRequestSenderBuilderImpl<>(
             rawRequestType,
             rawResponseType,

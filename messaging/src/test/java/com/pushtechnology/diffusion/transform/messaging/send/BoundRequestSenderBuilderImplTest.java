@@ -75,7 +75,7 @@ public final class BoundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(unsafeTransformer);
+            .unsafeTransformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
 
@@ -90,7 +90,7 @@ public final class BoundRequestSenderBuilderImplTest {
             JSON.class,
             transformer,
             responseTransformer)
-            .transformRequest(unsafeTransformer);
+            .unsafeTransformRequest(unsafeTransformer);
 
         final RequestToHandlerSender<String, String> sender = builder.buildToHandlerSender();
 

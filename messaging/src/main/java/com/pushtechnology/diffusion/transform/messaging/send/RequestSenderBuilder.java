@@ -34,7 +34,7 @@ public interface RequestSenderBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new sender builder
      */
-    <R> RequestSenderBuilder<R, V> transformRequest(UnsafeTransformer<R, U> newTransformer);
+    <R> RequestSenderBuilder<R, V> unsafeTransformRequest(UnsafeTransformer<R, U> newTransformer);
 
     /**
      * Transform the sender that will be built.
@@ -43,5 +43,5 @@ public interface RequestSenderBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new sender builder
      */
-    <R> RequestSenderBuilder<U, R> transformResponse(UnsafeTransformer<V, R> newTransformer);
+    <R> RequestSenderBuilder<U, R> unsafeTransformResponse(UnsafeTransformer<V, R> newTransformer);
 }
