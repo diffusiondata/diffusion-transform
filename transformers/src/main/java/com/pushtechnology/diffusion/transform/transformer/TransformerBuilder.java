@@ -43,8 +43,19 @@ public interface TransformerBuilder<S, T> {
      * @param newTransformer the new transformer
      * @param <R> the new type of the transformed values
      * @return a new transformer builder
+     * @deprecated since 2.0.0 in favour of {@link #unsafeTransform(UnsafeTransformer)}
      */
+    @Deprecated
     <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer);
+
+    /**
+     * Transform the transformer that will be built.
+     *
+     * @param newTransformer the new transformer
+     * @param <R> the new type of the transformed values
+     * @return a new transformer builder
+     */
+    <R> TransformerBuilder<S, R> unsafeTransform(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * Transform the transformer that will be built.

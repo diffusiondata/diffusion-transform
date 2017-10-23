@@ -46,6 +46,11 @@ import java.util.function.Function;
     }
 
     @Override
+    public <R> TransformerBuilder<S, R> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
+        return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
+    }
+
+    @Override
     public <R> TransformerBuilder<S, R> transform(Function<T, R> newTransformer) {
         return new TransformerBuilderImpl<>(value -> newTransformer.apply(transformer.transform(value)));
     }
