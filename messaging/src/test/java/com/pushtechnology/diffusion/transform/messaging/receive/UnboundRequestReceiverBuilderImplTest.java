@@ -93,7 +93,7 @@ public final class UnboundRequestReceiverBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformRequest(unsafeTransformer);
+            .unsafeTransformRequest(unsafeTransformer);
 
         builder.setStream(session, "path", requestStream);
 
@@ -113,7 +113,7 @@ public final class UnboundRequestReceiverBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformResponse(unsafeTransformer);
+            .unsafeTransformResponse(unsafeTransformer);
 
         builder.setStream(session,"path", requestStream);
 

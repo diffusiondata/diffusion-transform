@@ -33,7 +33,7 @@ public interface RequestReceiverBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestReceiverBuilder<R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
+    <R> RequestReceiverBuilder<R, V> unsafeTransformRequest(UnsafeTransformer<U, R> newTransformer);
 
     /**
      * Transform the stream that will be built.
@@ -42,5 +42,5 @@ public interface RequestReceiverBuilder<U, V> {
      * @param <R> the new type of the transformed values
      * @return a new stream builder
      */
-    <R> RequestReceiverBuilder<U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
+    <R> RequestReceiverBuilder<U, R> unsafeTransformResponse(UnsafeTransformer<R, V> newTransformer);
 }

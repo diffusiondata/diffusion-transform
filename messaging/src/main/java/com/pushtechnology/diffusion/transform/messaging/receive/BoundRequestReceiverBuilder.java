@@ -31,10 +31,10 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 public interface BoundRequestReceiverBuilder<T, U, V> extends RequestReceiverBuilder<U, V> {
 
     @Override
-    <R> BoundRequestReceiverBuilder<T, R, V> transformRequest(UnsafeTransformer<U, R> newTransformer);
+    <R> BoundRequestReceiverBuilder<T, R, V> unsafeTransformRequest(UnsafeTransformer<U, R> newTransformer);
 
     @Override
-    <R> BoundRequestReceiverBuilder<T, U, R> transformResponse(UnsafeTransformer<R, V> newTransformer);
+    <R> BoundRequestReceiverBuilder<T, U, R> unsafeTransformResponse(UnsafeTransformer<R, V> newTransformer);
 
     /**
      * Register a request stream.

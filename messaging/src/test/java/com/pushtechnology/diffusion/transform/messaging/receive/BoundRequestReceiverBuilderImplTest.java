@@ -92,7 +92,7 @@ public final class BoundRequestReceiverBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformRequest(stringTransformer);
+            .unsafeTransformRequest(stringTransformer);
 
         builder.setStream("path", requestStream);
 
@@ -113,7 +113,7 @@ public final class BoundRequestReceiverBuilderImplTest {
             JSON.class,
             requestTransformer,
             responseTransformer)
-            .transformResponse(stringTransformer);
+            .unsafeTransformResponse(stringTransformer);
 
         builder.setStream("path", requestStream);
 
