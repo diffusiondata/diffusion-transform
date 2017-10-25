@@ -15,7 +15,7 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.binaryTopicAdderBuilder;
+import static com.pushtechnology.diffusion.client.topics.details.TopicType.BINARY;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.byteArrayToBinary;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -26,18 +26,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Function;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.adder.SafeTopicAdder;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.updater.SafeTransformedUpdater;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -78,12 +77,8 @@ public final class ProducingBinary extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final SafeTopicAdder<RandomData> adder = binaryTopicAdderBuilder()
-            .transform(SERIALISER)
-            .bind(session)
-            .create();
-
-        adder.add("binary/random", RandomData.next(), new TopicControl.AddCallback.Default());
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        topicControl.addTopic("binary/random", BINARY, new TopicControl.AddCallback.Default());
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)

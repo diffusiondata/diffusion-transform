@@ -30,11 +30,6 @@
 
         <dependency>
             <groupId>com.pushtechnology.diffusion.transform</groupId>
-            <artifactId>topic-adders</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.pushtechnology.diffusion.transform</groupId>
             <artifactId>messaging</artifactId>
         </dependency>
 

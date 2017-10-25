@@ -17,8 +17,6 @@ understood. This library aims to add additional ways of transforming these value
 
 [Updater builders](https://pushtechnology.github.io/diffusion-transform/updaters/updater-builders.html)
 
-[Topic adder builders](https://pushtechnology.github.io/diffusion-transform/topic-adders/topic-adder-builders.html)
-
 [Message receivers](https://pushtechnology.github.io/diffusion-transform/messaging/message-receiver-builders.html)
 
 [Message senders](https://pushtechnology.github.io/diffusion-transform/messaging/message-sender-builders.html)

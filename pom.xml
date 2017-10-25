@@ -18,7 +18,6 @@
     <modules>
         <module>examples</module>
         <module>streams</module>
-        <module>topic-adders</module>
         <module>transformers</module>
         <module>updaters</module>
         <module>messaging</module>
@@ -89,12 +88,6 @@
             <dependency>
                 <groupId>com.pushtechnology.diffusion.transform</groupId>
                 <artifactId>transformers</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.pushtechnology.diffusion.transform</groupId>
-                <artifactId>topic-adders</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

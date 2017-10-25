@@ -15,8 +15,7 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.adder.TopicAdderBuilders.jsonTopicAdderBuilder;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.parseJSON;
+import static com.pushtechnology.diffusion.client.topics.details.TopicType.JSON;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -24,15 +23,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.adder.TopicAdder;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.updater.BoundTransformedUpdaterBuilder;
@@ -40,6 +35,9 @@ import com.pushtechnology.diffusion.transform.updater.TransformedUpdateSource;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
 import com.pushtechnology.diffusion.transform.updater.UnboundSafeUpdaterBuilder;
 import com.pushtechnology.diffusion.transform.updater.UnboundTransformedUpdaterBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that reuses the updater builders.
@@ -70,20 +68,9 @@ public final class ReusingUpdaterBuilders extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        final TopicAdder<String> adder = jsonTopicAdderBuilder()
-            .transform(parseJSON())
-            .bind(session)
-            .create();
-
-        try {
-            adder.add("json/random", "{}", new TopicControl.AddCallback.Default());
-            adder.add("other/random", "{}", new TopicControl.AddCallback.Default());
-        }
-        catch (TransformationException e) {
-            LOG.error("Initial value could not be parsed as JSON");
-            stop();
-            return;
-        }
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        topicControl.addTopic("json/random", JSON, new TopicControl.AddCallback.Default());
+        topicControl.addTopic("other/random", JSON, new TopicControl.AddCallback.Default());
 
         final BoundTransformedUpdaterBuilder<JSON, RandomData> builder = updateBuilder.bind(session);
         builder.register(
