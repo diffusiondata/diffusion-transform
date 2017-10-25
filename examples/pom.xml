@@ -3,7 +3,7 @@
     <parent>
         <artifactId>diffusion-transform</artifactId>
         <groupId>com.pushtechnology.diffusion.transform</groupId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
