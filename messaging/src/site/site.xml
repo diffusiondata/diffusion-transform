@@ -4,8 +4,6 @@
         <menu ref="parent" />
         <menu name="Details">
             <item name="Messaging" href="messaging.html" />
-            <item name="Message Receiver Builders" href="message-receiver-builders.html" />
-            <item name="Message Sender Builders" href="message-sender-builders.html" />
         </menu>
         <menu ref="reports" />
     </body>
