@@ -15,22 +15,22 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders.newJSONMessageSenderBuilder;
+import static com.pushtechnology.diffusion.transform.messaging.send.RequestSenderBuilders.requestSenderBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
-import com.pushtechnology.diffusion.client.features.Messaging;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.messaging.send.MessageToHandlerSender;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.messaging.send.RequestToHandlerSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that sends JSON messages to the server.
@@ -54,18 +54,17 @@ public final class SendingToServer extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        final MessageToHandlerSender<RandomData> sender = newJSONMessageSenderBuilder()
-            .transform(Transformers.<RandomData>fromPojo())
+        final RequestToHandlerSender<RandomData, String> sender = requestSenderBuilder(JSON.class, String.class)
+            .unsafeTransformRequest(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
             .bind(session)
             .buildToHandlerSender();
 
         updateTask = executor.scheduleAtFixedRate(
             () -> {
                 try {
-                    sender.send(
+                    sender.sendRequest(
                         "json/random",
-                        RandomData.next(),
-                        new Messaging.SendCallback.Default());
+                        RandomData.next()).thenAccept(n -> LOG.info("Request sent and received"));
                 }
                 catch (TransformationException e) {
                     LOG.warn("Failed to transform data", e);

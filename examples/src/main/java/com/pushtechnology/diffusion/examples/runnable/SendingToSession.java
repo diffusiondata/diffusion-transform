@@ -15,24 +15,23 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import static com.pushtechnology.diffusion.transform.messaging.send.MessageSenderBuilders.newJSONMessageSenderBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.util.Collection;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
-import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.client.types.ErrorReport;
-import com.pushtechnology.diffusion.transform.messaging.send.MessageToSessionSender;
+import com.pushtechnology.diffusion.client.session.SessionId;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.messaging.send.RequestSenderBuilders;
+import com.pushtechnology.diffusion.transform.messaging.send.RequestToSessionSender;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that sends JSON messages to a session filter.
@@ -56,35 +55,48 @@ public final class SendingToSession extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        final MessageToSessionSender<RandomData> sender = newJSONMessageSenderBuilder()
-            .transform(Transformers.<RandomData>fromPojo())
+        final RequestToSessionSender<String, RandomData, String> sender = RequestSenderBuilders
+            .requestSenderBuilder(JSON.class, String.class)
+            .unsafeTransformRequest(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
             .bind(session)
             .buildToSessionSender();
 
         updateTask = executor.scheduleAtFixedRate(
             () -> {
                 try {
-                    sender.sendToFilter(
+                    sender.sendRequest(
                         "$Principal IS 'auth'",
                         "json/random",
                         RandomData.next(),
-                        new MessagingControl.SendToFilterCallback() {
+                        new RequestToSessionSender.TransformedFilterCallback<String, String>() {
+                            @Override
+                            public void onResponse(SessionId sessionId, String response) {
+                                LOG.warn("Received response from {}", sessionId);
+                            }
+
+                            @Override
+                            public void onResponseError(SessionId sessionId, Throwable t) {
+                                LOG.warn("Failed to send message to session {}", sessionId, t);
+                            }
+
+                            @Override
+                            public void onTransformationException(
+                                    SessionId sessionId,
+                                    String response,
+                                    TransformationException e) {
+                                LOG.warn("Failed to transform response from {}", sessionId, e);
+                            }
+
+                            @Override
+                            public void onClose() {
+                                LOG.info("All responses received");
+                            }
 
                             @Override
                             public void onError(ErrorReason errorReason) {
                                 LOG.warn("Failed to send message, {}", errorReason);
                             }
-
-                            @Override
-                            public void onComplete(int numberSent) {
-                                LOG.warn("Sent message to {} clients", numberSent);
-                            }
-
-                            @Override
-                            public void onRejected(Collection<ErrorReport> errors) {
-                                LOG.warn("Failed to parse filter, {}", errors);
-                            }
-                        });
+                        }).thenAccept(numberSent -> LOG.warn("Sent message to {} clients", numberSent));
                 }
                 catch (TransformationException e) {
                     LOG.warn("Failed to transform data", e);

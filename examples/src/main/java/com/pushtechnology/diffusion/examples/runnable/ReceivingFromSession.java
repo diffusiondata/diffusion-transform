@@ -15,18 +15,17 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import java.util.Map;
+import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
+import com.pushtechnology.diffusion.client.features.control.topics.MessagingControl.RequestHandler.RequestContext;
+import com.pushtechnology.diffusion.client.session.Session;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.messaging.receive.RequestReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedRequestHandler;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
+import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.pushtechnology.diffusion.client.content.Content;
-import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.client.session.SessionId;
-import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
-import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageHandler;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 /**
  * A client that receives JSON messages sent to a path.
@@ -48,30 +47,51 @@ public final class ReceivingFromSession extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        MessageReceiverBuilders
-            .newJSONMessageReceiverBuilder()
-            .transform(Transformers.stringify())
+        RequestReceiverBuilders
+            .requestStreamBuilder(JSON.class, String.class)
+            .unsafeTransformRequest(Transformers.stringify().asUnsafeTransformer())
             .bind(session)
-            .register(
+            .addRequestHandler(
                 "json/random",
-                new TransformedMessageHandler.Default<String>() {
+                new TransformedRequestHandler<JSON, String, String>() {
                     @Override
-                    public void onTransformationException(
-                            String path,
-                            Content value,
-                            SessionId sessionId,
-                            Map<String, String> sessionProperties,
-                            TransformationException e) {
-                        LOG.warn("{} transformation error, path={}, message={}", this, path, value, e);
+                    public void onRequest(
+                        String request,
+                        RequestContext requestContext,
+                        Responder<String> responder) {
+
+                        LOG.warn("{} request, path={}, message={}", this, requestContext.getPath(), request);
+                        try {
+                            responder.respond(null);
+                        }
+                        catch (TransformationException e) {
+                            LOG.warn("{} failed to transform response", this, e);
+                        }
                     }
 
                     @Override
-                    public void onMessageReceived(
-                            String path,
-                            String message,
-                            SessionId sessionId,
-                            Map<String, String> sessionProperties) {
-                        LOG.warn("{} message, path={}, message={}", this, path, message);
+                    public void onTransformationException(
+                        JSON request,
+                        RequestContext requestContext,
+                        Responder<String> responder,
+                        TransformationException e) {
+
+                        LOG.warn(
+                            "{} transformation error, path={}, message={}",
+                            this,
+                            requestContext.getPath(),
+                            request,
+                            e);
+                    }
+
+                    @Override
+                    public void onClose() {
+                        LOG.debug("{} closed", this);
+                    }
+
+                    @Override
+                    public void onError(ErrorReason errorReason) {
+                        LOG.warn("Failed to send message, {}", errorReason);
                     }
                 });
     }

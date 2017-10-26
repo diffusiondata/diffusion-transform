@@ -15,15 +15,16 @@
 
 package com.pushtechnology.diffusion.examples.runnable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.pushtechnology.diffusion.client.content.Content;
+import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.messaging.receive.MessageReceiverBuilders;
-import com.pushtechnology.diffusion.transform.messaging.receive.TransformedMessageStream;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.messaging.receive.RequestReceiverBuilders;
+import com.pushtechnology.diffusion.transform.messaging.receive.TransformedRequestStream;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that receives JSON messages sent specifically to it.
@@ -45,21 +46,43 @@ public final class ReceivingFromServer extends AbstractClient {
 
     @Override
     public void onStarted(Session session) {
-        MessageReceiverBuilders
-            .newJSONMessageReceiverBuilder()
-            .transform(Transformers.stringify())
+        RequestReceiverBuilders
+            .requestStreamBuilder(JSON.class, String.class)
+            .unsafeTransformRequest(Transformers.stringify().asUnsafeTransformer())
             .bind(session)
-            .register(new TransformedMessageStream.Default<String>() {
-                @Override
-                public void onTransformationException(String path, Content value, TransformationException e) {
-                    LOG.warn("{} transformation error, path={}, message={}", this, path, value, e);
-                }
+            .setStream(
+                "json/random",
+                new TransformedRequestStream<JSON, String, String>() {
+                    @Override
+                    public void onRequest(String path, String request, Responder<String> responder) {
+                        LOG.warn("{} request, path={}, message={}", this, path, request);
+                        try {
+                            responder.respond(null);
+                        }
+                        catch (TransformationException e) {
+                            LOG.warn("{} failed to transform response", this, e);
+                        }
+                    }
 
-                @Override
-                public void onMessageReceived(String path, String message) {
-                    LOG.warn("{} message, path={}, message={}", this, path, message);
-                }
-            });
+                    @Override
+                    public void onTransformationException(
+                            String path,
+                            JSON request,
+                            Responder<String> responder,
+                            TransformationException e) {
+                        LOG.warn("{} transformation error, path={}, message={}", this, path, request, e);
+                    }
+
+                    @Override
+                    public void onClose() {
+                        LOG.debug("{} closed", this);
+                    }
+
+                    @Override
+                    public void onError(ErrorReason errorReason) {
+                        LOG.warn("Failed to send message, {}", errorReason);
+                    }
+                });
     }
 
     /**
