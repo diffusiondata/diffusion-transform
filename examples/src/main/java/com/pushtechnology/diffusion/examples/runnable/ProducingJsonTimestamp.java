@@ -25,9 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
@@ -38,6 +35,9 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.JSONTransformers;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -83,7 +83,7 @@ public final class ProducingJsonTimestamp extends AbstractClient {
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
         final TransformedUpdater<JSON, LocalDateTime> valueUpdater = updaterBuilder(JSON.class)
-            .transform(jsonTransformers.<LocalDateTime>fromPojo())
+            .unsafeTransform(jsonTransformers.<LocalDateTime>fromPojo().asUnsafeTransformer())
             .create(updater);
 
         updateTask = EXECUTOR.scheduleAtFixedRate(

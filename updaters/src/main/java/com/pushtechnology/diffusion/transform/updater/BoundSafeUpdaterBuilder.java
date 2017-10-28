@@ -17,8 +17,6 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import java.util.function.Function;
 
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-
 /**
  * An extension to {@link SafeUpdaterBuilder} that is bound to a session.
  *
@@ -30,12 +28,6 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 public interface BoundSafeUpdaterBuilder<S, T> extends
     SafeUpdaterBuilder<S, T>,
     BoundUpdaterBuilder<S, T, SafeTransformedUpdater<S, T>, SafeTransformedUpdateSource<S, T>> {
-
-    @Override
-    <R> BoundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
-
-    @Override
-    <R> BoundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
 
     @Override
     <R> BoundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer);

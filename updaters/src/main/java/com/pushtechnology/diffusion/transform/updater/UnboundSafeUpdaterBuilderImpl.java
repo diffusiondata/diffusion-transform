@@ -23,7 +23,6 @@ import java.util.function.Function;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -44,28 +43,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer) {
-        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
-    }
-
-    @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type) {
-        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
-    }
-
-    @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer) {
-        return unsafeTransform(newTransformer);
-    }
-
-    @Override
-    public <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(
-            UnsafeTransformer<R, T> newTransformer,
-            Class<R> type) {
-        return unsafeTransform(newTransformer, type);
-    }
-
-    @Override
     public <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer) {
         return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
     }
@@ -78,17 +55,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer) {
-        return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
-    }
-
-    @Override
-    public <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type) {
-        return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer, transformer));
-    }
-
-    @Override
-    public <R> SafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer) {
+    public <R> UnboundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer) {
         return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer::apply, transformer));
     }
 

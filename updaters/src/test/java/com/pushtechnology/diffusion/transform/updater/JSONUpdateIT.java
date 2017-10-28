@@ -30,14 +30,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Collections;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.verification.VerificationWithTimeout;
-
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
@@ -48,6 +40,14 @@ import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.verification.VerificationWithTimeout;
 
 /**
  * Integration test for JSON updaters.
@@ -117,7 +117,7 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .transform(Transformers.fromMap())
+            .unsafeTransform(Transformers.fromMap().asUnsafeTransformer())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);
@@ -158,7 +158,7 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .transform(Transformers.fromMap())
+            .unsafeTransform(Transformers.fromMap().asUnsafeTransformer())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);

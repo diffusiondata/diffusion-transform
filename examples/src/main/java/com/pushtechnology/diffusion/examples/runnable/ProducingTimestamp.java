@@ -26,9 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -36,6 +33,9 @@ import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.updater.TransformedUpdater;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -69,8 +69,8 @@ public final class ProducingTimestamp extends AbstractClient {
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
         final TransformedUpdater<String, Instant> valueUpdater = updaterBuilder(String.class)
-            .transform(DATE_FORMAT::format, Date.class)
-            .transform(Date::from, Instant.class)
+            .transform(DATE_FORMAT::format)
+            .transform(Date::from)
             .create(updater);
 
         updateTask = EXECUTOR.scheduleAtFixedRate(

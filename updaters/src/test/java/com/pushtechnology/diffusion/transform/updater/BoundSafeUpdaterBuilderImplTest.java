@@ -23,6 +23,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.function.Function;
+
+import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,19 +37,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
-import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
-
 /**
  * Unit tests for {@link BoundSafeUpdaterBuilderImpl}.
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class BoundSafeUpdaterBuilderImplTest {
     @Mock
     private TopicUpdateControl updateControl;
@@ -55,9 +54,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     @Mock
     private JSON jsonValue;
     @Mock
-    private Transformer<String, JSON> transformer;
-    @Mock
-    private SafeTransformer<String, JSON> safeTransformer;
+    private Function<String, JSON> safeTransformer;
     @Mock
     private UnsafeTransformer<String, JSON> unsafeTransformer;
     @Mock
@@ -76,8 +73,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         initMocks(this);
 
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
-        when(transformer.transform("stringValue")).thenReturn(jsonValue);
-        when(safeTransformer.transform("stringValue")).thenReturn(jsonValue);
+        when(safeTransformer.apply("stringValue")).thenReturn(jsonValue);
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
@@ -87,7 +83,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, transformer, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer);
+        verifyNoMoreInteractions(callback, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer);
     }
 
     @Test
@@ -119,14 +115,14 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
         updater.update("topic", "stringValue", callback);
 
-        verify(safeTransformer).transform("stringValue");
+        verify(safeTransformer).apply("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
     @Test
     public void transformWithCreateAndUpdate() throws Exception {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
-            .transformWith(unsafeTransformer)
+            .unsafeTransform(unsafeTransformer)
             .create();
 
         updater.update("topic", "stringValue", callback);
@@ -136,39 +132,15 @@ public final class BoundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void safeTransformCreateAndUpdateWithClass() throws TransformationException {
-        final SafeTransformedUpdater<JSON, String> updater = updaterBuilder
-            .transform(safeTransformer, String.class)
-            .create();
-
-        updater.update("topic", "stringValue", "context", contextCallback);
-
-        verify(safeTransformer).transform("stringValue");
-        verify(delegateUpdater).update("topic", jsonValue, "context", contextCallback);
-    }
-
-    @Test
-    public void transformCreateAndUpdate() throws TransformationException {
+    public void transformCreateAndUpdate() throws Exception {
         final TransformedUpdater<JSON, String> updater = updaterBuilder
-            .transform(transformer)
+            .unsafeTransform(unsafeTransformer)
             .create();
 
         updater.update("topic", "stringValue", callback);
 
-        verify(transformer).transform("stringValue");
+        verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
-    }
-
-    @Test
-    public void transformCreateAndUpdateWithClass() throws TransformationException {
-        final TransformedUpdater<JSON, String> updater = updaterBuilder
-            .transform(transformer, String.class)
-            .create();
-
-        updater.update("topic", "stringValue", "context", contextCallback);
-
-        verify(transformer).transform("stringValue");
-        verify(delegateUpdater).update("topic", jsonValue, "context", contextCallback);
     }
 
     @Test
@@ -185,14 +157,14 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
         updaterCaptor.getValue().update("topic", "stringValue", callback);
 
-        verify(safeTransformer).transform("stringValue");
+        verify(safeTransformer).apply("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
     @Test
     public void transformAndUnbind() throws TransformationException {
         final UnboundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
-            .transform(transformer)
+            .unsafeTransform(unsafeTransformer)
             .unbind();
 
         builder.create(simpleUpdater);

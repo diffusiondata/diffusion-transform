@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -27,50 +26,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface UpdaterBuilder<S, T> {
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of methods using {@link UnsafeTransformer}
-     */
-    @Deprecated
-    <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of methods using {@link UnsafeTransformer}
-     */
-    @Deprecated
-    <R> TransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of {@link #unsafeTransform(UnsafeTransformer)}
-     */
-    @Deprecated
-    <R> TransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of {@link #unsafeTransform(UnsafeTransformer)}
-     */
-    @Deprecated
-    <R> TransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Transform the updater that will be built.

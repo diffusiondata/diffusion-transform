@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class ProducingJson extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJson.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -66,7 +65,7 @@ public final class ProducingJson extends AbstractClient {
             .updater();
 
         final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.class)
-            .transform(Transformers.<RandomData>fromPojo())
+            .unsafeTransform(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
             .create(updater);
 
         updateTask = executor.scheduleAtFixedRate(

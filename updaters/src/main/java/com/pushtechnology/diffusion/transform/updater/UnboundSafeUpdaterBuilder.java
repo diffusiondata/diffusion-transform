@@ -15,9 +15,10 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
  * An extension to {@link SafeUpdaterBuilder} that is not bound to a session.
@@ -31,12 +32,6 @@ public interface UnboundSafeUpdaterBuilder<S, T> extends
     SafeUpdaterBuilder<S, T>,
     UnboundUpdaterBuilder<S, T, SafeTransformedUpdater<S, T>, SafeTransformedUpdateSource<S, T>> {
 
-    @Override
-    <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
-
-    @Override
-    <R> UnboundSafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
-
     // CHECKSTYLE.OFF: MissingDeprecated
     @Deprecated
     @Override
@@ -45,6 +40,9 @@ public interface UnboundSafeUpdaterBuilder<S, T> extends
 
     @Override
     BoundSafeUpdaterBuilder<S, T> bind(Session session);
+
+    @Override
+    <R> UnboundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer);
 
     /**
      * Register an update source.

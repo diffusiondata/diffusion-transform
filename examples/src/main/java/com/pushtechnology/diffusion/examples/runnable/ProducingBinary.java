@@ -31,8 +31,6 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformers;
 import com.pushtechnology.diffusion.transform.updater.SafeTransformedUpdater;
 
 import org.slf4j.Logger;
@@ -44,24 +42,20 @@ import org.slf4j.LoggerFactory;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class ProducingBinary extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingBinary.class);
-    private static final SafeTransformer<RandomData, Binary> SERIALISER = Transformers
-        .builder(RandomData.class)
-        .transform(new SafeTransformer<RandomData, ByteBuffer>() {
-            @Override
-            public ByteBuffer transform(RandomData value) {
-                final ByteBuffer buffer = ByteBuffer.allocate(16);
-                buffer.putInt(value.getId());
-                buffer.putLong(value.getTimestamp());
-                buffer.putInt(value.getRandomInt());
-                return buffer;
-            }
-        })
-        .transform((Function<ByteBuffer, byte[]>) ByteBuffer::array)
-        .transform(byteArrayToBinary())
-        .build();
+    private static final Function<RandomData, Binary> SERIALISER = new Function<RandomData, ByteBuffer>() {
+        @Override
+        public ByteBuffer apply(RandomData value) {
+            final ByteBuffer buffer = ByteBuffer.allocate(16);
+            buffer.putInt(value.getId());
+            buffer.putLong(value.getTimestamp());
+            buffer.putInt(value.getRandomInt());
+            return buffer;
+        }
+    }
+        .andThen(ByteBuffer::array)
+        .andThen(value -> byteArrayToBinary().transform(value));
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;

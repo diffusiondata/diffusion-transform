@@ -17,7 +17,6 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -33,18 +32,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 public interface UnboundUpdaterBuilder
     <S, T, U extends TransformedUpdater<S, T>, V extends TransformedUpdateSource<S, T, U>>
     extends UpdaterBuilder<S, T> {
-
-    @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
-
-    @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
-
-    @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
-
-    @Override
-    <R> UnboundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     @Override
     <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer);

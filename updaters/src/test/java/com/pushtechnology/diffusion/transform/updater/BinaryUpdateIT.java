@@ -32,14 +32,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.verification.VerificationWithTimeout;
-
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
@@ -50,6 +42,14 @@ import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.verification.VerificationWithTimeout;
 
 /**
  * Integration test for Binary updaters.
@@ -119,7 +119,7 @@ public final class BinaryUpdateIT {
 
         final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .transform(Transformers.bigIntegerToBinary())
+            .unsafeTransform(Transformers.bigIntegerToBinary().asUnsafeTransformer())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", TEN, updateCallback);
@@ -160,7 +160,7 @@ public final class BinaryUpdateIT {
 
         final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .transform(Transformers.bigIntegerToBinary())
+            .unsafeTransform(Transformers.bigIntegerToBinary().asUnsafeTransformer())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", TEN, updateCallback);

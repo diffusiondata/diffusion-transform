@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -27,21 +26,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> The type of update source
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V extends
         TransformedUpdateSource<S, T, U>> extends UpdaterBuilder<S, T> {
-
-    @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer);
-
-    @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transform(Transformer<R, T> newTransformer, Class<R> type);
-
-    @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer);
-
-    @Override
-    <R> BoundTransformedUpdaterBuilder<S, R> transformWith(UnsafeTransformer<R, T> newTransformer, Class<R> type);
 
     @Override
     <R> BoundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer);

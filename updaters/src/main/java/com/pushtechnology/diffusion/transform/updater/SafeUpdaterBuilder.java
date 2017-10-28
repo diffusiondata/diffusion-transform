@@ -17,8 +17,6 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import java.util.function.Function;
 
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-
 /**
  * An extension to {@link UpdaterBuilder} that creates {@link SafeTransformedUpdater}s.
  *
@@ -28,28 +26,6 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface SafeUpdaterBuilder<S, T> extends UpdaterBuilder<S, T> {
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new safe transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of methods using {@link Function}
-     */
-    @Deprecated
-    <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer);
-
-    /**
-     * Transform the updater that will be built.
-     *
-     * @param newTransformer the new safe transformer
-     * @param <R> the new type of the transformed values
-     * @return a new updater builder
-     * @deprecated since 2.0.0 in favour of methods using {@link Function}
-     */
-    @Deprecated
-    <R> SafeUpdaterBuilder<S, R> transform(SafeTransformer<R, T> newTransformer, Class<R> type);
 
     /**
      * Transform the updater that will be built.

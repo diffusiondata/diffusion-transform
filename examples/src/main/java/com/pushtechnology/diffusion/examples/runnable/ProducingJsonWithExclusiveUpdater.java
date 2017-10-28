@@ -63,7 +63,7 @@ public final class ProducingJsonWithExclusiveUpdater extends AbstractClient {
         topicControl.addTopic("json/random", JSON, new TopicControl.AddCallback.Default());
 
         updaterBuilder(JSON.class)
-            .transform(Transformers.<RandomData>fromPojo())
+            .unsafeTransform(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
             .register(
                 session.feature(TopicUpdateControl.class),
                 "json",
