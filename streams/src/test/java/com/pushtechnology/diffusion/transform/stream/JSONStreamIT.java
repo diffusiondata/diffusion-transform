@@ -104,7 +104,7 @@ public final class JSONStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
-            .transform(Transformers.toMapOf(String.class))
+            .unsafeTransform(Transformers.toMapOf(String.class).asUnsafeTransformer())
             .createFallback(topics, stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -148,7 +148,7 @@ public final class JSONStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
-            .transform(Transformers.toMapOf(String.class))
+            .unsafeTransform(Transformers.toMapOf(String.class).asUnsafeTransformer())
             .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);

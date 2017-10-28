@@ -25,7 +25,6 @@ import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
-import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,28 +51,12 @@ public final class StreamBuilderImplTest {
     }
 
     @Test
-    public void transform() {
+    public void unsafeTransform() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transform(Transformers.<String>identity());
-
-        assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
-    }
-
-    @Test
-    public void transformWith() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
-
-        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transformWith(new UnsafeTransformer<String, String>() {
-                @Override
-                public String transform(String value) throws Exception {
-                    return value;
-                }
-            });
+            streamBuilder.unsafeTransform(Transformers.<String>identity().asUnsafeTransformer());
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }

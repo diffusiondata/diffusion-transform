@@ -22,11 +22,12 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
-import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,34 +60,18 @@ public final class SafeStreamBuilderImplTest {
             new SafeStreamBuilderImpl<>(String.class, identity());
 
         final SafeStreamBuilder<String, String> transformedStreamBuilder =
-            streamBuilder.transform(Transformers.identity());
+            streamBuilder.transform(Function.identity());
 
         assertTrue(transformedStreamBuilder instanceof SafeStreamBuilderImpl);
     }
 
     @Test
-    public void transform() {
+    public void unsafeTransform() {
         final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transform(Transformers.identity());
-
-        assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
-    }
-
-    @Test
-    public void transformWith() {
-        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
-            new SafeStreamBuilderImpl<>(String.class, identity());
-
-        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.transformWith(new UnsafeTransformer<String, String>() {
-                @Override
-                public String transform(String value) throws Exception {
-                    return value;
-                }
-            });
+            streamBuilder.unsafeTransform(Transformers.<String>identity().asUnsafeTransformer());
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }

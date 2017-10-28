@@ -15,7 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.isNull;
@@ -23,17 +22,16 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
+import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
-import com.pushtechnology.diffusion.client.features.Topics;
-import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
  * Unit tests for {@link StreamAdapter}.
@@ -56,7 +54,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onValue() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onValue("path", specification, null, "first");
 
@@ -69,7 +67,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onValueMultipleTopics() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onValue("pathOne", specification, null, "first");
         stream.onValue("pathTwo", specification, null, "ay");
@@ -86,11 +84,8 @@ public final class StreamAdapterTest {
 
     @Test
     public void onTransformationException() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(new Transformer<String, String>() {
-            @Override
-            public String transform(String value) throws TransformationException {
-                throw new TransformationException(new Exception("Intentionally thrown in test"));
-            }
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> {
+            throw new TransformationException(new Exception("Intentionally thrown in test"));
         }, delegate);
 
         stream.onValue("path", specification, null, "first");
@@ -101,11 +96,8 @@ public final class StreamAdapterTest {
 
     @Test
     public void onRuntimeException() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(new Transformer<String, String>() {
-            @Override
-            public String transform(String value) throws TransformationException {
-                throw new RuntimeException("Intentionally thrown in test");
-            }
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> {
+            throw new RuntimeException("Intentionally thrown in test");
         }, delegate);
 
         stream.onValue("path", specification, null, "first");
@@ -123,14 +115,14 @@ public final class StreamAdapterTest {
             }
         }).when(delegate).onValue(eq("path"), eq(specification), isNull(String.class), eq("first"));
 
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onValue("path", specification, null, "first");
     }
 
     @Test
     public void onSubscription() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onSubscription("path", specification);
 
@@ -139,7 +131,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onUnsubscription() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onUnsubscription("path", specification, Topics.UnsubscribeReason.REQUESTED);
 
@@ -148,7 +140,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onClose() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onClose();
 
@@ -157,7 +149,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onError() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onError(ErrorReason.TOPIC_TREE_REGISTRATION_CONFLICT);
 
@@ -166,7 +158,7 @@ public final class StreamAdapterTest {
 
     @Test
     public void onSessionClose() {
-        final Topics.ValueStream<String> stream = new StreamAdapter<>(identity(String.class), delegate);
+        final Topics.ValueStream<String> stream = new StreamAdapter<>(value -> value, delegate);
 
         stream.onError(ErrorReason.SESSION_CLOSED);
 

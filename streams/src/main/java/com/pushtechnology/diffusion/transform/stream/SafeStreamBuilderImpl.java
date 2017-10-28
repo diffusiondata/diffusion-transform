@@ -20,8 +20,6 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -46,26 +44,10 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer) {
-        return new StreamBuilderImpl<>(
-            valueType,
-            toTransformer(transformer).chainUnsafe(newTransformer.asUnsafeTransformer()));
-    }
-
-    @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer) {
-        return unsafeTransform(newTransformer);
-    }
-
-    @Override
     public <R> StreamBuilder<S, R, TransformedStream<S, R>> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
         return new StreamBuilderImpl<>(valueType, toTransformer(transformer).chainUnsafe(newTransformer));
     }
 
-    @Override
-    public <R> SafeStreamBuilder<S, R> transform(SafeTransformer<T, R> newTransformer) {
-        return new SafeStreamBuilderImpl<>(valueType, transformer.andThen(newTransformer.asFunction()));
-    }
 
     @Override
     public <R> SafeStreamBuilder<S, R> transform(Function<T, R> newTransformer) {

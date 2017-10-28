@@ -15,15 +15,15 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
-
 /**
- * A transforming stream that uses {@link Transformer} to convert the values.
+ * A transforming stream that uses {@link UnsafeTransformer} to convert the values.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
@@ -32,12 +32,12 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 @SuppressWarnings("deprecation")
 /*package*/ final class StreamAdapter<S, T> extends AbstractStreamAdapter<S, T, TransformedStream<S, T>> {
     private static final Logger LOG = LoggerFactory.getLogger(StreamAdapter.class);
-    private final Transformer<S, T> transformingFunction;
+    private final UnsafeTransformer<S, T> transformingFunction;
 
     /**
      * Constructor.
      */
-    /*package*/ StreamAdapter(Transformer<S, T> transformingFunction, TransformedStream<S, T> delegate) {
+    /*package*/ StreamAdapter(UnsafeTransformer<S, T> transformingFunction, TransformedStream<S, T> delegate) {
         super(delegate);
         this.transformingFunction = transformingFunction;
     }
@@ -54,7 +54,7 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
             return;
         }
         // CHECKSTYLE.OFF: IllegalCatch
-        catch (RuntimeException e) {
+        catch (Exception e) {
             delegate.onTransformationException(topicPath, topicSpecification, newValue, new TransformationException(e));
             return;
         }

@@ -15,12 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -43,16 +40,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer) {
-        return new StreamBuilderImpl<>(valueType, transformer.chainUnsafe(newTransformer.asUnsafeTransformer()));
-    }
-
-    @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer) {
-        return unsafeTransform(newTransformer);
-    }
-
-    @Override
     public <R> StreamBuilder<S, R, TransformedStream<S, R>> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
         return new StreamBuilderImpl<>(valueType, transformer.chainUnsafe(newTransformer));
     }
@@ -64,6 +51,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
     @Override
     protected Topics.ValueStream<S> adaptStream(TransformedStream<S, T> targetStream) {
-        return new StreamAdapter<>(toTransformer(transformer), targetStream);
+        return new StreamAdapter<>(transformer, targetStream);
     }
 }

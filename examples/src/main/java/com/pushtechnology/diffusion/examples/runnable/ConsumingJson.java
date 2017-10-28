@@ -16,19 +16,18 @@
 package com.pushtechnology.diffusion.examples.runnable;
 
 import static com.pushtechnology.diffusion.transform.stream.StreamBuilders.newJsonStreamBuilder;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.project;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.toMapOf;
 
 import java.math.BigInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.stream.TransformedStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that consumes JSON topics.
@@ -52,8 +51,8 @@ public final class ConsumingJson extends AbstractClient {
         final Topics topics = session.feature(Topics.class);
 
         newJsonStreamBuilder()
-            .transform(toMapOf(BigInteger.class))
-            .transform(project("timestamp"))
+            .unsafeTransform(toMapOf(BigInteger.class).asUnsafeTransformer())
+            .unsafeTransform(value -> value.get("timestamp"))
             .register(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
                 @Override
                 public void onValue(

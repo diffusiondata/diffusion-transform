@@ -19,14 +19,13 @@ import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
- * An immutable builder for streams. The builder can be used to chain the {@link Transformer}s that will be applied to
- * a stream. The builder can be used as a template to register multiple streams that apply the same transformation. Once
- * the transformations have been chained the {@link #register(Topics, String, Topics.ValueStream)} method can be used to
- * register the stream.
+ * An immutable builder for streams. The builder can be used to chain the {@link UnsafeTransformer}s that will be
+ * applied to a stream. The builder can be used as a template to register multiple streams that apply the same
+ * transformation. Once the transformations have been chained the {@link #register(Topics, String, Topics.ValueStream)}
+ * method can be used to register the stream.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
@@ -35,27 +34,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     * @deprecated since 2.0.0 in favour of methods using {@link UnsafeTransformer}
-     */
-    @Deprecated
-    <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Transformer<T, R> newTransformer);
-
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     * @deprecated since 2.0.0 in favour of {@link #unsafeTransform(UnsafeTransformer)}
-     */
-    @Deprecated
-    <R> StreamBuilder<S, R, TransformedStream<S, R>> transformWith(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * Transform the stream that will be built.

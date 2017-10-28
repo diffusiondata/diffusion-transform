@@ -26,7 +26,6 @@ import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.transform.stream.TransformedStream;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,8 +56,8 @@ public final class ConsumingTimestamp extends AbstractClient {
         newStreamBuilder(String.class)
             // This method reference may throw a ParseException that will be
             // converted to a TransformationException automatically
-            .transformWith(DATE_FORMAT::parse)
-            .transform((Transformer<Date, Instant>) Date::toInstant)
+            .unsafeTransform(DATE_FORMAT::parse)
+            .unsafeTransform(Date::toInstant)
             .register(topics, "binary/timestamp", new TransformedStream.Default<String, Instant>() {
                 @Override
                 public void onValue(

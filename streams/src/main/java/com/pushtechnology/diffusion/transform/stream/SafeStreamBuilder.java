@@ -18,20 +18,19 @@ package com.pushtechnology.diffusion.transform.stream;
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
  * An immutable builder for streams.
  * <p>
  * This extends {@link StreamBuilder} with support for untransformed and safely transformed streams. If the
- * transformation does not need to throw an exception a {@link SafeTransformer} can be used. Chaining a
- * {@link SafeTransformer} to a {@link SafeStreamBuilder} returns another {@link SafeStreamBuilder}. The
+ * transformation does not need to throw an exception a {@link Function} can be used. Chaining a
+ * {@link Function} to a {@link SafeStreamBuilder} returns another {@link SafeStreamBuilder}. The
  * {@link SafeStreamBuilder} can be used to register a stream that does not need to implement any exception handling.
  * <p>
- * The builder can be used to chain the {@link com.pushtechnology.diffusion.transform.transformer.Transformer}s that
- * will be applied to a stream. The builder can be used as a template to register multiple streams that apply the same
- * transformation. Once the transformations have been chained the {@link #register(Topics, String, Topics.ValueStream)}
- * method can be used to register the stream.
+ * The builder can be used to chain the {@link com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer}s
+ * that will be applied to a stream. The builder can be used as a template to register multiple streams that apply the
+ * same transformation. Once the transformations have been chained the
+ * {@link #register(Topics, String, Topics.ValueStream)} method can be used to register the stream.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
@@ -39,14 +38,6 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  */
 @SuppressWarnings("deprecation")
 public interface SafeStreamBuilder<S, T> extends StreamBuilder<S, T, Topics.ValueStream<T>> {
-    /**
-     * Transform the stream that will be built.
-     *
-     * @param newTransformer the new safe transformer
-     * @param <R> the new type of the transformed values
-     * @return a new stream builder
-     */
-    <R> SafeStreamBuilder<S, R> transform(SafeTransformer<T, R> newTransformer);
 
     /**
      * Transform the stream that will be built.
