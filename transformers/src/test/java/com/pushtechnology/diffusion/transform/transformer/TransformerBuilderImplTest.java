@@ -34,12 +34,11 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class TransformerBuilderImplTest {
     @Mock
-    private Transformer<String, String> transformer;
+    private UnsafeTransformer<String, String> transformer;
     @Mock
-    private SafeTransformer<String, Integer> safeTransformer;
+    private Function<String, Integer> safeTransformer;
     @Mock
     private UnsafeTransformer<Integer, String> unsafeTransformer;
 
@@ -48,7 +47,7 @@ public final class TransformerBuilderImplTest {
         initMocks(this);
 
         when(transformer.transform("hello")).thenReturn("morning");
-        when(safeTransformer.transform("morning")).thenReturn(42);
+        when(safeTransformer.apply("morning")).thenReturn(42);
         when(unsafeTransformer.transform(42)).thenReturn("goodbye");
     }
 
@@ -61,16 +60,16 @@ public final class TransformerBuilderImplTest {
     public void chainTransformers() throws Exception {
         final TransformerBuilder<String, String> transformerBuilder = new TransformerBuilderImpl<>(transformer)
             .transform(safeTransformer)
-            .transformWith(unsafeTransformer)
+            .unsafeTransform(unsafeTransformer)
             .transform(Function.identity());
 
-        final Transformer<String, String> builtTransformer = transformerBuilder.build();
+        final UnsafeTransformer<String, String> builtTransformer = transformerBuilder.buildUnsafe();
         final String result = builtTransformer.transform("hello");
 
         assertEquals("goodbye", result);
 
         verify(transformer).transform("hello");
-        verify(safeTransformer).transform("morning");
+        verify(safeTransformer).apply("morning");
         verify(unsafeTransformer).transform(42);
 
         final UnsafeTransformer<String, String> unsafeBuiltTransformer = transformerBuilder.buildUnsafe();
@@ -79,7 +78,7 @@ public final class TransformerBuilderImplTest {
         assertEquals("goodbye", unsafeResult);
 
         verify(transformer, times(2)).transform("hello");
-        verify(safeTransformer, times(2)).transform("morning");
+        verify(safeTransformer, times(2)).apply("morning");
         verify(unsafeTransformer, times(2)).transform(42);
     }
 

@@ -37,29 +37,18 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 @SuppressWarnings("deprecation")
 public final class Transformers {
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
-    private static final SafeTransformer IDENTITY = new SafeTransformer() {
-        @Override
-        public Object transform(Object value) {
-            return value;
+    private static final SafeTransformer IDENTITY = value -> value;
+    private static final SafeTransformer<byte[], Binary> BYTE_ARRAY_TO_BINARY = value -> {
+        if (value == null) {
+            return null;
         }
+        return BINARY_DATA_TYPE.readValue(value);
     };
-    private static final SafeTransformer<byte[], Binary> BYTE_ARRAY_TO_BINARY = new SafeTransformer<byte[], Binary>() {
-        @Override
-        public Binary transform(byte[] value) {
-            if (value == null) {
-                return null;
-            }
-            return BINARY_DATA_TYPE.readValue(value);
+    private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = value -> {
+        if (value == null) {
+            return null;
         }
-    };
-    private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = new SafeTransformer<Bytes, byte[]>() {
-        @Override
-        public byte[] transform(Bytes value) {
-            if (value == null) {
-                return null;
-            }
-            return value.toByteArray();
-        }
+        return value.toByteArray();
     };
 
     private Transformers() {
@@ -396,7 +385,7 @@ public final class Transformers {
      * @return The builder
      */
     public static <V> SafeTransformerBuilder<V, V> builder() {
-        return new SafeTransformerBuilderImpl<>(Transformers.<V>identity());
+        return new SafeTransformerBuilderImpl<>(Function.identity());
     }
 
     /**
@@ -406,6 +395,6 @@ public final class Transformers {
      * @return The builder
      */
     public static <V> SafeTransformerBuilder<V, V> builder(Class<V> valueType) {
-        return new SafeTransformerBuilderImpl<>(identity(valueType));
+        return new SafeTransformerBuilderImpl<>(Function.identity());
     }
 }

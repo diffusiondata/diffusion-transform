@@ -15,9 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import java.util.function.Function;
 
 /**
@@ -27,27 +24,16 @@ import java.util.function.Function;
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class TransformerBuilderImpl<S, T> implements TransformerBuilder<S, T> {
-    private final Transformer<S, T> transformer;
+    private final UnsafeTransformer<S, T> transformer;
 
-    /*package*/ TransformerBuilderImpl(Transformer<S, T> transformer) {
+    /*package*/ TransformerBuilderImpl(UnsafeTransformer<S, T> transformer) {
         this.transformer = transformer;
     }
 
     @Override
-    public <R> TransformerBuilder<S, R> transform(Transformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, newTransformer));
-    }
-
-    @Override
-    public <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
-    }
-
-    @Override
     public <R> TransformerBuilder<S, R> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
+        return new TransformerBuilderImpl<>(transformer.chainUnsafe(newTransformer));
     }
 
     @Override
@@ -56,12 +42,7 @@ import java.util.function.Function;
     }
 
     @Override
-    public Transformer<S, T> build() {
-        return transformer;
-    }
-
-    @Override
     public UnsafeTransformer<S, T> buildUnsafe() {
-        return transformer.asUnsafeTransformer();
+        return transformer;
     }
 }

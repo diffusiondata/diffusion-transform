@@ -15,9 +15,6 @@
 
 package com.pushtechnology.diffusion.transform.transformer;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import java.util.function.Function;
 
 /**
@@ -27,46 +24,30 @@ import java.util.function.Function;
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class SafeTransformerBuilderImpl<S, T> implements SafeTransformerBuilder<S, T> {
-    private final SafeTransformer<S, T> transformer;
+    private final Function<S, T> transformer;
 
-    /*package*/ SafeTransformerBuilderImpl(SafeTransformer<S, T> transformer) {
+    /*package*/ SafeTransformerBuilderImpl(Function<S, T> transformer) {
         this.transformer = transformer;
     }
 
     @Override
-    public <R> TransformerBuilder<S, R> transform(Transformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, newTransformer));
-    }
-
-    @Override
-    public <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
-    }
-
-    @Override
     public <R> TransformerBuilder<S, R> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
-        return new TransformerBuilderImpl<>(chain(transformer, toTransformer(newTransformer)));
-    }
-
-    @Override
-    public <R> SafeTransformerBuilder<S, R> transform(SafeTransformer<T, R> newTransformer) {
-        return new SafeTransformerBuilderImpl<>(chain(transformer, newTransformer));
+        return new TransformerBuilderImpl<>(value -> newTransformer.transform(transformer.apply(value)));
     }
 
     @Override
     public <R> SafeTransformerBuilder<S, R> transform(Function<T, R> newTransformer) {
-        return new SafeTransformerBuilderImpl<>(value -> newTransformer.apply(transformer.transform(value)));
+        return new SafeTransformerBuilderImpl<>(value -> newTransformer.apply(transformer.apply(value)));
     }
 
     @Override
-    public SafeTransformer<S, T> build() {
+    public Function<S, T> buildSafe() {
         return transformer;
     }
 
     @Override
     public UnsafeTransformer<S, T> buildUnsafe() {
-        return transformer.asUnsafeTransformer();
+        return transformer::apply;
     }
 }

@@ -18,35 +18,13 @@ package com.pushtechnology.diffusion.transform.transformer;
 import java.util.function.Function;
 
 /**
- * Builder for {@link Transformer}s.
+ * Builder for {@link UnsafeTransformer}s.
  *
  * @param <S> The type of source value accepted by the transformers this builds
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface TransformerBuilder<S, T> {
-    /**
-     * Transform the transformer that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new transformer builder
-     * @deprecated since 2.0.0 in favour of methods using unsafe transformer
-     */
-    @Deprecated
-    <R> TransformerBuilder<S, R> transform(Transformer<T, R> newTransformer);
-
-    /**
-     * Transform the transformer that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new transformer builder
-     * @deprecated since 2.0.0 in favour of {@link #unsafeTransform(UnsafeTransformer)}
-     */
-    @Deprecated
-    <R> TransformerBuilder<S, R> transformWith(UnsafeTransformer<T, R> newTransformer);
 
     /**
      * Transform the transformer that will be built.
@@ -65,11 +43,6 @@ public interface TransformerBuilder<S, T> {
      * @return a new transformer builder
      */
     <R> TransformerBuilder<S, R> transform(Function<T, R> newTransformer);
-
-    /**
-     * @return a new transformer
-     */
-    Transformer<S, T> build();
 
     /**
      * @return a new transformer

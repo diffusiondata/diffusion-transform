@@ -24,16 +24,7 @@ import java.util.function.Function;
  * @param <T> The type of target value returned by the transformers this builds
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface SafeTransformerBuilder<S, T> extends TransformerBuilder<S, T> {
-    /**
-     * Transform the transformer that will be built.
-     *
-     * @param newTransformer the new transformer
-     * @param <R> the new type of the transformed values
-     * @return a new transformer builder
-     */
-    <R> SafeTransformerBuilder<S, R> transform(SafeTransformer<T, R> newTransformer);
 
     @Override
     <R> SafeTransformerBuilder<S, R> transform(Function<T, R> newTransformer);
@@ -41,5 +32,5 @@ public interface SafeTransformerBuilder<S, T> extends TransformerBuilder<S, T> {
     /**
      * @return a new transformer
      */
-    SafeTransformer<S, T> build();
+    Function<S, T> buildSafe();
 }
