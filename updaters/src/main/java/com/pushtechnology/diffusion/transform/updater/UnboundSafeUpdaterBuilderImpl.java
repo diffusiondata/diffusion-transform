@@ -15,14 +15,11 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
+import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -32,31 +29,54 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class UnboundSafeUpdaterBuilderImpl<S, T> implements UnboundSafeUpdaterBuilder<S, T> {
     private final Class<S> valueType;
-    private final SafeTransformer<T, S> transformer;
+    private final Function<T, S> transformer;
 
-    UnboundSafeUpdaterBuilderImpl(Class<S> valueType, SafeTransformer<T, S> transformer) {
+    UnboundSafeUpdaterBuilderImpl(Class<S> valueType, Function<T, S> transformer) {
         this.valueType = valueType;
         this.transformer = transformer;
     }
 
     @Override
     public <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer) {
-        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, value -> {
+            try {
+                return newTransformer.chain(transformer).transform(value);
+            }
+            catch (TransformationException e) {
+                throw e;
+            }
+            // CHECKSTYLE.OFF: IllegalCatch
+            catch (Exception e) {
+                throw new TransformationException(e);
+            }
+            // CHECKSTYLE.ON: IllegalCatch
+        });
     }
 
     @Override
     public <R> UnboundTransformedUpdaterBuilder<S, R> unsafeTransform(
             UnsafeTransformer<R, T> newTransformer,
             Class<R> type) {
-        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, chain(toTransformer(newTransformer), transformer));
+        return new UnboundTransformedUpdaterBuilderImpl<>(valueType, value -> {
+            try {
+                return newTransformer.chain(transformer).transform(value);
+            }
+            catch (TransformationException e) {
+                throw e;
+            }
+            // CHECKSTYLE.OFF: IllegalCatch
+            catch (Exception e) {
+                throw new TransformationException(e);
+            }
+            // CHECKSTYLE.ON: IllegalCatch
+        });
     }
 
     @Override
     public <R> UnboundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer) {
-        return new UnboundSafeUpdaterBuilderImpl<>(valueType, chain(newTransformer::apply, transformer));
+        return new UnboundSafeUpdaterBuilderImpl<>(valueType, v -> transformer.apply(newTransformer.apply(v)));
     }
 
     @Override

@@ -117,7 +117,7 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .unsafeTransform(Transformers.fromMap().asUnsafeTransformer())
+            .unsafeTransform(Transformers.fromMap())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);
@@ -158,7 +158,7 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .unsafeTransform(Transformers.fromMap().asUnsafeTransformer())
+            .unsafeTransform(Transformers.fromMap())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);

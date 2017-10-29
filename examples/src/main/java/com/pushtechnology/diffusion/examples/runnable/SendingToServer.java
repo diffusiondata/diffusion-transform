@@ -55,7 +55,7 @@ public final class SendingToServer extends AbstractClient {
     @Override
     public void onStarted(Session session) {
         final RequestToHandlerSender<RandomData, String> sender = requestSenderBuilder(JSON.class, String.class)
-            .unsafeTransformRequest(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
+            .unsafeTransformRequest(Transformers.<RandomData>fromPojo())
             .bind(session)
             .buildToHandlerSender();
 

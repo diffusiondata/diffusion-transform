@@ -30,15 +30,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Map;
 
-import com.pushtechnology.diffusion.datatype.json.JSONDataType;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.verification.VerificationWithTimeout;
-
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
@@ -47,7 +38,16 @@ import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.verification.VerificationWithTimeout;
 
 /**
  * Integration test for JSON streams.
@@ -104,7 +104,7 @@ public final class JSONStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
-            .unsafeTransform(Transformers.toMapOf(String.class).asUnsafeTransformer())
+            .unsafeTransform(Transformers.toMapOf(String.class))
             .createFallback(topics, stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -148,7 +148,7 @@ public final class JSONStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newJsonStreamBuilder()
-            .unsafeTransform(Transformers.toMapOf(String.class).asUnsafeTransformer())
+            .unsafeTransform(Transformers.toMapOf(String.class))
             .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);

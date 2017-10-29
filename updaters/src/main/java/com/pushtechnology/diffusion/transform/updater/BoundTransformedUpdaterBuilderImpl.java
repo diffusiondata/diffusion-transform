@@ -15,11 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -29,16 +25,15 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class BoundTransformedUpdaterBuilderImpl<S, T> implements BoundTransformedUpdaterBuilder<S, T> {
     private final TopicUpdateControl updateControl;
     private final Class<S> valueType;
-    private final Transformer<T, S> transformer;
+    private final UnsafeTransformer<T, S> transformer;
 
     BoundTransformedUpdaterBuilderImpl(
             TopicUpdateControl updateControl,
             Class<S> valueType,
-            Transformer<T, S> transformer) {
+            UnsafeTransformer<T, S> transformer) {
         this.updateControl = updateControl;
         this.valueType = valueType;
         this.transformer = transformer;
@@ -49,7 +44,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new BoundTransformedUpdaterBuilderImpl<>(
             updateControl,
             valueType,
-            chain(toTransformer(newTransformer), transformer));
+            newTransformer.chainUnsafe(transformer));
     }
 
     @Override
@@ -58,7 +53,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new BoundTransformedUpdaterBuilderImpl<>(
             updateControl,
             valueType,
-            chain(toTransformer(newTransformer), transformer));
+            newTransformer.chainUnsafe(transformer));
     }
 
     @Override

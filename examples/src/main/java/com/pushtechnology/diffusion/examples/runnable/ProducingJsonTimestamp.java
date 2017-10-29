@@ -83,7 +83,7 @@ public final class ProducingJsonTimestamp extends AbstractClient {
 
         // Create a one-way transforming value updater that cannot be used to lookup cached values
         final TransformedUpdater<JSON, LocalDateTime> valueUpdater = updaterBuilder(JSON.class)
-            .unsafeTransform(jsonTransformers.<LocalDateTime>fromPojo().asUnsafeTransformer())
+            .unsafeTransform(jsonTransformers.<LocalDateTime>fromPojo())
             .create(updater);
 
         updateTask = EXECUTOR.scheduleAtFixedRate(

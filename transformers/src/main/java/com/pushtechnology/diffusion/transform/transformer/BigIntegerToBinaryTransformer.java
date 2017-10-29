@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import java.math.BigInteger;
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
@@ -26,18 +27,18 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
-/*package*/ final class BigIntegerToBinaryTransformer implements SafeTransformer<BigInteger, Binary> {
+/*package*/ final class BigIntegerToBinaryTransformer implements Function<BigInteger, Binary> {
     /**
      * Instance of {@link BinaryToBigIntegerTransformer}.
      */
-    public static final SafeTransformer<BigInteger, Binary> INSTANCE = new BigIntegerToBinaryTransformer();
+    public static final Function<BigInteger, Binary> INSTANCE = new BigIntegerToBinaryTransformer();
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
 
     private BigIntegerToBinaryTransformer() {
     }
+
     @Override
-    public Binary transform(BigInteger value) {
+    public Binary apply(BigInteger value) {
         return BINARY_DATA_TYPE.readValue(value.toByteArray());
     }
 }

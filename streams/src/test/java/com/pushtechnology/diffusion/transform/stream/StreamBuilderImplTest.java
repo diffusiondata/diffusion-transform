@@ -21,6 +21,8 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -53,10 +55,10 @@ public final class StreamBuilderImplTest {
     @Test
     public void unsafeTransform() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
+            new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.unsafeTransform(Transformers.<String>identity().asUnsafeTransformer());
+            streamBuilder.unsafeTransform(Transformers.toTransformer(Function.identity()));
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }
@@ -65,7 +67,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createPath() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
+            new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(topics, "path", stream);
 
         verify(topics).addStream(eq("path"), eq(String.class), isA(StreamAdapter.class));
@@ -75,7 +77,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createSelector() {
         final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
-            new StreamBuilderImpl<>(String.class, Transformers.<String>identity().asUnsafeTransformer());
+            new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(topics, selector, stream);
 
         verify(topics).addStream(eq(selector), eq(String.class), isA(StreamAdapter.class));
@@ -85,7 +87,7 @@ public final class StreamBuilderImplTest {
     @Test
     public void createFallback() {
         final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
-            new StreamBuilderImpl<>(JSON.class, Transformers.<JSON>identity().asUnsafeTransformer());
+            new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.createFallback(topics, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));

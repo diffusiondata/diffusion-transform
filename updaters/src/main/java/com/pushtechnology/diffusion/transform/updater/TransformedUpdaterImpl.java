@@ -19,7 +19,7 @@ import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateCo
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl.Updater.UpdateContextCallback;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl.ValueUpdater;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
  * Implementation of {@link TransformedUpdater}.
@@ -31,22 +31,42 @@ import com.pushtechnology.diffusion.transform.transformer.Transformer;
 @SuppressWarnings("deprecation")
 /*package*/ final class TransformedUpdaterImpl<S, T> implements TransformedUpdater<S, T> {
     private final ValueUpdater<S> updater;
-    private final Transformer<T, S> transformer;
+    private final UnsafeTransformer<T, S> transformer;
 
-    TransformedUpdaterImpl(ValueUpdater<S> updater, Transformer<T, S> transformer) {
+    TransformedUpdaterImpl(ValueUpdater<S> updater, UnsafeTransformer<T, S> transformer) {
         this.updater = updater;
         this.transformer = transformer;
     }
 
     @Override
     public void update(String topicPath, T value, UpdateCallback callback) throws TransformationException {
-        updater.update(topicPath, transformer.transform(value), callback);
+        try {
+            updater.update(topicPath, transformer.transform(value), callback);
+        }
+        catch (TransformationException e) {
+            throw e;
+        }
+        // CHECKSTYLE.OFF: IllegalCatch
+        catch (Exception e) {
+            throw new TransformationException(e);
+        }
+        // CHECKSTYLE.ON: IllegalCatch
     }
 
     @Override
     public <C> void update(String topicPath, T value, C context, UpdateContextCallback<C> callback)
             throws TransformationException {
-        updater.update(topicPath, transformer.transform(value), context, callback);
+        try {
+            updater.update(topicPath, transformer.transform(value), context, callback);
+        }
+        catch (TransformationException e) {
+            throw e;
+        }
+        // CHECKSTYLE.OFF: IllegalCatch
+        catch (Exception e) {
+            throw new TransformationException(e);
+        }
+        // CHECKSTYLE.ON: IllegalCatch
     }
 
     @Override

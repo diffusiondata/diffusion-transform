@@ -57,7 +57,7 @@ public final class SendingToSession extends AbstractClient {
     public void onStarted(Session session) {
         final RequestToSessionSender<String, RandomData, String> sender = RequestSenderBuilders
             .requestSenderBuilder(JSON.class, String.class)
-            .unsafeTransformRequest(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
+            .unsafeTransformRequest(Transformers.<RandomData>fromPojo())
             .bind(session)
             .buildToSessionSender();
 

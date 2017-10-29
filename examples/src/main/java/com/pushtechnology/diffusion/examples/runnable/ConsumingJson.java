@@ -51,7 +51,7 @@ public final class ConsumingJson extends AbstractClient {
         final Topics topics = session.feature(Topics.class);
 
         newJsonStreamBuilder()
-            .unsafeTransform(toMapOf(BigInteger.class).asUnsafeTransformer())
+            .unsafeTransform(toMapOf(BigInteger.class))
             .unsafeTransform(value -> value.get("timestamp"))
             .register(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
                 @Override

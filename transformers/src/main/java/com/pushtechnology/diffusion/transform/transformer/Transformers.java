@@ -30,21 +30,19 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 
 /**
- * Common {@link Transformer}s.
+ * Common {@link UnsafeTransformer}s and {@link Function}s.
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class Transformers {
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
-    private static final SafeTransformer IDENTITY = value -> value;
-    private static final SafeTransformer<byte[], Binary> BYTE_ARRAY_TO_BINARY = value -> {
+    private static final Function<byte[], Binary> BYTE_ARRAY_TO_BINARY = value -> {
         if (value == null) {
             return null;
         }
         return BINARY_DATA_TYPE.readValue(value);
     };
-    private static final SafeTransformer<Bytes, byte[]> TO_BYTE_ARRAY = value -> {
+    private static final Function<Bytes, byte[]> TO_BYTE_ARRAY = value -> {
         if (value == null) {
             return null;
         }
@@ -60,9 +58,8 @@ public final class Transformers {
      * @param <T> the type of value
      * @return a transformer that transforms values to themselves.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> SafeTransformer<T, T> identity() {
-        return (SafeTransformer<T, T>) IDENTITY;
+    public static <T> Function<T, T> identity() {
+        return Function.identity();
     }
 
     /**
@@ -72,9 +69,8 @@ public final class Transformers {
      * @param <T> the type of value
      * @return a transformer that transforms values to themselves.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> SafeTransformer<T, T> identity(Class<T> type) {
-        return IDENTITY;
+    public static <T> Function<T, T> identity(Class<T> type) {
+        return Function.identity();
     }
 
     /**
@@ -84,15 +80,14 @@ public final class Transformers {
      * @param <T> the super type of value
      * @return a transformer that transforms values to a super class.
      */
-    @SuppressWarnings("unchecked")
-    public static <S, T extends S> SafeTransformer<T, S> toSuperClass() {
-        return IDENTITY;
+    public static <S, T extends S> Function<T, S> toSuperClass() {
+        return value -> value;
     }
 
     /**
      * @return transformer from byte[] to {@link Binary}.
      */
-    public static SafeTransformer<byte[], Binary> byteArrayToBinary() {
+    public static Function<byte[], Binary> byteArrayToBinary() {
         return BYTE_ARRAY_TO_BINARY;
     }
 
@@ -106,43 +101,18 @@ public final class Transformers {
      * @param <T> the target value type
      * @return the composed transformer
      */
-    public static <S, M, T> Transformer<S, T> chain(
-            final Transformer<S, M> transformer0,
-            final Transformer<M, T> transformer1) {
-        return new Transformer<S, T>() {
-            @Override
-            public T transform(S value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                final M transientValue = transformer0.transform(value);
-                return transformer1.transform(transientValue);
+    public static <S, M, T> UnsafeTransformer<S, T> chain(
+            final Function<S, M> transformer0,
+            final UnsafeTransformer<M, T> transformer1) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
-        };
-    }
-
-    /**
-     * Chain two safe transformers together.
-     *
-     * @param transformer0 the first transformer
-     * @param transformer1 the second transformer
-     * @param <S> the source value type
-     * @param <M> the intermediate value type
-     * @param <T> the target value type
-     * @return the composed transformer
-     */
-    public static <S, M, T> SafeTransformer<S, T> chain(
-            final SafeTransformer<S, M> transformer0,
-            final SafeTransformer<M, T> transformer1) {
-        return new SafeTransformer<S, T>() {
-            @Override
-            public T transform(S value) {
-                if (value == null) {
-                    return null;
-                }
-                final M transientValue = transformer0.transform(value);
-                return transformer1.transform(transientValue);
+            final M transientResult = transformer0.apply(value);
+            if (transientResult == null) {
+                return null;
             }
+            return transformer1.transform(transientResult);
         };
     }
 
@@ -166,15 +136,12 @@ public final class Transformers {
      * @param <V> the value type
      * @return a transformer that creates a projection of a map
      */
-    public static <K, V> SafeTransformer<Map<K, V>, V> project(final K key) {
-        return new SafeTransformer<Map<K, V>, V>() {
-            @Override
-            public V transform(Map<K, V> value) {
-                if (value == null) {
-                    return null;
-                }
-                return value.get(key);
+    public static <K, V> Function<Map<K, V>, V> project(final K key) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return value.get(key);
         };
     }
 
@@ -186,8 +153,8 @@ public final class Transformers {
      * @param <T> the type to cast to
      * @return a transformer that casts the object
      */
-    public static <S, T> Transformer<S, T> cast(Class<T> type) {
-        return new Transformer<S, T>() {
+    public static <S, T> UnsafeTransformer<S, T> cast(Class<T> type) {
+        return new UnsafeTransformer<S, T>() {
             // Cast exceptions are caught so they can be propagated as transformation exceptions
             @SuppressWarnings("unchecked")
             @Override
@@ -210,8 +177,8 @@ public final class Transformers {
      * @param <T> the type to cast to
      * @return a transformer that casts the object
      */
-    public static <S, T> Transformer<S, T> cast(TypeReference<T> type) {
-        return new Transformer<S, T>() {
+    public static <S, T> UnsafeTransformer<S, T> cast(TypeReference<T> type) {
+        return new UnsafeTransformer<S, T>() {
             // Cast exceptions are caught so they can be propagated as transformation exceptions
             @SuppressWarnings("unchecked")
             @Override
@@ -233,15 +200,12 @@ public final class Transformers {
      * @param <T> the target type
      * @return a transformer that converts JSON to the provided type
      */
-    public static <T> Transformer<JSON, T> toObject(final Class<T> type) {
-        return new Transformer<JSON, T>() {
-            @Override
-            public T transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return JACKSON_CONTEXT.toObject(value, type);
+    public static <T> UnsafeTransformer<JSON, T> toObject(final Class<T> type) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return JACKSON_CONTEXT.toObject(value, type);
         };
     }
 
@@ -252,15 +216,12 @@ public final class Transformers {
      * @param <T> the target type
      * @return a transformer that converts JSON to the provided type
      */
-    public static <T> Transformer<JSON, T> toType(final TypeReference<T> typeReference) {
-        return new Transformer<JSON, T>() {
-            @Override
-            public T transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return JACKSON_CONTEXT.toType(value, typeReference);
+    public static <T> UnsafeTransformer<JSON, T> toType(final TypeReference<T> typeReference) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return JACKSON_CONTEXT.toType(value, typeReference);
         };
     }
 
@@ -271,15 +232,12 @@ public final class Transformers {
      * @param <T> the type of value contained by the map
      * @return a transformer that converts JSON to a map
      */
-    public static <T> Transformer<JSON, Map<String, T>> toMapOf(final Class<T> type) {
-        return new Transformer<JSON, Map<String, T>>() {
-            @Override
-            public Map<String, T> transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return JACKSON_CONTEXT.toMapOf(value, type);
+    public static <T> UnsafeTransformer<JSON, Map<String, T>> toMapOf(final Class<T> type) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return JACKSON_CONTEXT.toMapOf(value, type);
         };
     }
 
@@ -289,8 +247,7 @@ public final class Transformers {
      * @param <T> the type of pojo
      * @return the transformer to JSON
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Transformer<T, JSON> fromPojo() {
+    public static <T> UnsafeTransformer<T, JSON> fromPojo() {
         return JSON_TRANSFORMERS.fromPojo();
     }
 
@@ -300,8 +257,7 @@ public final class Transformers {
      * @param <T> the value type of map
      * @return the transformer to JSON
      */
-    @SuppressWarnings("unchecked")
-    public static <T> Transformer<Map<String, T>, JSON> fromMap() {
+    public static <T> UnsafeTransformer<Map<String, T>, JSON> fromMap() {
         return JSON_TRANSFORMERS.fromMap();
     }
 
@@ -310,7 +266,7 @@ public final class Transformers {
      *
      * @return the transformer to Binary
      */
-    public static SafeTransformer<BigInteger, Binary> bigIntegerToBinary() {
+    public static Function<BigInteger, Binary> bigIntegerToBinary() {
         return BigIntegerToBinaryTransformer.INSTANCE;
     }
 
@@ -319,7 +275,7 @@ public final class Transformers {
      *
      * @return the transformer to integer
      */
-    public static Transformer<Binary, BigInteger> binaryToBigInteger() {
+    public static UnsafeTransformer<Binary, BigInteger> binaryToBigInteger() {
         return BinaryToBigIntegerTransformer.INSTANCE;
     }
 
@@ -327,7 +283,7 @@ public final class Transformers {
      * Transformer from String to JSON.
      * @return the transformer to JSON
      */
-    public static Transformer<String, JSON> parseJSON() {
+    public static UnsafeTransformer<String, JSON> parseJSON() {
         return JSON_TRANSFORMERS.parseJSON();
     }
 
@@ -335,7 +291,7 @@ public final class Transformers {
      * Transformer from JSON to String.
      * @return the transformer to String
      */
-    public static Transformer<JSON, String> stringify() {
+    public static UnsafeTransformer<JSON, String> stringify() {
         return JSON_TRANSFORMERS.stringify();
     }
 
@@ -345,38 +301,8 @@ public final class Transformers {
      * @return the transformer to byte array
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Bytes> SafeTransformer<T, byte[]> toByteArray() {
-        return (SafeTransformer<T, byte[]>) TO_BYTE_ARRAY;
-    }
-
-    /**
-     * Create a {@link Transformer} from a {@link UnsafeTransformer}.
-     * @param transformer the uncaught transformer
-     * @param <S> the source value type
-     * @param <T> the target value type
-     * @return the transformer
-     */
-    public static <S, T> Transformer<S, T> toTransformer(final UnsafeTransformer<S, T> transformer) {
-        return new Transformer<S, T>() {
-            @Override
-            public T transform(S value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-
-                try {
-                    return transformer.transform(value);
-                }
-                catch (TransformationException e) {
-                    throw e;
-                }
-                // CHECKSTYLE.OFF: IllegalCatch // Bulkhead
-                catch (Exception e) {
-                    throw new TransformationException(e);
-                }
-                // CHECKSTYLE.ON: IllegalCatch // Bulkhead
-            }
-        };
+    public static <T extends Bytes> Function<T, byte[]> toByteArray() {
+        return (Function<T, byte[]>) TO_BYTE_ARRAY;
     }
 
     /**

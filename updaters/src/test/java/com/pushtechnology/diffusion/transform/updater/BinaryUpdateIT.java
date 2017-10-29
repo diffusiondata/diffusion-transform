@@ -29,7 +29,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.io.IOException;
 import java.math.BigInteger;
 
 import com.pushtechnology.diffusion.client.Diffusion;
@@ -40,7 +39,6 @@ import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 import org.junit.After;
@@ -102,7 +100,7 @@ public final class BinaryUpdateIT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void fallback() throws TransformationException, IOException {
+    public void fallback() throws Exception {
         final Topics topics = session.feature(Topics.class);
         topics.addFallbackStream(Binary.class, stream);
 
@@ -119,7 +117,7 @@ public final class BinaryUpdateIT {
 
         final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .unsafeTransform(Transformers.bigIntegerToBinary().asUnsafeTransformer())
+            .unsafeTransform(Transformers.toTransformer(Transformers.bigIntegerToBinary()))
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", TEN, updateCallback);
@@ -143,7 +141,7 @@ public final class BinaryUpdateIT {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void stream() throws TransformationException, IOException {
+    public void stream() throws Exception {
         final Topics topics = session.feature(Topics.class);
         topics.addStream("?test//", Binary.class, stream);
 
@@ -160,7 +158,7 @@ public final class BinaryUpdateIT {
 
         final TransformedUpdater<Binary, BigInteger> valueUpdater = UpdaterBuilders
             .binaryUpdaterBuilder()
-            .unsafeTransform(Transformers.bigIntegerToBinary().asUnsafeTransformer())
+            .unsafeTransform(Transformers.toTransformer(Transformers.bigIntegerToBinary()))
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", TEN, updateCallback);

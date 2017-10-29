@@ -15,10 +15,11 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import java.util.function.Function;
+
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl.Updater.UpdateCallback;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl.Updater.UpdateContextCallback;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl.ValueUpdater;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 
 /**
  * Implementation of {@link SafeTransformedUpdater}.
@@ -27,24 +28,23 @@ import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class SafeTransformedUpdaterImpl<S, T> implements SafeTransformedUpdater<S, T> {
     private final ValueUpdater<S> updater;
-    private final SafeTransformer<T, S> transformer;
+    private final Function<T, S> transformer;
 
-    SafeTransformedUpdaterImpl(ValueUpdater<S> updater, SafeTransformer<T, S> transformer) {
+    SafeTransformedUpdaterImpl(ValueUpdater<S> updater, Function<T, S> transformer) {
         this.updater = updater;
         this.transformer = transformer;
     }
 
     @Override
     public void update(String topicPath, T value, UpdateCallback callback) {
-        updater.update(topicPath, transformer.transform(value), callback);
+        updater.update(topicPath, transformer.apply(value), callback);
     }
 
     @Override
     public <C> void update(String topicPath, T value, C context, UpdateContextCallback<C> callback) {
-        updater.update(topicPath, transformer.transform(value), context, callback);
+        updater.update(topicPath, transformer.apply(value), context, callback);
     }
 
     @Override

@@ -16,12 +16,16 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -34,6 +38,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests for {@link UnboundTransformedUpdaterBuilderImpl}.
@@ -70,10 +76,29 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
+        when(unsafeTransformer.chainUnsafe(isA(UnsafeTransformer.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, UnsafeTransformer.class)
+                    .transform(unsafeTransformer.transform((String) value));
+            }
+        });
+        when(unsafeTransformer.chain(isA(Function.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, Function.class)
+                    .apply(unsafeTransformer.transform((String) value));
+            }
+        });
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
 
-        updaterBuilder = new BoundTransformedUpdaterBuilderImpl<>(updateControl, JSON.class, identity(JSON.class));
+        updaterBuilder = new BoundTransformedUpdaterBuilderImpl<>(
+            updateControl,
+            JSON.class,
+            toTransformer(identity(JSON.class)));
     }
 
     @After
@@ -121,6 +146,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
+        verify(unsafeTransformer).chainUnsafe(isA(UnsafeTransformer.class));
     }
 
     @Test
@@ -139,6 +165,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
+        verify(unsafeTransformer).chainUnsafe(isA(UnsafeTransformer.class));
     }
 
     @Test
@@ -148,5 +175,7 @@ public final class BoundTransformedUpdaterBuilderTest {
             .unbind();
 
         builder.create(simpleUpdater);
+
+        verify(unsafeTransformer).chainUnsafe(isA(UnsafeTransformer.class));
     }
 }

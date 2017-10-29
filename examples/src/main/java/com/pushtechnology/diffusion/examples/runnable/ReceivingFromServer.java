@@ -48,7 +48,7 @@ public final class ReceivingFromServer extends AbstractClient {
     public void onStarted(Session session) {
         RequestReceiverBuilders
             .requestStreamBuilder(JSON.class, String.class)
-            .unsafeTransformRequest(Transformers.stringify().asUnsafeTransformer())
+            .unsafeTransformRequest(Transformers.stringify())
             .bind(session)
             .setStream(
                 "json/random",

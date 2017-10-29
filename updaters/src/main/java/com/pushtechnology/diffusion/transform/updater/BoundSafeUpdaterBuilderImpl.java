@@ -15,13 +15,9 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.chain;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
-
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-import com.pushtechnology.diffusion.transform.transformer.SafeTransformer;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -31,16 +27,15 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class BoundSafeUpdaterBuilderImpl<S, T> implements BoundSafeUpdaterBuilder<S, T> {
     private final TopicUpdateControl updateControl;
     private final Class<S> valueType;
-    private final SafeTransformer<T, S> transformer;
+    private final Function<T, S> transformer;
 
     BoundSafeUpdaterBuilderImpl(
             TopicUpdateControl updateControl,
             Class<S> valueType,
-            SafeTransformer<T, S> transformer) {
+            Function<T, S> transformer) {
         this.updateControl = updateControl;
         this.valueType = valueType;
         this.transformer = transformer;
@@ -51,7 +46,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new BoundTransformedUpdaterBuilderImpl<>(
             updateControl,
             valueType,
-            chain(toTransformer(newTransformer), transformer));
+            newTransformer.chain(transformer));
     }
 
     @Override
@@ -61,12 +56,12 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         return new BoundTransformedUpdaterBuilderImpl<>(
             updateControl,
             valueType,
-            chain(toTransformer(newTransformer), transformer));
+            newTransformer.chain(transformer));
     }
 
     @Override
     public <R> BoundSafeUpdaterBuilder<S, R> transform(Function<R, T> newTransformer) {
-        return new BoundSafeUpdaterBuilderImpl<>(updateControl, valueType, chain(newTransformer::apply, transformer));
+        return new BoundSafeUpdaterBuilderImpl<>(updateControl, valueType, newTransformer.andThen(transformer));
     }
 
     @Override

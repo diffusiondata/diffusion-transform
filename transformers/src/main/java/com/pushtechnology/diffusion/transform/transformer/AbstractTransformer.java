@@ -16,15 +16,14 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 /**
- * Abstract {@link Transformer} that catches and converts any exception to a
+ * Abstract {@link UnsafeTransformer} that catches and converts any exception to a
  * {@link TransformationException}.
  *
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
-public abstract class AbstractTransformer<S, T> implements Transformer<S, T> {
+public abstract class AbstractTransformer<S, T> implements UnsafeTransformer<S, T> {
     @Override
     public final T transform(S value) throws TransformationException {
         if (value == null) {

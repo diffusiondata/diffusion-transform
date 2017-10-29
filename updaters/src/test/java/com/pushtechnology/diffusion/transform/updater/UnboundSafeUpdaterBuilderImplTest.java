@@ -18,6 +18,7 @@ package com.pushtechnology.diffusion.transform.updater;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -37,6 +38,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests for {@link UnboundSafeUpdaterBuilderImpl}.
@@ -62,8 +65,6 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     private UnsafeTransformer<String, JSON> unsafeTransformer;
     @Mock
     private TopicUpdateControl.Updater.UpdateCallback callback;
-    @Mock
-    private TopicUpdateControl.Updater.UpdateContextCallback contextCallback;
     @Captor
     private ArgumentCaptor<SafeTransformedUpdater<JSON, String>> updaterCaptor;
     @Captor
@@ -78,6 +79,22 @@ public final class UnboundSafeUpdaterBuilderImplTest {
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
         when(safeTransformer.apply("stringValue")).thenReturn(jsonValue);
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
+        when(unsafeTransformer.chainUnsafe(isA(UnsafeTransformer.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, UnsafeTransformer.class)
+                    .transform(unsafeTransformer.transform((String) value));
+            }
+        });
+        when(unsafeTransformer.chain(isA(Function.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, Function.class)
+                    .apply(unsafeTransformer.transform((String) value));
+            }
+        });
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
         when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
@@ -137,6 +154,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
 
         updater.update("topic", "stringValue", callback);
 
+        verify(unsafeTransformer).chain(isA(Function.class));
         verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
@@ -149,6 +167,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
 
         updater.update("topic", "stringValue", callback);
 
+        verify(unsafeTransformer).chain(isA(Function.class));
         verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }

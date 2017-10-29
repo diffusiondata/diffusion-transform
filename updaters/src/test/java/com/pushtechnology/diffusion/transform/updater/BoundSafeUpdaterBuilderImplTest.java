@@ -18,6 +18,7 @@ package com.pushtechnology.diffusion.transform.updater;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.identity;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -36,6 +37,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit tests for {@link BoundSafeUpdaterBuilderImpl}.
@@ -74,7 +77,31 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
         when(safeTransformer.apply("stringValue")).thenReturn(jsonValue);
+        when(safeTransformer.andThen(isA(Function.class))).thenAnswer(new Answer<Function>() {
+            @Override
+            public Function answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, Function.class)
+                    .apply(safeTransformer.apply((String) value));
+            }
+        });
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
+        when(unsafeTransformer.chainUnsafe(isA(UnsafeTransformer.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, UnsafeTransformer.class)
+                    .transform(unsafeTransformer.transform((String) value));
+            }
+        });
+        when(unsafeTransformer.chain(isA(Function.class))).thenAnswer(new Answer<UnsafeTransformer>() {
+            @Override
+            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+                return (Object value) -> invocation
+                    .getArgumentAt(0, Function.class)
+                    .apply(unsafeTransformer.transform((String) value));
+            }
+        });
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
 
@@ -116,6 +143,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         updater.update("topic", "stringValue", callback);
 
         verify(safeTransformer).apply("stringValue");
+        verify(safeTransformer).andThen(isA(Function.class));
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
@@ -129,6 +157,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
 
         verify(unsafeTransformer).transform("stringValue");
         verify(delegateUpdater).update("topic", jsonValue, callback);
+        verify(unsafeTransformer).chain(isA(Function.class));
     }
 
     @Test
@@ -140,6 +169,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         updater.update("topic", "stringValue", callback);
 
         verify(unsafeTransformer).transform("stringValue");
+        verify(unsafeTransformer).chain(isA(Function.class));
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
@@ -158,6 +188,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         updaterCaptor.getValue().update("topic", "stringValue", callback);
 
         verify(safeTransformer).apply("stringValue");
+        verify(safeTransformer).andThen(isA(Function.class));
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
@@ -168,5 +199,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
             .unbind();
 
         builder.create(simpleUpdater);
+
+        verify(unsafeTransformer).chain(isA(Function.class));
     }
 }

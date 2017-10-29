@@ -21,11 +21,11 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Test;
-
 import com.pushtechnology.diffusion.client.content.Content;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+
+import org.junit.Test;
 
 /**
  * Unit tests for Bytes to byte array transformer.
@@ -38,7 +38,7 @@ public final class BytesToByteArrayTransformerTest {
         final byte[] bytes = new byte[] { 0x0, 0x1, 0x2, 0x5 };
         final Content content = content().newContent(bytes);
 
-        final byte[] transformedBytes = toByteArray().transform(content);
+        final byte[] transformedBytes = toByteArray().apply(content);
 
         assertArrayEquals(bytes, transformedBytes);
     }
@@ -48,7 +48,7 @@ public final class BytesToByteArrayTransformerTest {
         final byte[] bytes = new byte[] { 0x0, 0x1, 0x2, 0x5 };
         final Binary binary = dataTypes().binary().readValue(bytes);
 
-        final byte[] transformedBytes = toByteArray().transform(binary);
+        final byte[] transformedBytes = toByteArray().apply(binary);
 
         assertArrayEquals(bytes, transformedBytes);
     }
@@ -59,13 +59,13 @@ public final class BytesToByteArrayTransformerTest {
         // Not valid CBOR but not checked
         final JSON json = dataTypes().json().readValue(bytes);
 
-        final byte[] transformedBytes = toByteArray().transform(json);
+        final byte[] transformedBytes = toByteArray().apply(json);
 
         assertArrayEquals(bytes, transformedBytes);
     }
 
     @Test
     public void testNull() {
-        assertNull(toByteArray().transform(null));
+        assertNull(toByteArray().apply(null));
     }
 }

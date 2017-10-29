@@ -21,26 +21,26 @@ import static java.math.BigInteger.ONE;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
-
-import org.junit.Test;
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.datatype.binary.Binary;
+
+import org.junit.Test;
 
 /**
  * Transformation test strings.
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class BigIntegerTransformersTest {
     @Test
-    public void testRoundTripConversion() throws TransformationException {
+    public void testRoundTripConversion() throws Exception {
         final BigInteger bigInteger = BigInteger.valueOf(Long.MAX_VALUE).add(ONE);
 
-        final Transformer<BigInteger, Binary> toBinaryTransformer = bigIntegerToBinary();
-        final Transformer<Binary, BigInteger> toBigIntegerTransformer = binaryToBigInteger();
+        final Function<BigInteger, Binary> toBinaryTransformer = bigIntegerToBinary();
+        final UnsafeTransformer<Binary, BigInteger> toBigIntegerTransformer = binaryToBigInteger();
 
-        final Binary binary = toBinaryTransformer.transform(bigInteger);
+        final Binary binary = toBinaryTransformer.apply(bigInteger);
         final BigInteger newBigInteger = toBigIntegerTransformer.transform(binary);
 
         assertEquals(bigInteger, newBigInteger);

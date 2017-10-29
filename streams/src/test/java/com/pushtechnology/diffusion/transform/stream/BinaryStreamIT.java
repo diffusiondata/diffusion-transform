@@ -103,7 +103,7 @@ public final class BinaryStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
-            .unsafeTransform(binaryToBigInteger().asUnsafeTransformer())
+            .unsafeTransform(binaryToBigInteger())
             .createFallback(topics, stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -122,7 +122,7 @@ public final class BinaryStreamIT {
             .updater()
             .valueUpdater(Binary.class);
 
-        updater.update("test/topic", bigIntegerToBinary().transform(TEN), updateCallback);
+        updater.update("test/topic", bigIntegerToBinary().apply(TEN), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
@@ -146,7 +146,7 @@ public final class BinaryStreamIT {
         final Topics topics = session.feature(Topics.class);
         final StreamHandle streamHandle = StreamBuilders
             .newBinaryStreamBuilder()
-            .unsafeTransform(binaryToBigInteger().asUnsafeTransformer())
+            .unsafeTransform(binaryToBigInteger())
             .register(topics, "?test//", stream);
 
         topics.subscribe("?test//", completionCallback);
@@ -165,7 +165,7 @@ public final class BinaryStreamIT {
             .updater()
             .valueUpdater(Binary.class);
 
-        updater.update("test/topic", bigIntegerToBinary().transform(TEN), updateCallback);
+        updater.update("test/topic", bigIntegerToBinary().apply(TEN), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())

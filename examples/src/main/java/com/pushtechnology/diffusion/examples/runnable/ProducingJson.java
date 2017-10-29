@@ -65,7 +65,7 @@ public final class ProducingJson extends AbstractClient {
             .updater();
 
         final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.class)
-            .unsafeTransform(Transformers.<RandomData>fromPojo().asUnsafeTransformer())
+            .unsafeTransform(Transformers.<RandomData>fromPojo())
             .create(updater);
 
         updateTask = executor.scheduleAtFixedRate(

@@ -71,7 +71,7 @@ public final class SafeStreamBuilderImplTest {
             new SafeStreamBuilderImpl<>(String.class, identity());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
-            streamBuilder.unsafeTransform(Transformers.<String>identity().asUnsafeTransformer());
+            streamBuilder.unsafeTransform(Transformers.toTransformer(identity()));
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
     }

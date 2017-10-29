@@ -139,7 +139,7 @@ public final class ReusingUpdaterBuilders extends AbstractClient {
     public static void main(String[] args) throws InterruptedException {
         final UnboundSafeUpdaterBuilder<JSON, JSON> safeUpdateBuilder = updaterBuilder(JSON.class);
         final UnboundTransformedUpdaterBuilder<JSON, RandomData> updaterBuilder = safeUpdateBuilder
-            .unsafeTransform(Transformers.<RandomData>fromPojo().asUnsafeTransformer());
+            .unsafeTransform(Transformers.<RandomData>fromPojo());
 
         final ReusingUpdaterBuilders client0 =
             new ReusingUpdaterBuilders("ws://diffusion.example.com:80", "auth", updaterBuilder);

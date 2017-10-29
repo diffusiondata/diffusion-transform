@@ -29,7 +29,7 @@ public final class BinaryToBigIntegerTransformer extends AbstractTransformer<Bin
     /**
      * Instance of {@link BinaryToBigIntegerTransformer}.
      */
-    public static final Transformer<Binary, BigInteger> INSTANCE = new BinaryToBigIntegerTransformer();
+    public static final UnsafeTransformer<Binary, BigInteger> INSTANCE = new BinaryToBigIntegerTransformer();
 
     private BinaryToBigIntegerTransformer() {
     }

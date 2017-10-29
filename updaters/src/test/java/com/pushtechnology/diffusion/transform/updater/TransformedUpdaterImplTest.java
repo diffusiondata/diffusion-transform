@@ -21,15 +21,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
-import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformer;
 
 /**
  * Unit tests for {@link TransformedUpdaterImpl}.
@@ -43,7 +42,7 @@ public final class TransformedUpdaterImplTest {
     @Mock
     private JSON jsonValue;
     @Mock
-    private Transformer<String, JSON> transformer;
+    private UnsafeTransformer<String, JSON> transformer;
     @Mock
     private TopicUpdateControl.Updater.UpdateCallback callback;
     @Mock
@@ -52,7 +51,7 @@ public final class TransformedUpdaterImplTest {
     private TransformedUpdaterImpl<JSON, String> updater;
 
     @Before
-    public void setUp() throws TransformationException {
+    public void setUp() throws Exception {
         initMocks(this);
 
         when(delegateUpdater.getCachedValue("topic")).thenReturn(jsonValue);
@@ -67,7 +66,7 @@ public final class TransformedUpdaterImplTest {
     }
 
     @Test
-    public void update() throws TransformationException {
+    public void update() throws Exception {
         updater.update("topic", "stringValue", callback);
 
         verify(transformer).transform("stringValue");
@@ -75,7 +74,7 @@ public final class TransformedUpdaterImplTest {
     }
 
     @Test
-    public void updateWithContext() throws TransformationException {
+    public void updateWithContext() throws Exception {
         updater.update("topic", "stringValue", "context", contextCallback);
 
         verify(transformer).transform("stringValue");

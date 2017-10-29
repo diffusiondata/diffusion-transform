@@ -16,7 +16,6 @@
 package com.pushtechnology.diffusion.transform.transformer;
 
 import static com.pushtechnology.diffusion.transform.transformer.JacksonContext.JACKSON_CONTEXT;
-import static com.pushtechnology.diffusion.transform.transformer.Transformers.toTransformer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,7 +31,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 import com.pushtechnology.diffusion.client.Diffusion;
-import com.pushtechnology.diffusion.datatype.InvalidDataException;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
@@ -53,22 +51,20 @@ public final class JSONTransformers {
      */
     public static final JSONTransformers JSON_TRANSFORMERS = new JSONTransformers(JACKSON_CONTEXT);
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
-    private static final Transformer<String, JSON> PARSE_JSON = toTransformer(
-        new UnsafeTransformer<String, JSON>() {
-            @Override
-            public JSON transform(String value) throws InvalidDataException {
-                return JSON_DATA_TYPE.fromJsonString(value);
-            }
-        });
-    private static final Transformer<JSON, String> STRINGIFY_JSON = toTransformer(
-        new UnsafeTransformer<JSON, String>() {
-            @Override
-            public String transform(JSON value) throws InvalidDataException {
-                return value.toJsonString();
-            }
-        });
+    private static final UnsafeTransformer<String, JSON> PARSE_JSON = value -> {
+        if (value == null) {
+            return null;
+        }
+        return JSON_DATA_TYPE.fromJsonString(value);
+    };
+    private static final UnsafeTransformer<JSON, String> STRINGIFY_JSON = value -> {
+        if (value == null) {
+            return null;
+        }
+        return value.toJsonString();
+    };
 
-    private final Transformer fromPojo = new Transformer() {
+    private final UnsafeTransformer fromPojo = new UnsafeTransformer() {
         @Override
         public Object transform(Object value) throws TransformationException {
             if (value == null) {
@@ -78,7 +74,7 @@ public final class JSONTransformers {
         }
     };
     @SuppressWarnings("unchecked")
-    private final Transformer fromMap = new Transformer() {
+    private final UnsafeTransformer fromMap = new UnsafeTransformer() {
         @Override
         public Object transform(Object value) throws TransformationException {
             if (value == null) {
@@ -96,10 +92,10 @@ public final class JSONTransformers {
     public JSONTransformers(Module... modules) {
         jacksonContext = new JacksonContext(
             modules,
-            Collections.<CBORFactory.Feature, Boolean>emptyMap(),
-            Collections.<MapperFeature, Boolean>emptyMap(),
-            Collections.<SerializationFeature, Boolean>emptyMap(),
-            Collections.<DeserializationFeature, Boolean>emptyMap());
+            Collections.emptyMap(),
+            Collections.emptyMap(),
+            Collections.emptyMap(),
+            Collections.emptyMap());
     }
 
     private JSONTransformers(
@@ -129,15 +125,12 @@ public final class JSONTransformers {
      * @param <T> the target type
      * @return a transformer that converts JSON to the provided type
      */
-    public <T> Transformer<JSON, T> toObject(final Class<T> type) {
-        return new Transformer<JSON, T>() {
-            @Override
-            public T transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return jacksonContext.toObject(value, type);
+    public <T> UnsafeTransformer<JSON, T> toObject(final Class<T> type) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return jacksonContext.toObject(value, type);
         };
     }
 
@@ -148,15 +141,12 @@ public final class JSONTransformers {
      * @param <T> the target type
      * @return a transformer that converts JSON to the provided type
      */
-    public <T> Transformer<JSON, T> toType(final TypeReference<T> typeReference) {
-        return new Transformer<JSON, T>() {
-            @Override
-            public T transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return jacksonContext.toType(value, typeReference);
+    public <T> UnsafeTransformer<JSON, T> toType(final TypeReference<T> typeReference) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return jacksonContext.toType(value, typeReference);
         };
     }
 
@@ -167,15 +157,12 @@ public final class JSONTransformers {
      * @param <T> the type of value contained by the map
      * @return a transformer that converts JSON to a map
      */
-    public <T> Transformer<JSON, Map<String, T>> toMapOf(final Class<T> type) {
-        return new Transformer<JSON, Map<String, T>>() {
-            @Override
-            public Map<String, T> transform(JSON value) throws TransformationException {
-                if (value == null) {
-                    return null;
-                }
-                return jacksonContext.toMapOf(value, type);
+    public <T> UnsafeTransformer<JSON, Map<String, T>> toMapOf(final Class<T> type) {
+        return value -> {
+            if (value == null) {
+                return null;
             }
+            return jacksonContext.toMapOf(value, type);
         };
     }
 
@@ -186,7 +173,7 @@ public final class JSONTransformers {
      * @return the transformer to JSON
      */
     @SuppressWarnings("unchecked")
-    public <T> Transformer<T, JSON> fromPojo() {
+    public <T> UnsafeTransformer<T, JSON> fromPojo() {
         return fromPojo;
     }
 
@@ -197,23 +184,31 @@ public final class JSONTransformers {
      * @return the transformer to JSON
      */
     @SuppressWarnings("unchecked")
-    public <T> Transformer<Map<String, T>, JSON> fromMap() {
+    public <T> UnsafeTransformer<Map<String, T>, JSON> fromMap() {
         return fromMap;
+    }
+
+    public UnsafeTransformer getFromPojo() {
+        return fromPojo;
     }
 
     /**
      * Transformer from String to JSON.
      * @return the transformer to JSON
      */
-    public Transformer<String, JSON> parseJSON() {
+    UnsafeTransformer<String, JSON> parseJSON() {
         return PARSE_JSON;
+    }
+
+    public static UnsafeTransformer<JSON, String> getStringifyJson() {
+        return STRINGIFY_JSON;
     }
 
     /**
      * Transformer from JSON to String.
      * @return the transformer to String
      */
-    public Transformer<JSON, String> stringify() {
+    UnsafeTransformer<JSON, String> stringify() {
         return STRINGIFY_JSON;
     }
 
@@ -222,11 +217,11 @@ public final class JSONTransformers {
      */
     public static Builder builder() {
         return new Builder(
-            new ArrayList<Module>(),
-            new HashMap<CBORFactory.Feature, Boolean>(),
-            new HashMap<MapperFeature, Boolean>(),
-            new HashMap<SerializationFeature, Boolean>(),
-            new HashMap<DeserializationFeature, Boolean>());
+            new ArrayList<>(),
+            new HashMap<>(),
+            new HashMap<>(),
+            new HashMap<>(),
+            new HashMap<>());
     }
 
     /**

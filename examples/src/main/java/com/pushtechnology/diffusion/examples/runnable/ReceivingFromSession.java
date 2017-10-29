@@ -49,7 +49,7 @@ public final class ReceivingFromSession extends AbstractClient {
     public void onStarted(Session session) {
         RequestReceiverBuilders
             .requestStreamBuilder(JSON.class, String.class)
-            .unsafeTransformRequest(Transformers.stringify().asUnsafeTransformer())
+            .unsafeTransformRequest(Transformers.stringify())
             .bind(session)
             .addRequestHandler(
                 "json/random",
