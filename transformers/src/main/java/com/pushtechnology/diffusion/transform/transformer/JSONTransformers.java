@@ -35,7 +35,7 @@ import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.datatype.json.JSONDataType;
 
 /**
- * Common {@link Transformer}s for working with JSON.
+ * Common transformers for working with JSON.
  * <p>
  * Many of the transformations are supported by Jackson. The behaviour of
  * Jackson can be customised by providing modules when constructing the

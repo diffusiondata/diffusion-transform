@@ -18,7 +18,7 @@ package com.pushtechnology.diffusion.transform.transformer;
 import java.util.function.Function;
 
 /**
- * Builder for {@link SafeTransformer}s.
+ * Builder for {@link Function}s.
  *
  * @param <S> The type of source value accepted by the transformers this builds
  * @param <T> The type of target value returned by the transformers this builds

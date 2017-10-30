@@ -22,15 +22,15 @@ import java.io.InputStream;
 import com.pushtechnology.diffusion.datatype.binary.Binary;
 
 /**
- * Abstract {@link Transformer} to help deserialise values from {@link Binary}.
+ * Abstract {@link UnsafeTransformer} to help deserialise values from {@link Binary}.
  *
  * @param <T> the type to transform to
  * @author Push Technology Limited
  */
 @SuppressWarnings("deprecation")
-public abstract class FromBinaryTransformer<T> implements Transformer<Binary, T> {
+public abstract class FromBinaryTransformer<T> implements UnsafeTransformer<Binary, T> {
     @Override
-    public final T transform(Binary value) throws TransformationException {
+    public final T transform(Binary value) throws Exception {
         if (value == null) {
             return null;
         }

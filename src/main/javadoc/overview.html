@@ -5,9 +5,8 @@
             additional data conversion functionality. Such functionality is very opinionated in Java and it was decided
             not suitable for the core library.</p>
         <p>This API currently supports streams and updaters, allowing them to use types not supported by
-            <em>Diffusion</em>. This is done by creating a
-            {@link com.pushtechnology.diffusion.transform.transformer.Transformer} that knows how to convert objects
-            between types.</p>
+            <em>Diffusion</em>. This is done by creating a transformer that knows how to convert objects between
+            types.</p>
         <p>You can create a stream that converts the data it receives. First get a <em>StreamBuilder</em> and apply
             one or more transformers. Each transformer returns a new <em>StreamBuilder</em> with a different type.
             Once all the transformers have been chained you can call create to register a new stream. Transformed values
