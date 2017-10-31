@@ -36,6 +36,7 @@ public interface RequestToHandlerSender<U, V> {
      * @param request the request
      *
      * @return the response
+     * @throws TransformationException if the request cannot be transformed
      */
     CompletableFuture<V> sendRequest(String path, U request) throws TransformationException;
 }

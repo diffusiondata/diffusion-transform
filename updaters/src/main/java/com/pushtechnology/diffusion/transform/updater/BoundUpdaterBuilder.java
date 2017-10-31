@@ -37,11 +37,14 @@ public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V
 
     /**
      * Create the updater.
+     *
+     * @return a transformed non-exclusive updater
      */
     U create();
 
     /**
      * Register an update source.
+     * @param topicPath the path to register the update source for
      * @param updateSource the update source
      */
     void register(String topicPath, V updateSource);

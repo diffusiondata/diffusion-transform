@@ -44,7 +44,6 @@ import com.pushtechnology.diffusion.datatype.json.JSONDataType;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class JSONTransformers {
     /**
      * Default {@link JSONTransformers}, without any Jackson modules.
@@ -251,6 +250,8 @@ public final class JSONTransformers {
 
         /**
          * Register a new Jackson module.
+         *
+         * @param module the module to register
          * @return a new builder
          */
         public Builder registerModule(Module module) {
@@ -266,6 +267,9 @@ public final class JSONTransformers {
 
         /**
          * Configure a CBOR feature.
+         *
+         * @param feature the factory feature
+         * @param enabled if it should be enabled
          * @return a new builder
          */
         public Builder configure(CBORFactory.Feature feature, boolean enabled) {
@@ -280,7 +284,10 @@ public final class JSONTransformers {
         }
 
         /**
-         * Configure a serialisation feature.
+         * Configure a mapper feature.
+         *
+         * @param feature the mapper feature
+         * @param enabled if it should be enabled
          * @return a new builder
          */
         public Builder configure(MapperFeature feature, boolean enabled) {
@@ -297,6 +304,9 @@ public final class JSONTransformers {
 
         /**
          * Configure a serialisation feature.
+         *
+         * @param feature the serialisation feature
+         * @param enabled if it should be enabled
          * @return a new builder
          */
         public Builder configure(SerializationFeature feature, boolean enabled) {
@@ -313,6 +323,9 @@ public final class JSONTransformers {
 
         /**
          * Configure a deserialisation feature.
+         *
+         * @param feature the deserialisation feature
+         * @param enabled if it should be enabled
          * @return a new builder
          */
         public Builder configure(DeserializationFeature feature, boolean enabled) {

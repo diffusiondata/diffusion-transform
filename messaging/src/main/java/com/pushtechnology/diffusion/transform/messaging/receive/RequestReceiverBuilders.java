@@ -29,6 +29,8 @@ public final class RequestReceiverBuilders {
     /**
      * Create a {@link UnboundRequestReceiverBuilder}.
      *
+     * @param requestType the class of requests understood by Diffusion
+     * @param responseType the class of responses understood by Diffusion
      * @return the request stream builder
      */
     public static <U, V> UnboundRequestReceiverBuilder<U, U, V> requestStreamBuilder(

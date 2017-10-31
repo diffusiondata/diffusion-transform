@@ -26,7 +26,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of response
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface UnboundRequestSenderBuilder<T, U, V> extends RequestSenderBuilder<U, V> {
 
     @Override
@@ -45,12 +44,14 @@ public interface UnboundRequestSenderBuilder<T, U, V> extends RequestSenderBuild
     /**
      * Create a request to handler sender.
      * @param session the session to send from
+     * @return a request to handler sender
      */
     RequestToHandlerSender<U, V> buildToHandlerSender(Session session);
 
     /**
      * Create a request to session sender.
      * @param session the session to send from
+     * @return a request to session sender
      */
     RequestToSessionSender<T, U, V> buildToSessionSender(Session session);
 }

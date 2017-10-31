@@ -27,7 +27,6 @@ import com.pushtechnology.diffusion.datatype.binary.Binary;
  * @param <T> the type to transform to
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public abstract class FromBinaryTransformer<T> implements UnsafeTransformer<Binary, T> {
     @Override
     public final T transform(Binary value) throws Exception {
@@ -58,6 +57,7 @@ public abstract class FromBinaryTransformer<T> implements UnsafeTransformer<Bina
      * @throws TransformationException if the value cannot be deserialised
      * @throws java.io.IOException if the operations on the input failed
      * @throws Exception if the deserialisation failed unexpectedly
+     * @return the deserialised value
      */
     protected abstract T deserialiseValue(DataInput dataInput) throws Exception;
 }

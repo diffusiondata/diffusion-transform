@@ -29,13 +29,14 @@ import com.pushtechnology.diffusion.datatype.binary.BinaryDataType;
  * @param <S> the type to transform from
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public abstract class ToBinaryTransformer<S> implements UnsafeTransformer<S, Binary> {
     private static final BinaryDataType BINARY_DATA_TYPE = Diffusion.dataTypes().binary();
     private final int initialSize;
 
     /**
      * Constructor.
+     *
+     * @param initialSize the initial bytes allocated
      */
     protected ToBinaryTransformer(int initialSize) {
         this.initialSize = initialSize;

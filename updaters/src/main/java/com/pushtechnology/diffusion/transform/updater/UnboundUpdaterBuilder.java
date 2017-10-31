@@ -28,7 +28,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> The type of update source
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface UnboundUpdaterBuilder
     <S, T, U extends TransformedUpdater<S, T>, V extends TransformedUpdateSource<S, T, U>>
     extends UpdaterBuilder<S, T> {
@@ -59,11 +58,14 @@ public interface UnboundUpdaterBuilder
      * Create the updater.
      *
      * @param updater the update to transform
+     * @return a transformed non-exclusive updater
      */
     U create(TopicUpdateControl.Updater updater);
 
     /**
      * Register an update source.
+     * @param updateControl the update control feature
+     * @param topicPath the path to register the update source for
      * @param updateSource the update source
      */
     void register(TopicUpdateControl updateControl, String topicPath, V updateSource);

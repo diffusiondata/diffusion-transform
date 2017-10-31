@@ -29,6 +29,10 @@ public final class RequestSenderBuilders {
     /**
      * Create a {@link UnboundRequestSenderBuilder}.
      *
+     * @param requestType the class of request understood by Diffusion
+     * @param responseType the class of request understood by Diffusion
+     * @param <U> the type of request understood by Diffusion
+     * @param <V> the type of response understood by Diffusion
      * @return the request sender builder
      */
     public static <U, V> UnboundRequestSenderBuilder<V, U, V> requestSenderBuilder(
