@@ -6,13 +6,13 @@ To help with receiving values from topics a `StreamBuilder` can be used to const
 immutable and allows a new `StreamBuilder` to be created from it that adds an additional transformation.
 
 A `TransformedStream` adds additional error handling capabilities to a `ValueStream` to handle a
-`TransformationException`. Using only `SafeTransformer` this additional error handling can be avoided.
+`TransformationException`. Using only `Function` this additional error handling can be avoided.
 
 Multiple transformations can be chained together to read a `JSON` value and extract part of it.
 
 ```java
 StreamBuilders.newJsonStreamBuilder()
-    .transform(Transformers.toMapOf(BigInteger.class))
+    .unsafeTransform(Transformers.toMapOf(BigInteger.class))
     .transform(Transformers.project("timestamp"))
     .create(topics, "json/random", new TransformedStream.Default<JSON, BigInteger>() {
         @Override
