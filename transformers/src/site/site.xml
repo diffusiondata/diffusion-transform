@@ -6,6 +6,9 @@
             <item name="Transformers" href="transformers.html" />
             <item name="JSON Transformers" href="json-transformers.html" />
             <item name="Transformer Builders" href="transformer-builders.html" />
+            <item name="Stream Builders" href="../streams/stream-builders.html" />
+            <item name="Updater Builders" href="../updaters/updater-builders.html" />
+            <item name="Messaging" href="../messaging/messaging.html" />
         </menu>
         <menu ref="reports" />
     </body>

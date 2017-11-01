@@ -3,7 +3,12 @@
     <body>
         <menu ref="parent" />
         <menu name="Details">
+            <item name="Transformers" href="../transformers/transformers.html" />
+            <item name="JSON Transformers" href="../transformers/json-transformers.html" />
+            <item name="Transformer Builders" href="../transformers/transformer-builders.html" />
             <item name="Stream Builders" href="stream-builders.html" />
+            <item name="Updater Builders" href="../updaters/updater-builders.html" />
+            <item name="Messaging" href="../messaging/messaging.html" />
         </menu>
         <menu ref="reports" />
     </body>
