@@ -11,7 +11,7 @@ Multiple transformations can be chained together, for example to take a POJO
 and create a `Binary` object that can be published to a topic.
 
 ```java
-final SafeTransformer<RandomData, Binary> randomDataSerialiser = Transformers
+final Function<RandomData, Binary> randomDataSerialiser = Transformers
     .builder(RandomData.class)
     .transform(value -> {
         final ByteBuffer buffer = ByteBuffer.allocate(16);
