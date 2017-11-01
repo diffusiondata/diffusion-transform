@@ -55,7 +55,7 @@ public final class ProducingBinary extends AbstractClient {
         }
     }
         .andThen(ByteBuffer::array)
-        .andThen(value -> byteArrayToBinary().apply(value));
+        .andThen(byteArrayToBinary());
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
 
     private volatile Future<?> updateTask;
