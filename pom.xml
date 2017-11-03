@@ -14,6 +14,7 @@
     <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://pushtechnology.github.io/diffusion-transform/</url>
+    <description>Parent project for Diffusion transformers.</description>
 
     <modules>
         <module>examples</module>

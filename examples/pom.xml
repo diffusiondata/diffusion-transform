@@ -9,6 +9,7 @@
 
     <artifactId>examples</artifactId>
     <name>Examples</name>
+    <description>Module for examples of Diffusion transformers.</description>
 
     <scm>
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/examples</url>

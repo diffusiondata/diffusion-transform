@@ -9,6 +9,7 @@
 
     <artifactId>transformers</artifactId>
     <name>Transformers</name>
+    <description>Module for transformers.</description>
 
     <scm>
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/transformers</url>

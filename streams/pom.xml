@@ -9,6 +9,7 @@
 
     <artifactId>streams</artifactId>
     <name>Streams</name>
+    <description>Module for transforming streams.</description>
 
     <scm>
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/streams</url>

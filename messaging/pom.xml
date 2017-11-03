@@ -9,6 +9,7 @@
 
     <artifactId>messaging</artifactId>
     <name>Messaging</name>
+    <description>Module for transforming request/response messaging.</description>
 
     <scm>
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/messaging</url>

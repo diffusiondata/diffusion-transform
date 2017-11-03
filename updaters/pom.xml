@@ -9,6 +9,7 @@
 
     <artifactId>updaters</artifactId>
     <name>Updaters</name>
+    <description>Module for transforming updaters.</description>
 
     <scm>
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/updaters</url>
