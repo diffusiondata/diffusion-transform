@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,18 @@ public final class ProducingTimestamp extends AbstractClient {
 
     @Override
     public void onConnected(Session session) {
-        session.feature(TopicControl.class).addTopic("binary/timestamp", TopicType.STRING);
+        session
+            .feature(TopicControl.class)
+            .addTopic("string/timestamp", TopicType.STRING)
+            .thenAccept(result -> beingUpdating(session))
+            .exceptionally(ex -> {
+                LOG.error("Failed to add topic string/timestamp", ex);
+                return null;
+            });
+    }
+
+    private void beingUpdating(Session session) {
+        LOG.debug("Begin updating topic");
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)
@@ -77,7 +88,7 @@ public final class ProducingTimestamp extends AbstractClient {
             () -> {
                 try {
                     valueUpdater.update(
-                        "binary/timestamp",
+                        "string/timestamp",
                         Instant.now(),
                         new TopicUpdateControl.Updater.UpdateCallback.Default());
                 }

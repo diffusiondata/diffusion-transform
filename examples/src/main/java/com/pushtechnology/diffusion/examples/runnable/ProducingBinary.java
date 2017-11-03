@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,17 @@ public final class ProducingBinary extends AbstractClient {
     @Override
     public void onConnected(Session session) {
         final TopicControl topicControl = session.feature(TopicControl.class);
-        topicControl.addTopic("binary/random", BINARY, new TopicControl.AddCallback.Default());
+        topicControl
+            .addTopic("binary/random", BINARY)
+            .thenAccept(result -> beginUpdating(session))
+            .exceptionally(ex -> {
+                LOG.error("Failed to add topic binary/random", ex);
+                return null;
+            });
+    }
+
+    private void beginUpdating(Session session) {
+        LOG.debug("Begin updating topic");
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)

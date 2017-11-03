@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,16 @@ public final class ProducingJsonTimestamp extends AbstractClient {
     public void onConnected(Session session) {
         session
             .feature(TopicControl.class)
-            .addTopic("json/timestamp", TopicType.JSON, new TopicControl.AddCallback.Default());
+            .addTopic("json/timestamp", TopicType.JSON)
+            .thenAccept(result -> beginUpdating(session))
+            .exceptionally(ex -> {
+                LOG.error("Failed to add topic json/timestamp", ex);
+                return null;
+            });
+    }
+
+    private void beginUpdating(Session session) {
+        LOG.debug("Begin updating topic");
 
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)

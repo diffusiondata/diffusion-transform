@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class ProducingJsonWithExclusiveUpdater extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJsonWithExclusiveUpdater.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -60,7 +59,17 @@ public final class ProducingJsonWithExclusiveUpdater extends AbstractClient {
     @Override
     public void onConnected(Session session) {
         final TopicControl topicControl = session.feature(TopicControl.class);
-        topicControl.addTopic("json/random", JSON, new TopicControl.AddCallback.Default());
+        topicControl
+            .addTopic("json/random", JSON)
+            .thenAccept(result -> beginUpdating(session))
+            .exceptionally(ex -> {
+                LOG.error("Failed to add topic json/random", ex);
+                return null;
+            });
+    }
+
+    private void beginUpdating(Session session) {
+        LOG.debug("Begin updating topic");
 
         updaterBuilder(JSON.class)
             .unsafeTransform(Transformers.<RandomData>fromPojo())

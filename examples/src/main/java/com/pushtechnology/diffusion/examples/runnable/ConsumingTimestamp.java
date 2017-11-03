@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class ConsumingTimestamp extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ConsumingBinary.class);
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");

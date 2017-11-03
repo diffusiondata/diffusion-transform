@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@ import static com.pushtechnology.diffusion.client.topics.details.TopicType.JSON;
 import static com.pushtechnology.diffusion.transform.updater.UpdaterBuilders.updaterBuilder;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
+import com.pushtechnology.diffusion.client.features.control.topics.TopicControl.AddTopicResult;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -44,7 +46,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class ReusingUpdaterBuilders extends AbstractClient {
     private static final Logger LOG = LoggerFactory.getLogger(ProducingJson.class);
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -69,9 +70,22 @@ public final class ReusingUpdaterBuilders extends AbstractClient {
     @Override
     public void onConnected(Session session) {
         final TopicControl topicControl = session.feature(TopicControl.class);
-        topicControl.addTopic("json/random", JSON, new TopicControl.AddCallback.Default());
-        topicControl.addTopic("other/random", JSON, new TopicControl.AddCallback.Default());
+        final CompletableFuture<AddTopicResult> addFirstTopic = topicControl.addTopic("json/random", JSON);
+        addFirstTopic.exceptionally(ex -> {
+            LOG.error("Failed to add topic json/random", ex);
+            return null;
+        });
 
+        final CompletableFuture<AddTopicResult> addSecondTopic = topicControl.addTopic("other/random", JSON);
+        addSecondTopic.exceptionally(ex -> {
+            LOG.error("Failed to add topic other/random", ex);
+            return null;
+        });
+
+        CompletableFuture.allOf(addFirstTopic, addSecondTopic).thenAccept(r -> beginUpdating(session));
+    }
+
+    private void beginUpdating(Session session) {
         final BoundTransformedUpdaterBuilder<JSON, RandomData> builder = updateBuilder.bind(session);
         builder.register(
             "json",

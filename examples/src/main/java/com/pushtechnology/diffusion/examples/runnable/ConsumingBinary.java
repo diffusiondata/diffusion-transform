@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@ package com.pushtechnology.diffusion.examples.runnable;
 
 import static com.pushtechnology.diffusion.transform.stream.StreamBuilders.newBinaryStreamBuilder;
 
-import java.util.function.Function;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.datatype.Bytes;
-import com.pushtechnology.diffusion.datatype.binary.Binary;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A client that consumes Binary topics.
@@ -50,8 +47,8 @@ public final class ConsumingBinary extends AbstractClient {
         final Topics topics = session.feature(Topics.class);
 
         newBinaryStreamBuilder()
-            .transform((Function<Binary, byte[]>) Bytes::toByteArray)
-            .transform((Function<byte[], RandomData>) RandomData::fromByteArray)
+            .transform(Bytes::toByteArray)
+            .transform(RandomData::fromByteArray)
             .register(topics, "binary/random", new Topics.ValueStream.Default<RandomData>() {
                 @Override
                 public void onValue(
