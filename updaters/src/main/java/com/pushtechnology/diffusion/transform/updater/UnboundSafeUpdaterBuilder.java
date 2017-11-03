@@ -32,12 +32,6 @@ public interface UnboundSafeUpdaterBuilder<S, T> extends
     SafeUpdaterBuilder<S, T>,
     UnboundUpdaterBuilder<S, T, SafeTransformedUpdater<S, T>, SafeTransformedUpdateSource<S, T>> {
 
-    // CHECKSTYLE.OFF: MissingDeprecated
-    @Deprecated
-    @Override
-    BoundSafeUpdaterBuilder<S, T> bind(TopicUpdateControl updateControl);
-    // CHECKSTYLE.ON: MissingDeprecated
-
     @Override
     BoundSafeUpdaterBuilder<S, T> bind(Session session);
 

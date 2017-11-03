@@ -164,17 +164,6 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformAndBind() throws TransformationException {
-        final BoundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
-            .unsafeTransform(unsafeTransformer)
-            .bind(updateControl);
-
-        builder.create();
-
-        verify(updateControl).updater();
-    }
-
-    @Test
     public void transformAndBindWithSession() throws TransformationException {
         final BoundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
             .unsafeTransform(unsafeTransformer)

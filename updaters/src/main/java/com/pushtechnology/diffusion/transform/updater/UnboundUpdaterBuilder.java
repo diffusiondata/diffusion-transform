@@ -40,15 +40,6 @@ public interface UnboundUpdaterBuilder
 
     /**
      * Bind an {@link UpdaterBuilder} to a session.
-     * @param updateControl The feature of the session to bind
-     * @return The bound updater
-     * @deprecated since 1.2, use {@link #bind(Session)}
-     */
-    @Deprecated
-    BoundUpdaterBuilder<S, T, U, V> bind(TopicUpdateControl updateControl);
-
-    /**
-     * Bind an {@link UpdaterBuilder} to a session.
      * @param session The session to bind
      * @return The bound updater
      */

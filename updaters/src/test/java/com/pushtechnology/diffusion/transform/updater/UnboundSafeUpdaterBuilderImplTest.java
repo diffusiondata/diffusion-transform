@@ -192,17 +192,6 @@ public final class UnboundSafeUpdaterBuilderImplTest {
 
     @SuppressWarnings("deprecation")
     @Test
-    public void transformAndBind() throws TransformationException {
-        final BoundSafeUpdaterBuilder<JSON, String> builder = updaterBuilder
-            .transform(safeTransformer)
-            .bind(updateControl);
-
-        builder.create();
-
-        verify(updateControl).updater();
-    }
-
-    @Test
     public void transformAndBindWithSession() throws TransformationException {
         final BoundSafeUpdaterBuilder<JSON, String> builder = updaterBuilder
             .transform(safeTransformer)
