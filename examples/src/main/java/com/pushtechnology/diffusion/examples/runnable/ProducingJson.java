@@ -58,8 +58,16 @@ public final class ProducingJson extends AbstractClient {
     @Override
     public void onConnected(Session session) {
         final TopicControl topicControl = session.feature(TopicControl.class);
-        topicControl.addTopic("json/random", JSON, new TopicControl.AddCallback.Default());
+        topicControl
+            .addTopic("json/random", JSON)
+            .thenAccept(result -> beginUpdating(session))
+            .exceptionally(ex -> {
+                LOG.error("Failed to add topic json/random", ex);
+                return null;
+            });
+    }
 
+    private void beginUpdating(Session session) {
         final TopicUpdateControl.Updater updater = session
             .feature(TopicUpdateControl.class)
             .updater();
