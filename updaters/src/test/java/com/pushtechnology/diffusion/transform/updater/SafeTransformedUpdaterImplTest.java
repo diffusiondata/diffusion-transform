@@ -37,7 +37,6 @@ import org.mockito.Mock;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class SafeTransformedUpdaterImplTest {
     @Mock
     private TopicUpdateControl.ValueUpdater<JSON> delegateUpdater;

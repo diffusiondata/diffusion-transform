@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 /*package*/ final class StreamAdapter<S, T> extends AbstractStreamAdapter<S, T, TransformedStream<S, T>> {
     private static final Logger LOG = LoggerFactory.getLogger(StreamAdapter.class);
     private final UnsafeTransformer<S, T> transformingFunction;

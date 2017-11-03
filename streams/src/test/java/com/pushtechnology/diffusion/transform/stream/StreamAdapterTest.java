@@ -38,7 +38,6 @@ import org.mockito.stubbing.Answer;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class StreamAdapterTest {
 
     @Mock

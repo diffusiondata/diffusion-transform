@@ -24,7 +24,6 @@ import java.util.function.Function;
  * @param <T> The type of value updates are provided as
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface BoundSafeUpdaterBuilder<S, T> extends
     SafeUpdaterBuilder<S, T>,
     BoundUpdaterBuilder<S, T, SafeTransformedUpdater<S, T>, SafeTransformedUpdateSource<S, T>> {

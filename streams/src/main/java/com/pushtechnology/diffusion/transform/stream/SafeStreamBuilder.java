@@ -36,7 +36,6 @@ import com.pushtechnology.diffusion.client.features.Topics;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface SafeStreamBuilder<S, T> extends StreamBuilder<S, T, Topics.ValueStream<T>> {
 
     /**

@@ -42,7 +42,6 @@ import org.junit.Test;
  *
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public final class JSONTransformersTest {
     private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
 

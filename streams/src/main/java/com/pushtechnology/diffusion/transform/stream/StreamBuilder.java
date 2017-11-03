@@ -32,7 +32,6 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <V> the type of the value steam to be built
  * @author Push Technology Limited
  */
-@SuppressWarnings("deprecation")
 public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
 
     /**
