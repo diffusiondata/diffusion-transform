@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,13 @@ public interface UnboundSafeUpdaterBuilder<S, T> extends
 
     /**
      * Register an update source.
+     *
+     * @param updateControl the update control feature
+     * @param topicPath the path to register the update source for
      * @param updateSource the update source
      */
     void register(TopicUpdateControl updateControl, String topicPath, SafeTransformedUpdateSource<S, T> updateSource);
+
+    @Override
+    void register(Session session, String topicPath, SafeTransformedUpdateSource<S, T> updateSource);
 }

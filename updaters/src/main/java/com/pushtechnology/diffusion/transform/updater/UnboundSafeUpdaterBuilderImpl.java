@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,11 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
+    public SafeTransformedUpdater<S, T> create(Session session) {
+        return create(session.feature(TopicUpdateControl.class).updater());
+    }
+
+    @Override
     public BoundSafeUpdaterBuilder<S, T> bind(Session session) {
         return new BoundSafeUpdaterBuilderImpl<>(session.feature(TopicUpdateControl.class), valueType, transformer);
     }
@@ -97,5 +102,14 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
         updateControl.registerUpdateSource(
             topicPath,
             new SafeUpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this, updateSource));
+    }
+
+    @Override
+    public void register(
+        Session session,
+        String topicPath,
+        SafeTransformedUpdateSource<S, T> updateSource) {
+
+        register(session.feature(TopicUpdateControl.class), topicPath, updateSource);
     }
 }

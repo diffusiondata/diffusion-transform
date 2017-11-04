@@ -123,6 +123,18 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
+    public void createAndUpdateWithSession() throws TransformationException {
+        final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(session);
+
+        verify(session).feature(TopicUpdateControl.class);
+        verify(updateControl).updater();
+
+        updater.update("topic", jsonValue, callback);
+
+        verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
     public void untransformedValueCache() {
         final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
 
@@ -178,6 +190,25 @@ public final class UnboundSafeUpdaterBuilderImplTest {
             .transform(safeTransformer)
             .register(updateControl, "topic", updateSource);
 
+        verify(updateControl).registerUpdateSource(eq("topic"), updateSourceCaptor.capture());
+
+        updateSourceCaptor.getValue().onActive("topic", simpleUpdater);
+
+        verify(updateSource).onActive(eq("topic"), updaterCaptor.capture());
+
+        updaterCaptor.getValue().update("topic", "stringValue", callback);
+
+        verify(safeTransformer).apply("stringValue");
+        verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void transformRegisterAndUpdateWithSession() throws TransformationException {
+        updaterBuilder
+            .transform(safeTransformer)
+            .register(session, "topic", updateSource);
+
+        verify(session).feature(TopicUpdateControl.class);
         verify(updateControl).registerUpdateSource(eq("topic"), updateSourceCaptor.capture());
 
         updateSourceCaptor.getValue().onActive("topic", simpleUpdater);

@@ -54,10 +54,27 @@ public interface UnboundUpdaterBuilder
     U create(TopicUpdateControl.Updater updater);
 
     /**
+     * Create the updater.
+     *
+     * @param session the session
+     * @return a transformed non-exclusive updater
+     */
+    U create(Session session);
+
+    /**
      * Register an update source.
      * @param updateControl the update control feature
      * @param topicPath the path to register the update source for
      * @param updateSource the update source
      */
     void register(TopicUpdateControl updateControl, String topicPath, V updateSource);
+
+    /**
+     * Register an update source.
+     *
+     * @param session the session
+     * @param topicPath the path to register the update source for
+     * @param updateSource the update source
+     */
+    void register(Session session, String topicPath, V updateSource);
 }
