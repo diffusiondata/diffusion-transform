@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.pushtechnology.diffusion.transform.stream;
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
@@ -65,12 +66,32 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
     /**
      * Create the stream.
      *
+     * @param session the session
+     * @param topicSelector the topic selector to match the stream
+     * @param stream the stream handler
+     * @return a handle to the stream
+     */
+    StreamHandle register(Session session, String topicSelector, V stream);
+
+    /**
+     * Create the stream.
+     *
      * @param topicsFeature the topics feature
      * @param topicSelector the topic selector to match the stream
      * @param stream the stream handler
      * @return a handle to the stream
      */
     StreamHandle register(Topics topicsFeature, TopicSelector topicSelector, V stream);
+
+    /**
+     * Create the stream.
+     *
+     * @param session the session
+     * @param topicSelector the topic selector to match the stream
+     * @param stream the stream handler
+     * @return a handle to the stream
+     */
+    StreamHandle register(Session session, TopicSelector topicSelector, V stream);
 
     /**
      * Create the fallback stream.
@@ -80,4 +101,13 @@ public interface StreamBuilder<S, T, V extends Topics.ValueStream<T>> {
      * @return a handle to the stream
      */
     StreamHandle createFallback(Topics topicsFeature, V stream);
+
+    /**
+     * Create the fallback stream.
+     *
+     * @param session the session
+     * @param stream the stream handler
+     * @return a handle to the stream
+     */
+    StreamHandle createFallback(Session session, V stream);
 }

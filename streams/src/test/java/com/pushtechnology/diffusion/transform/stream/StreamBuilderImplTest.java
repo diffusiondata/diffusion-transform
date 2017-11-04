@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
@@ -39,6 +41,8 @@ import org.mockito.Mock;
  */
 public final class StreamBuilderImplTest {
     @Mock
+    private Session session;
+    @Mock
     private Topics topics;
     @Mock
     private TopicSelector selector;
@@ -50,6 +54,8 @@ public final class StreamBuilderImplTest {
     @Before
     public void setUp() {
         initMocks(this);
+
+        when(session.feature(Topics.class)).thenReturn(topics);
     }
 
     @Test
@@ -89,6 +95,36 @@ public final class StreamBuilderImplTest {
         final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
             new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.createFallback(topics, jsonStream);
+
+        verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createPathWithSession() {
+        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+            new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
+        streamBuilder.register(session, "path", stream);
+
+        verify(topics).addStream(eq("path"), eq(String.class), isA(StreamAdapter.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createSelectorWithSession() {
+        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+            new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
+        streamBuilder.register(session, selector, stream);
+
+        verify(topics).addStream(eq(selector), eq(String.class), isA(StreamAdapter.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createFallbackWithSession() {
+        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
+            new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
+        streamBuilder.createFallback(session, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
     }

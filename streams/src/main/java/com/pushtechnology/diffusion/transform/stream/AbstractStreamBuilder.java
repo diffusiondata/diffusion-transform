@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
@@ -56,20 +57,34 @@ import com.pushtechnology.diffusion.datatype.DataType;
     }
 
     @Override
+    public final StreamHandle register(Session session, String topicSelector, V stream) {
+        return register(session.feature(Topics.class), topicSelector, stream);
+    }
+
+    @Override
     public final StreamHandle register(Topics topicsFeature, TopicSelector topicSelector, V stream) {
         final Topics.ValueStream<S> valueStream = adaptStream(stream);
         topicsFeature.addStream(topicSelector, valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public final StreamHandle register(Session session, TopicSelector topicSelector, V stream) {
+        return register(session.feature(Topics.class), topicSelector, stream);
+    }
+
     @Override
     public final StreamHandle createFallback(Topics topicsFeature, V stream) {
-        final DataType<S> dataType = (DataType<S>) Diffusion.dataTypes().getByClass(valueType);
+        final DataType<S> dataType = Diffusion.dataTypes().getByClass(valueType);
         final TopicType topicType = TopicType.valueOf(dataType.getTypeName().toUpperCase());
         final Topics.ValueStream<S> valueStream = new FilterStream<>(topicType, adaptStream(stream));
         topicsFeature.addFallbackStream(valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
+    }
+
+    @Override
+    public final StreamHandle createFallback(Session session, V stream) {
+        return createFallback(session.feature(Topics.class), stream);
     }
 
     /**

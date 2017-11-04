@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2017 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.features.Topics.ValueStream;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
@@ -41,17 +44,21 @@ import org.mockito.Mock;
 @SuppressWarnings("deprecation")
 public final class SafeStreamBuilderImplTest {
     @Mock
+    private Session session;
+    @Mock
     private Topics topics;
     @Mock
     private TopicSelector selector;
     @Mock
-    private Topics.ValueStream<String> stream;
+    private ValueStream<String> stream;
     @Mock
-    private Topics.ValueStream<JSON> jsonStream;
+    private ValueStream<JSON> jsonStream;
 
     @Before
     public void setUp() {
         initMocks(this);
+
+        when(session.feature(Topics.class)).thenReturn(topics);
     }
 
     @Test
@@ -67,7 +74,7 @@ public final class SafeStreamBuilderImplTest {
 
     @Test
     public void unsafeTransform() {
-        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
 
         final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
@@ -90,7 +97,7 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createPath() {
-        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, "path", stream);
 
@@ -100,7 +107,7 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createSelector() {
-        final StreamBuilder<String, String, Topics.ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, selector, stream);
 
@@ -110,10 +117,40 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallback() {
-        final StreamBuilder<JSON, JSON, Topics.ValueStream<JSON>> streamBuilder =
+        final StreamBuilder<JSON, JSON, ValueStream<JSON>> streamBuilder =
             new SafeStreamBuilderImpl<>(JSON.class, identity());
         streamBuilder.createFallback(topics, jsonStream);
 
-        verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
+        verify(topics).addFallbackStream(eq(JSON.class), isA(ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createPathWithSession() {
+        final SafeStreamBuilder<String, String> streamBuilder =
+            new SafeStreamBuilderImpl<>(String.class, Function.identity());
+        streamBuilder.register(session, "path", stream);
+
+        verify(topics).addStream(eq("path"), eq(String.class), isA(ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createSelectorWithSession() {
+        final SafeStreamBuilder<String, String> streamBuilder =
+            new SafeStreamBuilderImpl<>(String.class, Function.identity());
+        streamBuilder.register(session, selector, stream);
+
+        verify(topics).addStream(eq(selector), eq(String.class), isA(ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createFallbackWithSession() {
+        final SafeStreamBuilder<JSON, JSON> streamBuilder =
+            new SafeStreamBuilderImpl<>(JSON.class, Function.identity());
+        streamBuilder.createFallback(session, jsonStream);
+
+        verify(topics).addFallbackStream(eq(JSON.class), isA(ValueStream.class));
     }
 }
