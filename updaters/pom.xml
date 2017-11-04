@@ -3,7 +3,7 @@
     <parent>
         <artifactId>diffusion-transform</artifactId>
         <groupId>com.pushtechnology.diffusion.transform</groupId>
-        <version>3.0.0</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
         <url>https://github.com/pushtechnology/diffusion-transform/tree/master/updaters</url>
         <connection>scm:git:https://github.com/pushtechnology/diffusion-transform</connection>
         <developerConnection>scm:git:ssh://git@github.com/pushtechnology/diffusion-transform.git</developerConnection>
-        <tag>diffusion-transform-3.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
