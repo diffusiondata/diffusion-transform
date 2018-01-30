@@ -17,7 +17,11 @@ package com.pushtechnology.diffusion.transform.stream;
 
 import java.util.function.Function;
 
-import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
+import com.pushtechnology.diffusion.client.features.TimeSeries.EventMetadata;
+import com.pushtechnology.diffusion.client.features.Topics.ValueStream;
+import com.pushtechnology.diffusion.timeseries.event.EventImpl;
+import com.pushtechnology.diffusion.timeseries.event.EventMetadataImpl;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -27,7 +31,8 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-/*package*/ final class StreamBuilderImpl<S, T> extends AbstractStreamBuilder<S, T, TransformedStream<S, T>> {
+/*package*/ final class StreamBuilderImpl<S, T>
+        extends AbstractStreamBuilder<S, T, TransformedStream<S, T>, TransformedStream<Event<S>, Event<T>>> {
     private final UnsafeTransformer<S, T> transformer;
 
     /**
@@ -39,17 +44,34 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
+    public <R> StreamBuilder<S, R, TransformedStream<S, R>, TransformedStream<Event<S>, Event<R>>>
+        unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
+
         return new StreamBuilderImpl<>(valueType, transformer.chainUnsafe(newTransformer));
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> transform(Function<T, R> newTransformer) {
+    public <R> StreamBuilder<S, R, TransformedStream<S, R>, TransformedStream<Event<S>, Event<R>>>
+        transform(Function<T, R> newTransformer) {
+
         return new StreamBuilderImpl<>(valueType, transformer.chain(newTransformer));
     }
 
     @Override
-    protected Topics.ValueStream<S> adaptStream(TransformedStream<S, T> targetStream) {
+    protected ValueStream<S> adaptStream(TransformedStream<S, T> targetStream) {
         return new StreamAdapter<>(transformer, targetStream);
+    }
+
+    @Override
+    protected ValueStream<Event<S>> adaptTimeSeriesStream(TransformedStream<Event<S>, Event<T>> targetStream) {
+        final UnsafeTransformer<Event<S>, Event<T>> eventTransformer = value -> {
+            final T newValue = transformer.transform(value.value());
+            final EventMetadata metadata = new EventMetadataImpl(
+                value.sequence(),
+                value.timestamp(),
+                value.author());
+            return EventImpl.createEvent(metadata, value.originalEvent(), newValue);
+        };
+        return new StreamAdapter<>(eventTransformer, targetStream);
     }
 }

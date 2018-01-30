@@ -25,6 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.Topics.ValueStream;
 import com.pushtechnology.diffusion.client.session.Session;
@@ -53,6 +54,8 @@ public final class SafeStreamBuilderImplTest {
     private ValueStream<String> stream;
     @Mock
     private ValueStream<JSON> jsonStream;
+    @Mock
+    private ValueStream<Event<JSON>> timeseriesStream;
 
     @Before
     public void setUp() {
@@ -74,10 +77,14 @@ public final class SafeStreamBuilderImplTest {
 
     @Test
     public void unsafeTransform() {
-        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>, ValueStream<Event<String>>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
 
-        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
+        final StreamBuilder<
+                String,
+                String,
+                TransformedStream<String, String>,
+                TransformedStream<Event<String>, Event<String>>> transformedStreamBuilder =
             streamBuilder.unsafeTransform(Transformers.toTransformer(identity()));
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
@@ -97,7 +104,7 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createPath() {
-        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>, ValueStream<Event<String>>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, "path", stream);
 
@@ -107,7 +114,7 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createSelector() {
-        final StreamBuilder<String, String, ValueStream<String>> streamBuilder =
+        final StreamBuilder<String, String, ValueStream<String>, ValueStream<Event<String>>> streamBuilder =
             new SafeStreamBuilderImpl<>(String.class, identity());
         streamBuilder.register(topics, selector, stream);
 
@@ -117,7 +124,7 @@ public final class SafeStreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallback() {
-        final StreamBuilder<JSON, JSON, ValueStream<JSON>> streamBuilder =
+        final StreamBuilder<JSON, JSON, ValueStream<JSON>, ValueStream<Event<JSON>>> streamBuilder =
             new SafeStreamBuilderImpl<>(JSON.class, identity());
         streamBuilder.createFallback(topics, jsonStream);
 
@@ -152,5 +159,15 @@ public final class SafeStreamBuilderImplTest {
         streamBuilder.createFallback(session, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createTimeSeriesWithSession() {
+        final SafeStreamBuilder<JSON, JSON> streamBuilder =
+            new SafeStreamBuilderImpl<>(JSON.class, Function.identity());
+        streamBuilder.createTimeSeries(session, "path", timeseriesStream);
+
+        verify(topics).addTimeSeriesStream(eq("path"), eq(JSON.class), isA(ValueStream.class));
     }
 }

@@ -19,7 +19,11 @@ import static com.pushtechnology.diffusion.transform.transformer.Transformers.to
 
 import java.util.function.Function;
 
-import com.pushtechnology.diffusion.client.features.Topics;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
+import com.pushtechnology.diffusion.client.features.TimeSeries.EventMetadata;
+import com.pushtechnology.diffusion.client.features.Topics.ValueStream;
+import com.pushtechnology.diffusion.timeseries.event.EventImpl;
+import com.pushtechnology.diffusion.timeseries.event.EventMetadataImpl;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -30,7 +34,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @author Push Technology Limited
  */
 /*package*/ final class SafeStreamBuilderImpl<S, T>
-        extends AbstractStreamBuilder<S, T, Topics.ValueStream<T>>
+        extends AbstractStreamBuilder<S, T, ValueStream<T>, ValueStream<Event<T>>>
         implements SafeStreamBuilder<S, T> {
     private final Function<S, T> transformer;
 
@@ -43,7 +47,9 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    public <R> StreamBuilder<S, R, TransformedStream<S, R>> unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
+    public <R> StreamBuilder<S, R, TransformedStream<S, R>, TransformedStream<Event<S>, Event<R>>>
+        unsafeTransform(UnsafeTransformer<T, R> newTransformer) {
+
         return new StreamBuilderImpl<>(valueType, toTransformer(transformer).chainUnsafe(newTransformer));
     }
 
@@ -54,7 +60,20 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     }
 
     @Override
-    protected Topics.ValueStream<S> adaptStream(Topics.ValueStream<T> targetStream) {
+    protected ValueStream<S> adaptStream(ValueStream<T> targetStream) {
         return new SafeStreamAdapter<>(transformer, targetStream);
+    }
+
+    @Override
+    protected ValueStream<Event<S>> adaptTimeSeriesStream(ValueStream<Event<T>> targetStream) {
+        final Function<Event<S>, Event<T>> eventTransformer = value -> {
+            final T newValue = transformer.apply(value.value());
+            final EventMetadata metadata = new EventMetadataImpl(
+                value.sequence(),
+                value.timestamp(),
+                value.author());
+            return EventImpl.createEvent(metadata, value.originalEvent(), newValue);
+        };
+        return new SafeStreamAdapter<>(eventTransformer, targetStream);
     }
 }

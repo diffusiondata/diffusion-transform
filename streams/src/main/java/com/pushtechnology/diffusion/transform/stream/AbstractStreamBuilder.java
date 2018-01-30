@@ -17,8 +17,10 @@ package com.pushtechnology.diffusion.transform.stream;
 
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.callbacks.ErrorReason;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason;
+import com.pushtechnology.diffusion.client.features.Topics.ValueStream;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
 import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
@@ -31,10 +33,11 @@ import com.pushtechnology.diffusion.datatype.DataType;
  * @param <S> the type of the source values
  * @param <T> the type of the transformed values
  * @param <V> the type of the value steam to be built
+ * @param <U> the type of the time series value stream to be built
  * @author Push Technology Limited
  */
-/*package*/ abstract class AbstractStreamBuilder<S, T, V extends Topics.ValueStream<T>>
-        implements StreamBuilder<S, T, V> {
+/*package*/ abstract class AbstractStreamBuilder<S, T, V extends ValueStream<T>, U extends ValueStream<Event<T>>>
+        implements StreamBuilder<S, T, V, U> {
     // CHECKSTYLE.OFF: VisibilityModifier
     /**
      * Source value type.
@@ -51,7 +54,7 @@ import com.pushtechnology.diffusion.datatype.DataType;
 
     @Override
     public final StreamHandle register(Topics topicsFeature, String topicSelector, V stream) {
-        final Topics.ValueStream<S> valueStream = adaptStream(stream);
+        final ValueStream<S> valueStream = adaptStream(stream);
         topicsFeature.addStream(topicSelector, valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
     }
@@ -63,7 +66,7 @@ import com.pushtechnology.diffusion.datatype.DataType;
 
     @Override
     public final StreamHandle register(Topics topicsFeature, TopicSelector topicSelector, V stream) {
-        final Topics.ValueStream<S> valueStream = adaptStream(stream);
+        final ValueStream<S> valueStream = adaptStream(stream);
         topicsFeature.addStream(topicSelector, valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
     }
@@ -77,7 +80,7 @@ import com.pushtechnology.diffusion.datatype.DataType;
     public final StreamHandle createFallback(Topics topicsFeature, V stream) {
         final DataType<S> dataType = Diffusion.dataTypes().getByClass(valueType);
         final TopicType topicType = TopicType.valueOf(dataType.getTypeName().toUpperCase());
-        final Topics.ValueStream<S> valueStream = new FilterStream<>(topicType, adaptStream(stream));
+        final ValueStream<S> valueStream = new FilterStream<>(topicType, adaptStream(stream));
         topicsFeature.addFallbackStream(valueType, valueStream);
         return new StreamHandleImpl(topicsFeature, valueStream);
     }
@@ -87,24 +90,38 @@ import com.pushtechnology.diffusion.datatype.DataType;
         return createFallback(session.feature(Topics.class), stream);
     }
 
+    @Override
+    public final StreamHandle createTimeSeries(Session session, String topicSelector, U stream) {
+        final ValueStream<Event<S>> valueStream = adaptTimeSeriesStream(stream);
+        session.feature(Topics.class).addTimeSeriesStream(topicSelector, valueType, valueStream);
+        return new StreamHandleImpl(session.feature(Topics.class), valueStream);
+    }
+
     /**
      * Adapt the target value stream to the source value stream.
      * @param targetStream The target value stream
      * @return The source value stream
      */
-    protected abstract Topics.ValueStream<S> adaptStream(V targetStream);
+    protected abstract ValueStream<S> adaptStream(V targetStream);
 
     /**
-     * Implementation of {@link Topics.ValueStream} that filters by topic type. Used to restrict fallback streams to
+     * Adapt the target value stream to the source time series value stream.
+     * @param targetStream The target value stream
+     * @return The source value stream
+     */
+    protected abstract ValueStream<Event<S>> adaptTimeSeriesStream(U targetStream);
+
+    /**
+     * Implementation of {@link ValueStream} that filters by topic type. Used to restrict fallback streams to
      * certain topic types.
      *
      * @param <S>
      */
-    private static final class FilterStream<S> implements Topics.ValueStream<S> {
+    private static final class FilterStream<S> implements ValueStream<S> {
         private final TopicType topicType;
-        private final Topics.ValueStream<S> delegate;
+        private final ValueStream<S> delegate;
 
-        private FilterStream(TopicType topicType, Topics.ValueStream<S> delegate) {
+        private FilterStream(TopicType topicType, ValueStream<S> delegate) {
             this.topicType = topicType;
             this.delegate = delegate;
         }

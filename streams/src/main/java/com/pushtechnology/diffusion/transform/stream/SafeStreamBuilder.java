@@ -17,6 +17,7 @@ package com.pushtechnology.diffusion.transform.stream;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 
 /**
@@ -36,7 +37,8 @@ import com.pushtechnology.diffusion.client.features.Topics;
  * @param <T> the type of the transformed values
  * @author Push Technology Limited
  */
-public interface SafeStreamBuilder<S, T> extends StreamBuilder<S, T, Topics.ValueStream<T>> {
+public interface SafeStreamBuilder<S, T> extends
+        StreamBuilder<S, T, Topics.ValueStream<T>, Topics.ValueStream<Event<T>>> {
 
     /**
      * Transform the stream that will be built.

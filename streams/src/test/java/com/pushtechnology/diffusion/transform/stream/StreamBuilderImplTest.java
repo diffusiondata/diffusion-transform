@@ -24,6 +24,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
@@ -50,6 +51,8 @@ public final class StreamBuilderImplTest {
     private TransformedStream<String, String> stream;
     @Mock
     private TransformedStream<JSON, JSON> jsonStream;
+    @Mock
+    private TransformedStream<Event<JSON>, Event<JSON>> timeseriesStream;
 
     @Before
     public void setUp() {
@@ -60,10 +63,14 @@ public final class StreamBuilderImplTest {
 
     @Test
     public void unsafeTransform() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+        final StreamBuilder<
+                String,
+                String,
+                TransformedStream<String, String>,
+                TransformedStream<Event<String>, Event<String>>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
 
-        final StreamBuilder<String, String, TransformedStream<String, String>> transformedStreamBuilder =
+        final StreamBuilder<String, String, TransformedStream<String, String>, TransformedStream<Event<String>, Event<String>>> transformedStreamBuilder =
             streamBuilder.unsafeTransform(Transformers.toTransformer(Function.identity()));
 
         assertTrue(transformedStreamBuilder instanceof StreamBuilderImpl);
@@ -72,7 +79,7 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createPath() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+        final StreamBuilder<String, String, TransformedStream<String, String>, TransformedStream<Event<String>, Event<String>>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(topics, "path", stream);
 
@@ -82,7 +89,7 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createSelector() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+        final StreamBuilder<String, String, TransformedStream<String, String>, TransformedStream<Event<String>, Event<String>>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(topics, selector, stream);
 
@@ -92,7 +99,11 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallback() {
-        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
+        final StreamBuilder<
+                JSON,
+                JSON,
+                TransformedStream<JSON, JSON>,
+                TransformedStream<Event<JSON>, Event<JSON>>> streamBuilder =
             new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.createFallback(topics, jsonStream);
 
@@ -102,7 +113,7 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createPathWithSession() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+        final StreamBuilder<String, String, TransformedStream<String, String>, TransformedStream<Event<String>, Event<String>>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(session, "path", stream);
 
@@ -112,7 +123,7 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createSelectorWithSession() {
-        final StreamBuilder<String, String, TransformedStream<String, String>> streamBuilder =
+        final StreamBuilder<String, String, TransformedStream<String, String>, TransformedStream<Event<String>, Event<String>>> streamBuilder =
             new StreamBuilderImpl<>(String.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.register(session, selector, stream);
 
@@ -122,10 +133,20 @@ public final class StreamBuilderImplTest {
     @SuppressWarnings("unchecked")
     @Test
     public void createFallbackWithSession() {
-        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>> streamBuilder =
+        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>, TransformedStream<Event<JSON>, Event<JSON>>> streamBuilder =
             new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.createFallback(session, jsonStream);
 
         verify(topics).addFallbackStream(eq(JSON.class), isA(Topics.ValueStream.class));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void createTimeSeriesWithSession() {
+        final StreamBuilder<JSON, JSON, TransformedStream<JSON, JSON>, TransformedStream<Event<JSON>, Event<JSON>>> streamBuilder =
+            new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
+        streamBuilder.createTimeSeries(session, "path", timeseriesStream);
+
+        verify(topics).addTimeSeriesStream(eq("path"), eq(JSON.class), isA(Topics.ValueStream.class));
     }
 }
