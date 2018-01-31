@@ -32,8 +32,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.Diffusion;
 import com.pushtechnology.diffusion.client.features.TimeSeries;
@@ -69,6 +69,8 @@ public final class JSONStreamIT {
     @Mock
     private TransformedStream<Event<JSON>, Event<Map<String, String>>> timeSeriesStream;
     @Mock
+    private TransformedStream<Event<JSON>, Event<JSON>> safeTimeSeriesStream;
+    @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
     private TopicControl.RemovalCallback removalCallback;
@@ -82,6 +84,8 @@ public final class JSONStreamIT {
     private ArgumentCaptor<Map<String, String>> valueCaptor;
     @Captor
     private ArgumentCaptor<Event<Map<String, String>>> eventCaptor;
+    @Captor
+    private ArgumentCaptor<Event<JSON>> jsonEventCaptor;
 
     private Session session;
 
@@ -238,6 +242,49 @@ public final class JSONStreamIT {
 
         streamHandle.close();
         verify(timeSeriesStream, timed()).onClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void timeseriesSafe() throws InterruptedException, ExecutionException, TimeoutException {
+        final Topics topics = session.feature(Topics.class);
+        final StreamHandle streamHandle = StreamBuilders
+            .newJsonStreamBuilder()
+            .transform(Function.identity())
+            .createTimeSeries(session, "?test//", safeTimeSeriesStream);
+
+        topics.subscribe("?test//", completionCallback);
+        verify(completionCallback, timed()).onComplete();
+
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        final TopicSpecification specification = topicControl
+            .newSpecification(TopicType.TIME_SERIES)
+            .withProperty(TopicSpecification.TIME_SERIES_EVENT_VALUE_TYPE, dataTypes().json().getTypeName());
+        topicControl.addTopic("test/topic",
+                              specification).get(5, SECONDS);
+
+        verify(safeTimeSeriesStream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
+        final TopicSpecification specification0 = specificationCaptor.getValue();
+        assertEquals(specification, specification0);
+
+        session
+            .feature(TimeSeries.class)
+            .append("test/topic", JSON.class, JSON_DATA_TYPE.fromJsonString("{}")).get(5, SECONDS);
+
+        verify(safeTimeSeriesStream, timed())
+            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Event.class), jsonEventCaptor.capture());
+        final Event<JSON> value = jsonEventCaptor.getValue();
+        assertEquals(JSON_DATA_TYPE.fromJsonString("{}"), value.value());
+
+        topics.unsubscribe("?test//", completionCallback);
+        verify(completionCallback, timed().times(2)).onComplete();
+
+        verify(safeTimeSeriesStream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
+        final TopicSpecification specification1 = specificationCaptor.getValue();
+        assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(safeTimeSeriesStream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {
