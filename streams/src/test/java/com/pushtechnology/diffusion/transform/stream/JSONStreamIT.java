@@ -15,11 +15,13 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import static com.pushtechnology.diffusion.client.Diffusion.dataTypes;
 import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason.REQUESTED;
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
 import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.eq;
@@ -29,8 +31,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.client.features.TimeSeries;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -54,11 +61,13 @@ import org.mockito.verification.VerificationWithTimeout;
  * @author Push Technology Limited
  */
 public final class JSONStreamIT {
-    private static final JSONDataType JSON_DATA_TYPE = Diffusion.dataTypes().json();
+    private static final JSONDataType JSON_DATA_TYPE = dataTypes().json();
     @Mock
     private Session.Listener listener;
     @Mock
     private TransformedStream<JSON, Map<String, String>> stream;
+    @Mock
+    private TransformedStream<Event<JSON>, Event<Map<String, String>>> timeSeriesStream;
     @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
@@ -71,6 +80,8 @@ public final class JSONStreamIT {
     private ArgumentCaptor<TopicSpecification> specificationCaptor;
     @Captor
     private ArgumentCaptor<Map<String, String>> valueCaptor;
+    @Captor
+    private ArgumentCaptor<Event<Map<String, String>>> eventCaptor;
 
     private Session session;
 
@@ -184,6 +195,49 @@ public final class JSONStreamIT {
 
         streamHandle.close();
         verify(stream, timed()).onClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void timeseries() throws InterruptedException, ExecutionException, TimeoutException {
+        final Topics topics = session.feature(Topics.class);
+        final StreamHandle streamHandle = StreamBuilders
+            .newJsonStreamBuilder()
+            .unsafeTransform(Transformers.toMapOf(String.class))
+            .createTimeSeries(session, "?test//", timeSeriesStream);
+
+        topics.subscribe("?test//", completionCallback);
+        verify(completionCallback, timed()).onComplete();
+
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        final TopicSpecification specification = topicControl
+            .newSpecification(TopicType.TIME_SERIES)
+            .withProperty(TopicSpecification.TIME_SERIES_EVENT_VALUE_TYPE, dataTypes().json().getTypeName());
+        topicControl.addTopic("test/topic",
+                              specification).get(5, SECONDS);
+
+        verify(timeSeriesStream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
+        final TopicSpecification specification0 = specificationCaptor.getValue();
+        assertEquals(specification, specification0);
+
+        session
+            .feature(TimeSeries.class)
+            .append("test/topic", JSON.class, JSON_DATA_TYPE.fromJsonString("{}")).get(5, SECONDS);
+
+        verify(timeSeriesStream, timed())
+            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Event.class), eventCaptor.capture());
+        final Event<Map<String, String>> value = eventCaptor.getValue();
+        assertEquals(emptyMap(), value.value());
+
+        topics.unsubscribe("?test//", completionCallback);
+        verify(completionCallback, timed().times(2)).onComplete();
+
+        verify(timeSeriesStream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
+        final TopicSpecification specification1 = specificationCaptor.getValue();
+        assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(timeSeriesStream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {
