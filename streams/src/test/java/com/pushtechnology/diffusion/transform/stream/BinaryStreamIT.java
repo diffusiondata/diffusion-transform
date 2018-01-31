@@ -15,6 +15,7 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import static com.pushtechnology.diffusion.client.Diffusion.dataTypes;
 import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason.REQUESTED;
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
@@ -22,6 +23,7 @@ import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTI
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.bigIntegerToBinary;
 import static com.pushtechnology.diffusion.transform.transformer.Transformers.binaryToBigInteger;
 import static java.math.BigInteger.TEN;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.eq;
@@ -31,8 +33,12 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.client.features.TimeSeries;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -60,6 +66,8 @@ public final class BinaryStreamIT {
     @Mock
     private TransformedStream<Binary, BigInteger> stream;
     @Mock
+    private TransformedStream<Event<Binary>, Event<BigInteger>> timeSeriesStream;
+    @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
     private TopicControl.RemovalCallback removalCallback;
@@ -71,6 +79,8 @@ public final class BinaryStreamIT {
     private ArgumentCaptor<TopicSpecification> specificationCaptor;
     @Captor
     private ArgumentCaptor<BigInteger> valueCaptor;
+    @Captor
+    private ArgumentCaptor<Event<BigInteger>> eventCaptor;
 
     private Session session;
 
@@ -182,6 +192,49 @@ public final class BinaryStreamIT {
 
         streamHandle.close();
         verify(stream, timed()).onClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void timeseries() throws InterruptedException, ExecutionException, TimeoutException {
+        final Topics topics = session.feature(Topics.class);
+        final StreamHandle streamHandle = StreamBuilders
+            .newBinaryStreamBuilder()
+            .unsafeTransform(binaryToBigInteger())
+            .createTimeSeries(session, "?test//", timeSeriesStream);
+
+        topics.subscribe("?test//", completionCallback);
+        verify(completionCallback, timed()).onComplete();
+
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        final TopicSpecification specification = topicControl
+            .newSpecification(TopicType.TIME_SERIES)
+            .withProperty(TopicSpecification.TIME_SERIES_EVENT_VALUE_TYPE, dataTypes().binary().getTypeName());
+        topicControl.addTopic("test/topic",
+                              specification).get(5, SECONDS);
+
+        verify(timeSeriesStream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
+        final TopicSpecification specification0 = specificationCaptor.getValue();
+        assertEquals(specification, specification0);
+
+        session
+            .feature(TimeSeries.class)
+            .append("test/topic", Binary.class, bigIntegerToBinary().apply(TEN)).get(5, SECONDS);
+
+        verify(timeSeriesStream, timed())
+            .onValue(eq("test/topic"), specificationCaptor.capture(), isNull(Event.class), eventCaptor.capture());
+        final Event<BigInteger> value = eventCaptor.getValue();
+        assertEquals(TEN, value.value());
+
+        topics.unsubscribe("?test//", completionCallback);
+        verify(completionCallback, timed().times(2)).onComplete();
+
+        verify(timeSeriesStream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
+        final TopicSpecification specification1 = specificationCaptor.getValue();
+        assertEquals(specification0, specification1);
+
+        streamHandle.close();
+        verify(timeSeriesStream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {
