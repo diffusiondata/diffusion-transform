@@ -9,12 +9,12 @@
     </parent>
 
     <groupId>com.pushtechnology.diffusion.transform</groupId>
-    <artifactId>diffusion-transform</artifactId>
-    <name>Diffusion Transform</name>
+    <artifactId>diffusion-transform-parent</artifactId>
+    <name>Diffusion Transform Parent</name>
     <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://pushtechnology.github.io/diffusion-transform/</url>
-    <description>Parent project for Diffusion transformers.</description>
+    <description>Parent project for Diffusion transformers. Contains no code.</description>
 
     <modules>
         <module>examples</module>
