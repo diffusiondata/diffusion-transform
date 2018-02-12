@@ -22,6 +22,7 @@
         <module>transformers</module>
         <module>updaters</module>
         <module>messaging</module>
+        <module>aggregate</module>
     </modules>
 
     <repositories>
@@ -95,6 +96,12 @@
             <dependency>
                 <groupId>com.pushtechnology.diffusion.transform</groupId>
                 <artifactId>messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.pushtechnology.diffusion.transform</groupId>
+                <artifactId>diffusion-transform</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
