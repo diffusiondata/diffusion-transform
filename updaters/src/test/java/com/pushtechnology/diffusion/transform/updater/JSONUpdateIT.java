@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,15 @@
 
 package com.pushtechnology.diffusion.transform.updater;
 
+import static com.pushtechnology.diffusion.client.Diffusion.dataTypes;
 import static com.pushtechnology.diffusion.client.features.Topics.UnsubscribeReason.REQUESTED;
 import static com.pushtechnology.diffusion.client.session.Session.State.CLOSED_BY_CLIENT;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTED_ACTIVE;
 import static com.pushtechnology.diffusion.client.session.Session.State.CONNECTING;
+import static com.pushtechnology.diffusion.client.topics.details.TopicSpecification.TIME_SERIES_EVENT_VALUE_TYPE;
+import static com.pushtechnology.diffusion.client.topics.details.TopicType.TIME_SERIES;
+import static com.pushtechnology.diffusion.transform.transformer.Transformers.fromMap;
+import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
@@ -31,6 +36,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.pushtechnology.diffusion.client.Diffusion;
+import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicControl;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
@@ -39,7 +45,6 @@ import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.client.topics.details.TopicType;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
-import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 import org.junit.After;
 import org.junit.Before;
@@ -60,6 +65,8 @@ public final class JSONUpdateIT {
     @Mock
     private Topics.ValueStream<JSON> stream;
     @Mock
+    private Topics.ValueStream<Event<JSON>> timeSeriesStream;
+    @Mock
     private TopicControl.AddCallback addCallback;
     @Mock
     private TopicControl.RemovalCallback removalCallback;
@@ -71,6 +78,8 @@ public final class JSONUpdateIT {
     private ArgumentCaptor<TopicSpecification> specificationCaptor;
     @Captor
     private ArgumentCaptor<JSON> valueCaptor;
+    @Captor
+    private ArgumentCaptor<Event<JSON>> eventCaptor;
 
     private Session session;
 
@@ -117,7 +126,7 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .unsafeTransform(Transformers.fromMap())
+            .unsafeTransform(fromMap())
             .create(session.feature(TopicUpdateControl.class).updater());
 
         valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);
@@ -158,10 +167,10 @@ public final class JSONUpdateIT {
 
         final TransformedUpdater<JSON, Map<String, Object>> valueUpdater = UpdaterBuilders
             .jsonUpdaterBuilder()
-            .unsafeTransform(Transformers.fromMap())
+            .unsafeTransform(fromMap())
             .create(session.feature(TopicUpdateControl.class).updater());
 
-        valueUpdater.update("test/topic", Collections.<String, Object>emptyMap(), updateCallback);
+        valueUpdater.update("test/topic", emptyMap(), updateCallback);
         verify(updateCallback, timed()).onSuccess();
 
         verify(stream, timed())
@@ -178,6 +187,49 @@ public final class JSONUpdateIT {
 
         topics.removeStream(stream);
         verify(stream, timed()).onClose();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void timeseries() throws Exception {
+        final Topics topics = session.feature(Topics.class);
+        topics.addTimeSeriesStream("?test//", JSON.class, timeSeriesStream);
+
+        topics.subscribe("?test//").get();
+
+        final TopicControl topicControl = session.feature(TopicControl.class);
+        topicControl.addTopic(
+            "test/topic",
+            topicControl
+                .newSpecification(TIME_SERIES)
+                .withProperty(TIME_SERIES_EVENT_VALUE_TYPE, dataTypes().json().getTypeName()))
+            .get();
+
+        verify(timeSeriesStream, timed()).onSubscription(eq("test/topic"), specificationCaptor.capture());
+        final TopicSpecification specification0 = specificationCaptor.getValue();
+        assertEquals(TopicType.TIME_SERIES, specification0.getType());
+
+        final TimeSeriesUpdater<Map<String, Object>> valueUpdater = UpdaterBuilders
+            .jsonUpdaterBuilder()
+            .unsafeTransform(fromMap())
+            .createTimeSeries(session);
+
+        valueUpdater.append("test/topic", emptyMap()).get();
+
+        verify(timeSeriesStream, timed()).onValue(
+            eq("test/topic"),
+            specificationCaptor.capture(),
+            isNull(Event.class),
+            eventCaptor.capture());
+
+        assertEquals(fromMap().transform(emptyMap()), eventCaptor.getValue().value());
+
+        topics.unsubscribe("?test//").get();
+
+        verify(timeSeriesStream, timed()).onUnsubscription(eq("test/topic"), specificationCaptor.capture(), eq(REQUESTED));
+
+        topics.removeStream(timeSeriesStream);
+        verify(timeSeriesStream, timed()).onClose();
     }
 
     private VerificationWithTimeout timed() {
