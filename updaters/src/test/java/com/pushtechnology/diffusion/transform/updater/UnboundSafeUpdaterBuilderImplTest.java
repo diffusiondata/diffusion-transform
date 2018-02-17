@@ -26,10 +26,10 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -51,6 +51,8 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     private Session session;
     @Mock
     private TopicUpdateControl updateControl;
+    @Mock
+    private TimeSeries timeSeries;
     @Mock
     private SafeTransformedUpdateSource<JSON, String> updateSource;
     @Mock
@@ -98,6 +100,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
         when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
+        when(session.feature(TimeSeries.class)).thenReturn(timeSeries);
 
         updaterBuilder = new UnboundSafeUpdaterBuilderImpl<>(JSON.class, identity(JSON.class));
     }
@@ -110,11 +113,12 @@ public final class UnboundSafeUpdaterBuilderImplTest {
             jsonValue,
             delegateUpdater,
             unsafeTransformer,
-            session);
+            session,
+            timeSeries);
     }
 
     @Test
-    public void createAndUpdate() throws TransformationException {
+    public void createAndUpdate() {
         final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(simpleUpdater);
 
         updater.update("topic", jsonValue, callback);
@@ -123,7 +127,17 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void createAndUpdateWithSession() throws TransformationException {
+    public void createTimeSeriesAndAppend() {
+        final TimeSeriesUpdater<JSON> updater = updaterBuilder.createTimeSeries(session);
+        verify(session).feature(TimeSeries.class);
+
+        updater.append("topic", jsonValue);
+
+        verify(timeSeries).append("topic", JSON.class, jsonValue);
+    }
+
+    @Test
+    public void createAndUpdateWithSession() {
         final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create(session);
 
         verify(session).feature(TopicUpdateControl.class);
@@ -147,7 +161,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void safeTransformCreateAndUpdate() throws TransformationException {
+    public void safeTransformCreateAndUpdate() {
         final SafeTransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(safeTransformer)
             .create(simpleUpdater);
@@ -185,7 +199,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformRegisterAndUpdate() throws TransformationException {
+    public void transformRegisterAndUpdate() {
         updaterBuilder
             .transform(safeTransformer)
             .register(updateControl, "topic", updateSource);
@@ -203,7 +217,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformRegisterAndUpdateWithSession() throws TransformationException {
+    public void transformRegisterAndUpdateWithSession() {
         updaterBuilder
             .transform(safeTransformer)
             .register(session, "topic", updateSource);
@@ -222,7 +236,7 @@ public final class UnboundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformAndBindWithSession() throws TransformationException {
+    public void transformAndBindWithSession() {
         final BoundSafeUpdaterBuilder<JSON, String> builder = updaterBuilder
             .transform(safeTransformer)
             .bind(session);

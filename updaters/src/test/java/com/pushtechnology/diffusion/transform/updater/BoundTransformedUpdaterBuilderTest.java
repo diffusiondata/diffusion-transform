@@ -27,6 +27,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -52,6 +53,8 @@ public final class BoundTransformedUpdaterBuilderTest {
     private Session session;
     @Mock
     private TopicUpdateControl updateControl;
+    @Mock
+    private TimeSeries timeSeries;
     @Mock
     private TransformedUpdateSource<JSON, String, TransformedUpdater<JSON, String>> updateSource;
     @Mock
@@ -98,6 +101,7 @@ public final class BoundTransformedUpdaterBuilderTest {
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
         when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
+        when(session.feature(TimeSeries.class)).thenReturn(timeSeries);
 
         updaterBuilder = new BoundTransformedUpdaterBuilderImpl<>(
             session,
@@ -107,7 +111,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer, session);
+        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer, session, timeSeries);
     }
 
     @Test
@@ -118,6 +122,16 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         verify(session).feature(TopicUpdateControl.class);
         verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void createTimeSeriesAndAppend() {
+        final TimeSeriesUpdater<JSON> updater = updaterBuilder.createTimeSeries();
+
+        updater.append("topic", jsonValue);
+
+        verify(session).feature(TimeSeries.class);
+        verify(timeSeries).append("topic", JSON.class, jsonValue);
     }
 
     @Test

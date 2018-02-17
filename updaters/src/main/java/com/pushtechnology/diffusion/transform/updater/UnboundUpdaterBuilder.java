@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +60,14 @@ public interface UnboundUpdaterBuilder
      * @return a transformed non-exclusive updater
      */
     U create(Session session);
+
+    /**
+     * Create the updater for time series topics.
+     *
+     * @param session the session
+     * @return a transformed non-exclusive updater
+     */
+    TimeSeriesUpdater<T> createTimeSeries(Session session);
 
     /**
      * Register an update source.

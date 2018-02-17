@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -50,6 +51,8 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
     private Session session;
     @Mock
     private TopicUpdateControl updateControl;
+    @Mock
+    private TimeSeries timeSeries;
     @Mock
     private TransformedUpdateSource<JSON, String, TransformedUpdater<JSON, String>> updateSource;
     @Mock
@@ -88,13 +91,14 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
         when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
+        when(session.feature(TimeSeries.class)).thenReturn(timeSeries);
 
         updaterBuilder = new UnboundTransformedUpdaterBuilderImpl<>(JSON.class, toTransformer(identity(JSON.class)));
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer, session);
+        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer, session, timeSeries);
     }
 
     @Test
@@ -104,6 +108,16 @@ public final class UnboundTransformedUpdaterBuilderImplTest {
         updater.update("topic", jsonValue, callback);
 
         verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void createTimeSeriesAndAppend() {
+        final TimeSeriesUpdater<JSON> updater = updaterBuilder.createTimeSeries(session);
+        verify(session).feature(TimeSeries.class);
+
+        updater.append("topic", jsonValue);
+
+        verify(timeSeries).append("topic", JSON.class, jsonValue);
     }
 
     @Test

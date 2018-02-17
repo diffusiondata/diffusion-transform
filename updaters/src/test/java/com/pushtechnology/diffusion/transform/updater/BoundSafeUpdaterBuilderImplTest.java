@@ -26,6 +26,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
@@ -50,6 +51,8 @@ public final class BoundSafeUpdaterBuilderImplTest {
     private Session session;
     @Mock
     private TopicUpdateControl updateControl;
+    @Mock
+    private TimeSeries timeSeries;
     @Mock
     private SafeTransformedUpdateSource<JSON, String> updateSource;
     @Mock
@@ -107,6 +110,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
         when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
+        when(session.feature(TimeSeries.class)).thenReturn(timeSeries);
 
         updaterBuilder = new BoundSafeUpdaterBuilderImpl<>(session, JSON.class, identity(JSON.class));
     }
@@ -183,6 +187,21 @@ public final class BoundSafeUpdaterBuilderImplTest {
         verify(unsafeTransformer).transform("stringValue");
         verify(unsafeTransformer).chain(isA(Function.class));
         verify(delegateUpdater).update("topic", jsonValue, callback);
+    }
+
+    @Test
+    public void transformCreateTimeSeriesAndAppend() throws Exception {
+        final TimeSeriesUpdater<String> updater = updaterBuilder
+            .unsafeTransform(unsafeTransformer)
+            .createTimeSeries();
+
+        verify(session).feature(TimeSeries.class);
+
+        updater.append("topic", "stringValue");
+
+        verify(unsafeTransformer).transform("stringValue");
+        verify(unsafeTransformer).chain(isA(Function.class));
+        verify(timeSeries).append("topic", JSON.class, jsonValue);
     }
 
     @Test

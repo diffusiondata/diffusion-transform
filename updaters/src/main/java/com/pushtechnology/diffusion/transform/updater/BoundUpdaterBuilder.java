@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,13 @@ public interface BoundUpdaterBuilder<S, T, U extends TransformedUpdater<S, T>, V
      * @return a transformed non-exclusive updater
      */
     U create();
+
+    /**
+     * Create the updater for time series topics.
+     *
+     * @return a transformed non-exclusive updater
+     */
+    TimeSeriesUpdater<T> createTimeSeries();
 
     /**
      * Register an update source.

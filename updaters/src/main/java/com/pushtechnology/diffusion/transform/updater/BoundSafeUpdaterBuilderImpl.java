@@ -17,6 +17,7 @@ package com.pushtechnology.diffusion.transform.updater;
 
 import java.util.function.Function;
 
+import com.pushtechnology.diffusion.client.features.TimeSeries;
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
@@ -69,6 +70,11 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     public SafeTransformedUpdater<S, T> create() {
         final TopicUpdateControl updateControl = session.feature(TopicUpdateControl.class);
         return new SafeTransformedUpdaterImpl<>(updateControl.updater().valueUpdater(valueType), transformer);
+    }
+
+    @Override
+    public TimeSeriesUpdater<T> createTimeSeries() {
+        return new SafeTransformedTimeSeriesUpdater<>(session.feature(TimeSeries.class), valueType, transformer);
     }
 
     @Override
