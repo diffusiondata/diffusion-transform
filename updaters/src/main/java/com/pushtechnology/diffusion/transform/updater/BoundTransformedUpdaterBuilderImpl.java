@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.pushtechnology.diffusion.transform.updater;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 /**
@@ -26,15 +27,15 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
  * @author Push Technology Limited
  */
 /*package*/ final class BoundTransformedUpdaterBuilderImpl<S, T> implements BoundTransformedUpdaterBuilder<S, T> {
-    private final TopicUpdateControl updateControl;
+    private final Session session;
     private final Class<S> valueType;
     private final UnsafeTransformer<T, S> transformer;
 
     BoundTransformedUpdaterBuilderImpl(
-            TopicUpdateControl updateControl,
+            Session session,
             Class<S> valueType,
             UnsafeTransformer<T, S> transformer) {
-        this.updateControl = updateControl;
+        this.session = session;
         this.valueType = valueType;
         this.transformer = transformer;
     }
@@ -42,7 +43,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public <R> BoundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer) {
         return new BoundTransformedUpdaterBuilderImpl<>(
-            updateControl,
+            session,
             valueType,
             newTransformer.chainUnsafe(transformer));
     }
@@ -51,13 +52,14 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     public <R> BoundTransformedUpdaterBuilder<S, R> unsafeTransform(
         UnsafeTransformer<R, T> newTransformer, Class<R> type) {
         return new BoundTransformedUpdaterBuilderImpl<>(
-            updateControl,
+            session,
             valueType,
             newTransformer.chainUnsafe(transformer));
     }
 
     @Override
     public TransformedUpdater<S, T> create() {
+        final TopicUpdateControl updateControl = session.feature(TopicUpdateControl.class);
         return new TransformedUpdaterImpl<>(updateControl.updater().valueUpdater(valueType), transformer);
     }
 
@@ -68,6 +70,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
     @Override
     public void register(String topicPath, TransformedUpdateSource<S, T, TransformedUpdater<S, T>> updateSource) {
+        final TopicUpdateControl updateControl = session.feature(TopicUpdateControl.class);
         updateControl.registerUpdateSource(
             topicPath,
             new UpdateSourceAdapter<>(new UpdateControlValueCache(updateControl), this.unbind(), updateSource));

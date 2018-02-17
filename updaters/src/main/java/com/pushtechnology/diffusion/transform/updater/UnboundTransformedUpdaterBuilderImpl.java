@@ -85,7 +85,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public BoundTransformedUpdaterBuilder<S, T> bind(Session session) {
         return new BoundTransformedUpdaterBuilderImpl<>(
-            session.feature(TopicUpdateControl.class),
+            session,
             valueType,
             transformer);
     }

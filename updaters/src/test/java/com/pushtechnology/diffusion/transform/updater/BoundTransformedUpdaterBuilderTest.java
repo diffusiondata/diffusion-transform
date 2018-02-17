@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
 import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
@@ -47,6 +48,8 @@ import org.mockito.stubbing.Answer;
  * @author Push Technology Limited
  */
 public final class BoundTransformedUpdaterBuilderTest {
+    @Mock
+    private Session session;
     @Mock
     private TopicUpdateControl updateControl;
     @Mock
@@ -94,16 +97,17 @@ public final class BoundTransformedUpdaterBuilderTest {
         });
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
+        when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
 
         updaterBuilder = new BoundTransformedUpdaterBuilderImpl<>(
-            updateControl,
+            session,
             JSON.class,
             toTransformer(identity(JSON.class)));
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer);
+        verifyNoMoreInteractions(callback, jsonValue, delegateUpdater, unsafeTransformer, session);
     }
 
     @Test
@@ -112,6 +116,7 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         updater.update("topic", jsonValue, callback);
 
+        verify(session).feature(TopicUpdateControl.class);
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
@@ -121,12 +126,14 @@ public final class BoundTransformedUpdaterBuilderTest {
 
         updater.update("topic", jsonValue, callback);
 
+        verify(session).feature(TopicUpdateControl.class);
         verify(delegateUpdater).update("topic", jsonValue, callback);
     }
 
     @Test
     public void untransformedValueCache() {
         final TransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
+        verify(session).feature(TopicUpdateControl.class);
 
         final ValueCache<JSON> jsonValueCache = updater.untransformedValueCache();
 
@@ -142,6 +149,8 @@ public final class BoundTransformedUpdaterBuilderTest {
             .unsafeTransform(unsafeTransformer)
             .create();
 
+        verify(session).feature(TopicUpdateControl.class);
+
         updater.update("topic", "stringValue", callback);
 
         verify(unsafeTransformer).transform("stringValue");
@@ -155,6 +164,7 @@ public final class BoundTransformedUpdaterBuilderTest {
             .unsafeTransform(unsafeTransformer)
             .register("topic", updateSource);
 
+        verify(session).feature(TopicUpdateControl.class);
         verify(updateControl).registerUpdateSource(eq("topic"), updateSourceCaptor.capture());
 
         updateSourceCaptor.getValue().onActive("topic", simpleUpdater);
@@ -169,7 +179,7 @@ public final class BoundTransformedUpdaterBuilderTest {
     }
 
     @Test
-    public void transformAndUnbind() throws TransformationException {
+    public void transformAndUnbind() {
         final UnboundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
             .unsafeTransform(unsafeTransformer)
             .unbind();

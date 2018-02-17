@@ -45,7 +45,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
     @Override
     public <R> BoundTransformedUpdaterBuilder<S, R> unsafeTransform(UnsafeTransformer<R, T> newTransformer) {
         return new BoundTransformedUpdaterBuilderImpl<>(
-            session.feature(TopicUpdateControl.class),
+            session,
             valueType,
             newTransformer.chain(transformer));
     }
@@ -55,7 +55,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
             UnsafeTransformer<R, T> newTransformer,
             Class<R> type) {
         return new BoundTransformedUpdaterBuilderImpl<>(
-            session.feature(TopicUpdateControl.class),
+            session,
             valueType,
             newTransformer.chain(transformer));
     }
