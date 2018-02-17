@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2016 Push Technology Ltd.
+ * Copyright (C) 2018 Push Technology Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.function.Function;
 
 import com.pushtechnology.diffusion.client.features.control.topics.TopicUpdateControl;
+import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.datatype.json.JSON;
-import com.pushtechnology.diffusion.transform.transformer.TransformationException;
 import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
 
 import org.junit.After;
@@ -46,6 +46,8 @@ import org.mockito.stubbing.Answer;
  * @author Push Technology Limited
  */
 public final class BoundSafeUpdaterBuilderImplTest {
+    @Mock
+    private Session session;
     @Mock
     private TopicUpdateControl updateControl;
     @Mock
@@ -79,7 +81,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         when(safeTransformer.apply("stringValue")).thenReturn(jsonValue);
         when(safeTransformer.andThen(isA(Function.class))).thenAnswer(new Answer<Function>() {
             @Override
-            public Function answer(InvocationOnMock invocation) throws Throwable {
+            public Function answer(InvocationOnMock invocation) {
                 return (Object value) -> invocation
                     .getArgumentAt(0, Function.class)
                     .apply(safeTransformer.apply((String) value));
@@ -88,7 +90,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         when(unsafeTransformer.transform("stringValue")).thenReturn(jsonValue);
         when(unsafeTransformer.chainUnsafe(isA(UnsafeTransformer.class))).thenAnswer(new Answer<UnsafeTransformer>() {
             @Override
-            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+            public UnsafeTransformer answer(InvocationOnMock invocation) {
                 return (Object value) -> invocation
                     .getArgumentAt(0, UnsafeTransformer.class)
                     .transform(unsafeTransformer.transform((String) value));
@@ -96,7 +98,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
         });
         when(unsafeTransformer.chain(isA(Function.class))).thenAnswer(new Answer<UnsafeTransformer>() {
             @Override
-            public UnsafeTransformer answer(InvocationOnMock invocation) throws Throwable {
+            public UnsafeTransformer answer(InvocationOnMock invocation) {
                 return (Object value) -> invocation
                     .getArgumentAt(0, Function.class)
                     .apply(unsafeTransformer.transform((String) value));
@@ -104,18 +106,21 @@ public final class BoundSafeUpdaterBuilderImplTest {
         });
         when(simpleUpdater.valueUpdater(JSON.class)).thenReturn(delegateUpdater);
         when(updateControl.updater()).thenReturn(simpleUpdater);
+        when(session.feature(TopicUpdateControl.class)).thenReturn(updateControl);
 
-        updaterBuilder = new BoundSafeUpdaterBuilderImpl<>(updateControl, JSON.class, identity(JSON.class));
+        updaterBuilder = new BoundSafeUpdaterBuilderImpl<>(session, JSON.class, identity(JSON.class));
     }
 
     @After
     public void postConditions() {
-        verifyNoMoreInteractions(callback, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer);
+        verifyNoMoreInteractions(callback, safeTransformer, jsonValue, delegateUpdater, unsafeTransformer, session);
     }
 
     @Test
-    public void createAndUpdate() throws TransformationException {
+    public void createAndUpdate() {
         final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
+        verify(session).feature(TopicUpdateControl.class);
+        verify(session).feature(TopicUpdateControl.class);
 
         updater.update("topic", jsonValue, callback);
 
@@ -125,6 +130,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     @Test
     public void untransformedValueCache() {
         final SafeTransformedUpdater<JSON, JSON> updater = updaterBuilder.create();
+        verify(session).feature(TopicUpdateControl.class);
 
         final ValueCache<JSON> jsonValueCache = updater.untransformedValueCache();
 
@@ -135,10 +141,12 @@ public final class BoundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void safeTransformCreateAndUpdate() throws TransformationException {
+    public void safeTransformCreateAndUpdate() {
         final SafeTransformedUpdater<JSON, String> updater = updaterBuilder
             .transform(safeTransformer)
             .create();
+
+        verify(session).feature(TopicUpdateControl.class);
 
         updater.update("topic", "stringValue", callback);
 
@@ -153,6 +161,8 @@ public final class BoundSafeUpdaterBuilderImplTest {
             .unsafeTransform(unsafeTransformer)
             .create();
 
+        verify(session).feature(TopicUpdateControl.class);
+
         updater.update("topic", "stringValue", callback);
 
         verify(unsafeTransformer).transform("stringValue");
@@ -166,6 +176,8 @@ public final class BoundSafeUpdaterBuilderImplTest {
             .unsafeTransform(unsafeTransformer)
             .create();
 
+        verify(session).feature(TopicUpdateControl.class);
+
         updater.update("topic", "stringValue", callback);
 
         verify(unsafeTransformer).transform("stringValue");
@@ -174,11 +186,12 @@ public final class BoundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformRegisterAndUpdate() throws TransformationException {
+    public void transformRegisterAndUpdate() {
         updaterBuilder
             .transform(safeTransformer)
             .register("topic", updateSource);
 
+        verify(session).feature(TopicUpdateControl.class);
         verify(updateControl).registerUpdateSource(eq("topic"), updateSourceCaptor.capture());
 
         updateSourceCaptor.getValue().onActive("topic", simpleUpdater);
@@ -193,7 +206,7 @@ public final class BoundSafeUpdaterBuilderImplTest {
     }
 
     @Test
-    public void transformAndUnbind() throws TransformationException {
+    public void transformAndUnbind() {
         final UnboundTransformedUpdaterBuilder<JSON, String> builder = updaterBuilder
             .unsafeTransform(unsafeTransformer)
             .unbind();
