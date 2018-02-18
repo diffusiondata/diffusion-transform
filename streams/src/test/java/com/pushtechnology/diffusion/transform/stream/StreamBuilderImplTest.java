@@ -15,9 +15,13 @@
 
 package com.pushtechnology.diffusion.transform.stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.isNotNull;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -28,11 +32,16 @@ import com.pushtechnology.diffusion.client.features.TimeSeries.Event;
 import com.pushtechnology.diffusion.client.features.Topics;
 import com.pushtechnology.diffusion.client.session.Session;
 import com.pushtechnology.diffusion.client.topics.TopicSelector;
+import com.pushtechnology.diffusion.client.topics.details.TopicSpecification;
 import com.pushtechnology.diffusion.datatype.json.JSON;
+import com.pushtechnology.diffusion.timeseries.event.EventImpl;
+import com.pushtechnology.diffusion.timeseries.event.EventMetadataImpl;
 import com.pushtechnology.diffusion.transform.transformer.Transformers;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 
 /**
@@ -53,6 +62,12 @@ public final class StreamBuilderImplTest {
     private TransformedStream<JSON, JSON> jsonStream;
     @Mock
     private TransformedStream<Event<JSON>, Event<JSON>> timeseriesStream;
+    @Mock
+    private JSON json;
+    @Captor
+    private ArgumentCaptor<Topics.ValueStream<Event<JSON>>> streamCaptor;
+    @Captor
+    private ArgumentCaptor<Event<JSON>> eventCaptor;
 
     @Before
     public void setUp() {
@@ -147,6 +162,43 @@ public final class StreamBuilderImplTest {
             new StreamBuilderImpl<>(JSON.class, Transformers.toTransformer(Function.identity()));
         streamBuilder.createTimeSeries(session, "path", timeseriesStream);
 
-        verify(topics).addTimeSeriesStream(eq("path"), eq(JSON.class), isA(Topics.ValueStream.class));
+        verify(topics).addTimeSeriesStream(eq("path"), eq(JSON.class), streamCaptor.capture());
+
+        final EventMetadataImpl metadata0 = new EventMetadataImpl(0, 0, "author");
+        streamCaptor
+            .getValue()
+            .onValue("path", null, null, EventImpl.createEvent(metadata0, metadata0, json));
+
+        verify(timeseriesStream)
+            .onValue(
+                eq("path"),
+                isNull(TopicSpecification.class),
+                isNull(Event.class),
+                eventCaptor.capture());
+
+        final Event<JSON> event0 = eventCaptor.getValue();
+        assertFalse(event0.isEditEvent());
+        assertEquals(0, event0.sequence());
+        assertEquals(0, event0.timestamp());
+        assertEquals("author", event0.author());
+
+        final EventMetadataImpl metadata1 = new EventMetadataImpl(1, 1, "author");
+        streamCaptor
+            .getValue()
+            .onValue("path", null, null, EventImpl.createEvent(metadata1, metadata0, json));
+
+        verify(timeseriesStream)
+            .onValue(
+                eq("path"),
+                isNull(TopicSpecification.class),
+                isNotNull(Event.class),
+                eventCaptor.capture());
+
+        final Event<JSON> event1 = eventCaptor.getValue();
+        assertTrue(event1.isEditEvent());
+        assertEquals(1, event1.sequence());
+        assertEquals(1, event1.timestamp());
+        assertEquals("author", event1.author());
+        assertEquals(metadata0, event1.originalEvent());
     }
 }

@@ -70,7 +70,7 @@ import com.pushtechnology.diffusion.transform.transformer.UnsafeTransformer;
                 value.sequence(),
                 value.timestamp(),
                 value.author());
-            return EventImpl.createEvent(metadata, value.originalEvent(), newValue);
+            return EventImpl.createEvent(metadata, value.isEditEvent() ? value.originalEvent() : metadata, newValue);
         };
         return new StreamAdapter<>(eventTransformer, targetStream);
     }
