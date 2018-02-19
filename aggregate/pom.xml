@@ -11,7 +11,9 @@
 
     <artifactId>diffusion-transform</artifactId>
     <name>Aggregate</name>
-    <description>Module for aggregating other modules.</description>
+    <description>Module for aggregating other modules. Provides a shaded JAR
+        containing the code relating to transformers, streams, updaters and
+        messaging.</description>
 
     <dependencies>
         <dependency>
