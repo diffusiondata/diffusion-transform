@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <body>
+        <menu ref="parent" />
+        <menu name="Details">
+            <item name="Transformers" href="../transformers/transformers.html" />
+            <item name="JSON Transformers" href="../transformers/json-transformers.html" />
+            <item name="Transformer Builders" href="../transformers/transformer-builders.html" />
+            <item name="Stream Builders" href="../streams/stream-builders.html" />
+            <item name="Updater Builders" href="../updaters/updater-builders.html" />
+            <item name="Messaging" href="../messaging/messaging.html" />
+        </menu>
+    </body>
+</project>
