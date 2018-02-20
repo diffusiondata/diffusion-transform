@@ -14,7 +14,14 @@
     <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <url>https://pushtechnology.github.io/diffusion-transform/</url>
-    <description>Parent project for Diffusion transformers. Contains no code.</description>
+    <description>Parent project for Diffusion transformers. Structures
+        components of Diffusion Transform. The transformers module supports
+        converting values. The streams module supports combining transformers
+        and Diffusion value streams. The updaters module supports combining
+        transformers and Diffusion updaters. The messaging module supports
+        combining transformers and Diffusion messaging. The aggregate module
+        combines these modules. The examples module provides a collection of
+        examples.</description>
 
     <modules>
         <module>examples</module>
