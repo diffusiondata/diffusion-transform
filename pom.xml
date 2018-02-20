@@ -24,12 +24,12 @@
         examples.</description>
 
     <modules>
-        <module>examples</module>
-        <module>streams</module>
         <module>transformers</module>
+        <module>streams</module>
         <module>updaters</module>
         <module>messaging</module>
         <module>aggregate</module>
+        <module>examples</module>
     </modules>
 
     <repositories>
