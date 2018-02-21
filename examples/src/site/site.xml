@@ -10,6 +10,5 @@
             <item name="Updater Builders" href="../updaters/updater-builders.html" />
             <item name="Messaging" href="../messaging/messaging.html" />
         </menu>
-        <menu ref="reports" />
     </body>
 </project>
