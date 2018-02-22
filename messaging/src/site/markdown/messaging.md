@@ -23,3 +23,50 @@ This needs the `send_to_message_handler` permission.
 Backend clients can send to sessions and register request handlers with the server.
 This needs the `send_to_session` and `register_handler` permissions.
 The difference in permissions allows the server to enforce the roles of clients.
+
+### Transforming requests received from the server
+
+To transform requests received from a server a `TransformedRequestStream`
+needs to be set on a session.
+A `RequestReceiverBuilders` can be used to configure the transformation and
+set the stream.
+
+```
+RequestReceiverBuilders
+    .requestStreamBuilder(JSON.class, String.class)
+    .unsafeTransformRequest(Transformers.stringify())
+    .bind(session)
+    .setStream(
+        "json/random",
+        new TransformedRequestStream<JSON, String, String>() {
+            @Override
+            public void onRequest(String path, String request, Responder<String> responder) {
+                LOG.warn("{} request, path={}, message={}", this, path, request);
+                try {
+                    responder.respond(null);
+                }
+                catch (TransformationException e) {
+                    LOG.warn("{} failed to transform response", this, e);
+                }
+            }
+
+            @Override
+            public void onTransformationException(
+                    String path,
+                    JSON request,
+                    Responder<String> responder,
+                    TransformationException e) {
+                LOG.warn("{} transformation error, path={}, message={}", this, path, request, e);
+            }
+
+            @Override
+            public void onClose() {
+                LOG.debug("{} closed", this);
+            }
+
+            @Override
+            public void onError(ErrorReason errorReason) {
+                LOG.warn("Failed to send message, {}", errorReason);
+            }
+        });
+```
