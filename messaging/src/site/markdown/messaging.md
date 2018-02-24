@@ -70,3 +70,62 @@ RequestReceiverBuilders
             }
         });
 ```
+
+### Transforming requests received from sessions
+
+To transform requests received from a server a `TransformedRequestHandler`
+needs to be registered with the server.
+The `register_handler` permission is needed to be able to register the handler.
+A `RequestReceiverBuilders` can be used to configure the transformation and
+set the handler.
+
+
+```
+RequestReceiverBuilders
+    .requestStreamBuilder(JSON.class, String.class)
+    .unsafeTransformRequest(Transformers.stringify())
+    .bind(session)
+    .addRequestHandler(
+        "json/random",
+        new TransformedRequestHandler<JSON, String, String>() {
+            @Override
+            public void onRequest(
+                String request,
+                RequestContext requestContext,
+                Responder<String> responder) {
+
+                LOG.warn("{} request, path={}, message={}", this, requestContext.getPath(), request);
+                try {
+                    responder.respond(null);
+                }
+                catch (TransformationException e) {
+                    LOG.warn("{} failed to transform response", this, e);
+                }
+            }
+
+            @Override
+            public void onTransformationException(
+                JSON request,
+                RequestContext requestContext,
+                Responder<String> responder,
+                TransformationException e) {
+
+                LOG.warn(
+                    "{} transformation error, path={}, message={}",
+                    this,
+                    requestContext.getPath(),
+                    request,
+                    e);
+            }
+
+            @Override
+            public void onClose() {
+                LOG.debug("{} closed", this);
+            }
+
+            @Override
+            public void onError(ErrorReason errorReason) {
+                LOG.warn("Failed to send message, {}", errorReason);
+            }
+        });
+```
