@@ -9,8 +9,12 @@ applies a transformation to a value before updating the topic with the result. L
 Every `UpdaterBuilder` has two properties, safe transformation and session binding. Each of these properties can have
 one of two values. Updater builders can have any combination of these values.
 
+### Safe transforming builders
+
 An `UpdaterBuilder` that is safely transforming only uses `Function`s. If it is transformed with a `Transformer` the
 resulting `UpdaterBuilder` is unsafely transforming.
+
+### Unsafe transforming builders
 
 An `UpdaterBuilder` that is not bound must be provided with an `Updater` to create a `TransformedUpdater` or a
 `TopicUpdateControl` to register a `TransformedUpdateSource`. An `UpdaterBuilder` that is bound to a session can create
@@ -19,6 +23,8 @@ a `TransformedUpdater` or register a `TransformedUpdateSource` without any being
 
 A `TransformedUpdater` will throw a `TransformationException` when attempting to update a topic if the transformation
 cannot be applied to the value. Using only `Function` this additional exception throwing can be avoided.
+
+### Creating transformed updaters
 
 A `TransformedUpdater` can be created that converts a bean or pojo to a `JSON` value and applies it to a topic.  
 
@@ -52,3 +58,8 @@ final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.cl
         }
     });
 ```
+
+### Updating time series topics
+
+An `UpdaterBuilder` can also create a `TimeSeriesUpdater` that can append or edit transformed values to time series
+topics.
