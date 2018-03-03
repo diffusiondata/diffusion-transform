@@ -38,4 +38,7 @@ wrapped in an adapter before it is passed to the Diffusion API the `Topics` feat
 
 ### Streaming time series topics
 
-A `StreamBuilder` can also create streams the transform time series topics.
+A `StreamBuilder` can also create streams that transform time series topics.
+Time series streams receive values of type `Event<T>`.
+The `Event` contains metadata about the value and the value.
+A transformed time series stream creates a new `Event` with the same metadata and a transformed value.
