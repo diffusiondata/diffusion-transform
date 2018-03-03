@@ -63,3 +63,20 @@ final TransformedUpdater<JSON, RandomData> valueUpdater = updaterBuilder(JSON.cl
 
 An `UpdaterBuilder` can also create a `TimeSeriesUpdater` that can append or edit transformed values to time series
 topics.
+
+Creating and transforming an `UpdaterBuilder` is identical for time series and non-time series topics.
+The type of the builder should be for the event value type.
+A separate method is provided for creating a `TimeSeriesUpdater` called `createTimeSeries`.
+
+```java
+final TimeSeriesUpdater<RandomData> valueUpdater = updaterBuilder(JSON.class)
+    .unsafeTransform(Transformers.<RandomData>fromPojo())
+    .createTimeSeries(session);
+
+valueUpdater
+    .append("time/series/random", RandomData.next())
+    .exceptionally(e -> {
+        LOG.error("Failed to append data", e);
+        return null;
+    });
+```

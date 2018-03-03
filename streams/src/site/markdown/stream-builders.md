@@ -42,3 +42,24 @@ A `StreamBuilder` can also create streams that transform time series topics.
 Time series streams receive values of type `Event<T>`.
 The `Event` contains metadata about the value and the value.
 A transformed time series stream creates a new `Event` with the same metadata and a transformed value.
+
+Creating and transforming a `StreamBuilder` is identical for time series and non-time series topics.
+The type of the builder should be for the event value type.
+A separate method is provided for creating a time series stream called `createTimeSeries`.
+
+```java
+newJsonStreamBuilder()
+    .unsafeTransform(toMapOf(BigInteger.class))
+    .unsafeTransform(value -> value.get("timestamp"))
+    .createTimeSeries(session, "time/series/random", new Default<Event<JSON>, Event<BigInteger>>() {
+        @Override
+        public void onValue(
+            String topicPath,
+            TopicSpecification topicSpecification,
+            Event<BigInteger> oldValue,
+            Event<BigInteger> newValue) {
+
+            LOG.info("New timestamp {}", newValue);
+        }
+    });
+```
